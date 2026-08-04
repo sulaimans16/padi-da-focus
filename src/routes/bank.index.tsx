@@ -96,7 +96,7 @@ function AddQuestionForm({ onSaved }: { onSaved: () => void }) {
       subject,
       topic: topic.trim() || "Mixed",
       stem: stem.trim(),
-      options: ids.map((id, i) => ({ id, text: opts[i].trim() })),
+      options: ids.map((id, i) => ({ id, text: (opts[i] ?? "").trim() })),
       correctOptionId: correct,
       oneLiner: oneLiner.trim() || "Added by your study group.",
       explanation: oneLiner.trim() || "Added by your study group.",

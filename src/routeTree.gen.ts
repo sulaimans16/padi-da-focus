@@ -11,6 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as FocusRouteImport } from './routes/focus'
+import { Route as PyqRouteImport } from './routes/pyq'
+import { Route as BankIndexRouteImport } from './routes/bank.index'
+import { Route as BankSubjectRouteImport } from './routes/bank.$subject'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +25,58 @@ const FocusRoute = FocusRouteImport.update({
   path: '/focus',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PyqRoute = PyqRouteImport.update({
+  id: '/pyq',
+  path: '/pyq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BankIndexRoute = BankIndexRouteImport.update({
+  id: '/bank/',
+  path: '/bank/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BankSubjectRoute = BankSubjectRouteImport.update({
+  id: '/bank/$subject',
+  path: '/bank/$subject',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/focus': typeof FocusRoute
+  '/pyq': typeof PyqRoute
+  '/bank/$subject': typeof BankSubjectRoute
+  '/bank/': typeof BankIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/focus': typeof FocusRoute
+  '/pyq': typeof PyqRoute
+  '/bank/$subject': typeof BankSubjectRoute
+  '/bank': typeof BankIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/focus': typeof FocusRoute
+  '/pyq': typeof PyqRoute
+  '/bank/$subject': typeof BankSubjectRoute
+  '/bank/': typeof BankIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/focus'
+  fullPaths: '/' | '/focus' | '/pyq' | '/bank/$subject' | '/bank/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/focus'
-  id: '__root__' | '/' | '/focus'
+  to: '/' | '/focus' | '/pyq' | '/bank/$subject' | '/bank'
+  id: '__root__' | '/' | '/focus' | '/pyq' | '/bank/$subject' | '/bank/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   FocusRoute: typeof FocusRoute
+  PyqRoute: typeof PyqRoute
+  BankSubjectRoute: typeof BankSubjectRoute
+  BankIndexRoute: typeof BankIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +95,36 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FocusRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pyq': {
+      id: '/pyq'
+      path: '/pyq'
+      fullPath: '/pyq'
+      preLoaderRoute: typeof PyqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bank/': {
+      id: '/bank/'
+      path: '/bank'
+      fullPath: '/bank/'
+      preLoaderRoute: typeof BankIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bank/$subject': {
+      id: '/bank/$subject'
+      path: '/bank/$subject'
+      fullPath: '/bank/$subject'
+      preLoaderRoute: typeof BankSubjectRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   FocusRoute: FocusRoute,
+  PyqRoute: PyqRoute,
+  BankSubjectRoute: BankSubjectRoute,
+  BankIndexRoute: BankIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

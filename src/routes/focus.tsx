@@ -76,6 +76,19 @@ function FocusPage() {
     });
   }, []);
 
+  // Kill in-app router navigation (links, dashboard buttons) while locked.
+  useBlocker({
+    shouldBlockFn: () => {
+      if (!session) return false;
+      triggerNag();
+      return true;
+    },
+    enableBeforeUnload: false,
+    withResolver: false,
+  });
+
+
+
   const finish = useCallback(
     (completed: boolean) => {
       setSession((prev) => {

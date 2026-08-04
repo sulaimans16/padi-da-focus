@@ -99,6 +99,8 @@ export const generateQuestionBatch = createServerFn({ method: "POST" })
       }
     }
 
+    if (!parsed) throw new Error("AI returned no usable questions.");
+
     const rows = parsed.questions
       .filter(
         (q) =>

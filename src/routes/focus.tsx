@@ -326,6 +326,49 @@ function FocusPage() {
           </select>
         </div>
 
+        <div>
+          <label className="flex cursor-pointer items-start gap-3">
+            <input
+              type="checkbox"
+              checked={cameraWatch}
+              onChange={(e) => setCameraWatch(e.target.checked)}
+              className="mt-1 h-4 w-4 accent-[hsl(var(--primary))]"
+            />
+            <span>
+              <span className="block text-sm font-semibold">Eye watch (camera) 👀</span>
+              <span className="block text-xs text-muted-foreground">
+                Look away or leave the desk and padi da plays. Runs fully on this device — no video
+                is uploaded or stored.
+              </span>
+            </span>
+          </label>
+
+          {cameraWatch && (
+            <div className="mt-3">
+              <p className="mb-2 text-[11px] uppercase tracking-widest text-muted-foreground">
+                Strictness
+              </p>
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  [1, "Chill"],
+                  [2, "Normal"],
+                  [3, "Amma mode"],
+                ].map(([value, label]) => (
+                  <button
+                    key={String(value)}
+                    onClick={() => setSensitivity(Number(value))}
+                    className={`btn-base ${sensitivity === value ? "btn-primary" : "btn-ghost"}`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+
+
         <button onClick={start} className="btn-base btn-primary w-full py-3.5 text-base">
           Lock in — 30 days la neeye than paakanum 🔒
         </button>

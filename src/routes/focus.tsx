@@ -205,7 +205,14 @@ function FocusPage() {
           </span>
         </ProgressRing>
 
+        {session.cameraWatch && (
+          <div className="w-full max-w-sm">
+            <CameraWatch sensitivity={session.sensitivity ?? 2} onLookAway={triggerNag} />
+          </div>
+        )}
+
         <div className="grid w-full max-w-sm grid-cols-3 gap-2 text-center">
+
           {[
             ["Escapes", session.escapeAttempts],
             ["Elapsed", formatClock(session.durationSec - remaining)],

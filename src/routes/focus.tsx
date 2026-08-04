@@ -1,8 +1,10 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useBlocker, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ProgressRing } from "@/components/ProgressRing";
 import { NagOverlay } from "@/components/NagOverlay";
+import { CameraWatch } from "@/components/CameraWatch";
 import { playSuccess } from "@/lib/sfx";
+
 import {
   SUBJECTS,
   clearActiveSession,

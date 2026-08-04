@@ -14,7 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      questions: {
+        Row: {
+          correct_option_id: string
+          created_at: string
+          difficulty: string
+          distractors: Json
+          explanation: string
+          high_yield: string
+          id: string
+          is_pyq: boolean
+          one_liner: string
+          options: Json
+          pyq_year: number | null
+          repeat_count: number | null
+          source: string | null
+          stem: string
+          subject: string
+          topic: string
+        }
+        Insert: {
+          correct_option_id: string
+          created_at?: string
+          difficulty?: string
+          distractors?: Json
+          explanation: string
+          high_yield?: string
+          id?: string
+          is_pyq?: boolean
+          one_liner: string
+          options: Json
+          pyq_year?: number | null
+          repeat_count?: number | null
+          source?: string | null
+          stem: string
+          subject: string
+          topic: string
+        }
+        Update: {
+          correct_option_id?: string
+          created_at?: string
+          difficulty?: string
+          distractors?: Json
+          explanation?: string
+          high_yield?: string
+          id?: string
+          is_pyq?: boolean
+          one_liner?: string
+          options?: Json
+          pyq_year?: number | null
+          repeat_count?: number | null
+          source?: string | null
+          stem?: string
+          subject?: string
+          topic?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

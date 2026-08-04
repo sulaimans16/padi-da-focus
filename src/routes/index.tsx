@@ -28,8 +28,8 @@ export const Route = createFileRoute("/")({
 });
 
 const FEATURES = [
-  { label: "Question Bank", icon: "🧠", note: "Subject → topic drills" },
-  { label: "PYQs", icon: "🔥", note: "Tagged by year & repeats" },
+  { label: "Question Bank", icon: "🧠", note: "Subject → topic drills", to: "/bank" as const },
+  { label: "PYQs", icon: "🔥", note: "Tagged by year & repeats", to: "/pyq" as const },
   { label: "Mock Tests", icon: "⏱️", note: "200 Q · 3h30m · NBE" },
   { label: "Quizzes", icon: "⚡", note: "Rapid-fire, 5–15 Q" },
   { label: "Flashcards", icon: "🗂️", note: "Spaced repetition" },
@@ -121,14 +121,27 @@ function Index() {
       <section className="mt-6">
         <h2 className="text-sm uppercase tracking-widest text-muted-foreground">Study modules</h2>
         <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
-          {FEATURES.map((f) => (
-            <div key={f.label} className="card-surface p-3 opacity-60">
-              <span className="text-xl">{f.icon}</span>
-              <p className="mt-1 text-sm font-semibold leading-tight">{f.label}</p>
-              <p className="text-[11px] leading-tight text-muted-foreground">{f.note}</p>
-              <p className="mt-1 text-[10px] uppercase tracking-wider text-primary">Next up</p>
-            </div>
-          ))}
+          {FEATURES.map((f) => {
+            const body = (
+              <>
+                <span className="text-xl">{f.icon}</span>
+                <p className="mt-1 text-sm font-semibold leading-tight">{f.label}</p>
+                <p className="text-[11px] leading-tight text-muted-foreground">{f.note}</p>
+                <p className="mt-1 text-[10px] uppercase tracking-wider text-primary">
+                  {"to" in f ? "Open" : "Next up"}
+                </p>
+              </>
+            );
+            return "to" in f && f.to ? (
+              <Link key={f.label} to={f.to} className="card-surface block p-3">
+                {body}
+              </Link>
+            ) : (
+              <div key={f.label} className="card-surface p-3 opacity-60">
+                {body}
+              </div>
+            );
+          })}
         </div>
       </section>
 

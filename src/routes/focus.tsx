@@ -61,8 +61,13 @@ function FocusPage() {
     if (active) {
       setSession(active);
       setRemaining(remainingSec(active));
+      if (window.sessionStorage.getItem("padida.focus.escaped")) {
+        window.sessionStorage.removeItem("padida.focus.escaped");
+        setNagOpen(true);
+      }
     }
   }, []);
+
 
   const triggerNag = useCallback(() => {
     setSession((prev) => {

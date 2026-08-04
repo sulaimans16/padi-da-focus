@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { QuestionCard } from "@/components/QuestionCard";
+import { GenerateQuestions } from "@/components/GenerateQuestions";
+import { fetchRemoteQuestions } from "@/lib/remote-questions";
 import { allQuestions, subjectColor, type Question } from "@/lib/questions";
 
 export const Route = createFileRoute("/bank/$subject")({
@@ -25,7 +27,20 @@ function SubjectPractice() {
   const { subject } = Route.useParams();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [topic, setTopic] = useState("all");
-  useEffect(() => setQuestions(allQuestions().filter((q) => q.subject === subject)), [subject]);
+
+  const load = useCallback(async () => {
+    const local = allQuestions().filter((q) => q.subject === subject);
+    try {
+      const remote = await fetchRemoteQuestions(subject);
+      setQuestions([...remote, ...local]);
+    } catch {
+      setQuestions(local);
+    }
+  }, [subject]);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
 
   const topics = useMemo(
     () => ["all", ...Array.from(new Set(questions.map((q) => q.topic)))],
@@ -56,6 +71,15 @@ function SubjectPractice() {
           ))}
         </div>
       )}
+
+      <GenerateQuestions
+        subject={subject}
+        topic={topic}
+        currentCount={shown.length}
+        existingStems={shown.map((q) => q.stem.slice(0, 90))}
+        onDone={load}
+      />
+
 
       <div className="mt-4 space-y-3">
         {shown.map((q, i) => (

@@ -28,8 +28,8 @@ export const Route = createFileRoute("/")({
 });
 
 const FEATURES = [
-  { label: "Question Bank", icon: "🧠", note: "Subject → topic drills" },
-  { label: "PYQs", icon: "🔥", note: "Tagged by year & repeats" },
+  { label: "Question Bank", icon: "🧠", note: "Subject → topic drills", to: "/bank" as const },
+  { label: "PYQs", icon: "🔥", note: "Tagged by year & repeats", to: "/pyq" as const },
   { label: "Mock Tests", icon: "⏱️", note: "200 Q · 3h30m · NBE" },
   { label: "Quizzes", icon: "⚡", note: "Rapid-fire, 5–15 Q" },
   { label: "Flashcards", icon: "🗂️", note: "Spaced repetition" },

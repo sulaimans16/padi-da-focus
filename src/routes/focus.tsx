@@ -177,12 +177,15 @@ function FocusPage() {
       durationSec: dur * 60,
       subject: subject || null,
       escapeAttempts: 0,
+      cameraWatch,
+      sensitivity,
     };
     saveActiveSession(next);
     setSession(next);
     setRemaining(next.durationSec);
     setCelebrate(false);
   };
+
 
   if (session) {
     const progress = 1 - remaining / session.durationSec;

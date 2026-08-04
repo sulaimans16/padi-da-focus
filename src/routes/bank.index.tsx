@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { SUBJECTS } from "@/lib/focus-session";
+import { fetchRemoteCounts } from "@/lib/remote-questions";
 import {
   allQuestions,
   saveCustomQuestion,
@@ -29,14 +30,29 @@ export const Route = createFileRoute("/bank/")({
 
 function BankIndex() {
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [remote, setRemote] = useState<Map<string, number>>(new Map());
   const [showForm, setShowForm] = useState(false);
-  useEffect(() => setQuestions(allQuestions()), []);
+
+  const load = useCallback(async () => {
+    setQuestions(allQuestions());
+    try {
+      setRemote(await fetchRemoteCounts());
+    } catch {
+      /* offline: local counts only */
+    }
+  }, []);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
 
   const counts = useMemo(() => {
-    const map = new Map<string, number>();
+    const map = new Map<string, number>(remote);
     questions.forEach((q) => map.set(q.subject, (map.get(q.subject) ?? 0) + 1));
     return map;
-  }, [questions]);
+  }, [questions, remote]);
+
+  const total = Array.from(counts.values()).reduce((a, b) => a + b, 0);
 
   return (
     <main className="mx-auto w-full max-w-2xl px-4 py-6">
@@ -45,8 +61,9 @@ function BankIndex() {
       </Link>
       <h1 className="mt-2 text-3xl font-bold">Question Bank</h1>
       <p className="text-sm text-muted-foreground">
-        Subject → topic → drill. Placeholder content for now; bulk import replaces it.
+        {total} questions loaded. Open a subject and use “Fill to 50/100” to grow it.
       </p>
+
 
       <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
         {SUBJECTS.map((s) => {

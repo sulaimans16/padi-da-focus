@@ -1,8 +1,10 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useBlocker, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ProgressRing } from "@/components/ProgressRing";
 import { NagOverlay } from "@/components/NagOverlay";
+import { CameraWatch } from "@/components/CameraWatch";
 import { playSuccess } from "@/lib/sfx";
+
 import {
   SUBJECTS,
   clearActiveSession,
@@ -44,11 +46,14 @@ function FocusPage() {
   const [minutes, setMinutes] = useState(25);
   const [custom, setCustom] = useState("");
   const [subject, setSubject] = useState<string>("");
+  const [cameraWatch, setCameraWatch] = useState(false);
+  const [sensitivity, setSensitivity] = useState(2);
   const [exitOpen, setExitOpen] = useState(false);
   const [exitText, setExitText] = useState("");
   const [celebrate, setCelebrate] = useState(false);
   const lastNagRef = useRef(0);
   const hiddenTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
 
   // Rehydrate an in-flight lock so a refresh can't dodge it.
   useEffect(() => {
@@ -56,8 +61,13 @@ function FocusPage() {
     if (active) {
       setSession(active);
       setRemaining(remainingSec(active));
+      if (window.sessionStorage.getItem("padida.focus.escaped")) {
+        window.sessionStorage.removeItem("padida.focus.escaped");
+        setNagOpen(true);
+      }
     }
   }, []);
+
 
   const triggerNag = useCallback(() => {
     setSession((prev) => {
@@ -70,6 +80,19 @@ function FocusPage() {
       return next;
     });
   }, []);
+
+  // Kill in-app router navigation (links, dashboard buttons) while locked.
+  useBlocker({
+    shouldBlockFn: () => {
+      if (!session) return false;
+      triggerNag();
+      return true;
+    },
+    enableBeforeUnload: false,
+    withResolver: false,
+  });
+
+
 
   const finish = useCallback(
     (completed: boolean) => {
@@ -159,12 +182,15 @@ function FocusPage() {
       durationSec: dur * 60,
       subject: subject || null,
       escapeAttempts: 0,
+      cameraWatch,
+      sensitivity,
     };
     saveActiveSession(next);
     setSession(next);
     setRemaining(next.durationSec);
     setCelebrate(false);
   };
+
 
   if (session) {
     const progress = 1 - remaining / session.durationSec;
@@ -184,7 +210,14 @@ function FocusPage() {
           </span>
         </ProgressRing>
 
+        {session.cameraWatch && (
+          <div className="w-full max-w-sm">
+            <CameraWatch sensitivity={session.sensitivity ?? 2} onLookAway={triggerNag} />
+          </div>
+        )}
+
         <div className="grid w-full max-w-sm grid-cols-3 gap-2 text-center">
+
           {[
             ["Escapes", session.escapeAttempts],
             ["Elapsed", formatClock(session.durationSec - remaining)],
@@ -297,6 +330,49 @@ function FocusPage() {
             ))}
           </select>
         </div>
+
+        <div>
+          <label className="flex cursor-pointer items-start gap-3">
+            <input
+              type="checkbox"
+              checked={cameraWatch}
+              onChange={(e) => setCameraWatch(e.target.checked)}
+              className="mt-1 h-4 w-4 accent-[hsl(var(--primary))]"
+            />
+            <span>
+              <span className="block text-sm font-semibold">Eye watch (camera) 👀</span>
+              <span className="block text-xs text-muted-foreground">
+                Look away or leave the desk and padi da plays. Runs fully on this device — no video
+                is uploaded or stored.
+              </span>
+            </span>
+          </label>
+
+          {cameraWatch && (
+            <div className="mt-3">
+              <p className="mb-2 text-[11px] uppercase tracking-widest text-muted-foreground">
+                Strictness
+              </p>
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  [1, "Chill"],
+                  [2, "Normal"],
+                  [3, "Amma mode"],
+                ].map(([value, label]) => (
+                  <button
+                    key={String(value)}
+                    onClick={() => setSensitivity(Number(value))}
+                    className={`btn-base ${sensitivity === value ? "btn-primary" : "btn-ghost"}`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+
 
         <button onClick={start} className="btn-base btn-primary w-full py-3.5 text-base">
           Lock in — 30 days la neeye than paakanum 🔒

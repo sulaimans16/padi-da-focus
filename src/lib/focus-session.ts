@@ -3,7 +3,10 @@ export type FocusSession = {
   durationSec: number;
   subject: string | null;
   escapeAttempts: number;
+  cameraWatch?: boolean;
+  sensitivity?: number;
 };
+
 
 export type CompletedSession = {
   startedAt: number;

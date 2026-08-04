@@ -46,11 +46,14 @@ function FocusPage() {
   const [minutes, setMinutes] = useState(25);
   const [custom, setCustom] = useState("");
   const [subject, setSubject] = useState<string>("");
+  const [cameraWatch, setCameraWatch] = useState(false);
+  const [sensitivity, setSensitivity] = useState(2);
   const [exitOpen, setExitOpen] = useState(false);
   const [exitText, setExitText] = useState("");
   const [celebrate, setCelebrate] = useState(false);
   const lastNagRef = useRef(0);
   const hiddenTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
 
   // Rehydrate an in-flight lock so a refresh can't dodge it.
   useEffect(() => {

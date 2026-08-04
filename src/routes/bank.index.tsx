@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { SUBJECTS } from "@/lib/focus-session";
+import { fetchRemoteCounts } from "@/lib/remote-questions";
 import {
   allQuestions,
   saveCustomQuestion,

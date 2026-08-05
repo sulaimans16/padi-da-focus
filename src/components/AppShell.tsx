@@ -3,6 +3,9 @@ import type { ReactNode } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useTheme } from "@/lib/theme";
 import { AskAi } from "@/components/AskAi";
+import { UsernamePrompt } from "@/components/UsernamePrompt";
+import { doctorName } from "@/lib/doctor-name";
+
 
 type NavLink = {
   label: string;
@@ -61,7 +64,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   if (FULL_BLEED.some((p) => pathname.startsWith(p))) return <>{children}</>;
 
-  const name = displayName || user?.email?.split("@")[0] || "Guest";
+  const name = user ? doctorName(displayName, user.email) : "Guest";
 
   return (
     <div className="min-h-screen bg-background">
@@ -157,6 +160,8 @@ export function AppShell({ children }: { children: ReactNode }) {
       </nav>
 
       <AskAi />
+      <UsernamePrompt />
+
     </div>
   );
 }

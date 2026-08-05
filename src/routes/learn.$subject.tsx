@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
-import { figureSource, figureUrl, getModule, LEARN_MODULES } from "@/lib/learn";
+import { figureSource, figureUrl, getModule, LEARN_MODULES, type Vignette } from "@/lib/learn";
 
 export const Route = createFileRoute("/learn/$subject")({
   loader: ({ params }) => {
@@ -41,6 +41,26 @@ function ModuleNotFound() {
   );
 }
 
+function VignetteBlock({ v }: { v: Vignette }) {
+  const [show, setShow] = useState(false);
+  return (
+    <div className="mt-5 rounded-xl border border-border p-4">
+      <p className="label-eyebrow text-primary">Test yourself</p>
+      <p className="clinical-text mt-1">{v.stem}</p>
+      {show ? (
+        <div className="mt-3 rounded-lg bg-surface-2 p-3">
+          <p className="text-sm font-bold">{v.answer}</p>
+          <p className="mt-1 text-sm leading-snug text-muted-foreground">{v.reasoning}</p>
+        </div>
+      ) : (
+        <button type="button" onClick={() => setShow(true)} className="btn-base btn-ghost mt-3 text-xs">
+          Reveal answer
+        </button>
+      )}
+    </div>
+  );
+}
+
 function LearnSubject() {
   const { subject } = Route.useParams();
   const mod = getModule(subject)!;
@@ -65,6 +85,19 @@ function LearnSubject() {
           <p className="label-eyebrow">Subject module</p>
           <h1 className="text-3xl">{mod.subject}</h1>
           <p className="mt-1 text-sm text-muted-foreground">{mod.blurb}</p>
+          <div className="mt-4 rounded-xl border border-border bg-surface-2 p-4">
+            <p className="label-eyebrow">By the end of this module you can</p>
+            <ul className="mt-2 space-y-1.5">
+              {mod.objectives.map((o) => (
+                <li key={o} className="flex gap-2 text-sm leading-snug">
+                  <span aria-hidden className="material-symbols-outlined mt-0.5 text-[16px] text-primary">
+                    task_alt
+                  </span>
+                  <span>{o}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
           <div className="mt-4 flex flex-wrap gap-2">
             <Link
               to="/bank/$subject"

@@ -164,7 +164,8 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       {/* Mobile bottom navigation */}
       <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-6 border-t border-border bg-surface md:hidden">
-        {[...PRIMARY, FOCUS_LINK].map((item) => {
+        {[...PRIMARY.filter((i) => i.to !== "/tracker"), FOCUS_LINK].map((item) => {
+
           const active =
             item.to === "/" ? pathname === "/" : pathname === item.to || pathname.startsWith(`${item.to}/`);
           return (

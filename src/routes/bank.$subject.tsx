@@ -97,11 +97,11 @@ function SubjectPractice() {
       />
 
       <div className="mt-4 space-y-4">
-        {shown.map((q, i) => (
+        {pageItems.map((q, i) => (
           <QuestionCard
             key={q.id}
             question={q}
-            index={i}
+            index={offset + i}
             total={shown.length}
             context="question_bank"
           />
@@ -113,6 +113,14 @@ function SubjectPractice() {
           </p>
         )}
       </div>
+
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        onChange={setPage}
+        totalItems={shown.length}
+      />
     </div>
   );
 }
+

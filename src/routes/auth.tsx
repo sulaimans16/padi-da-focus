@@ -142,7 +142,10 @@ function AuthPage() {
         />
         <button
           onClick={submit}
-          disabled={busy || !email || password.length < 6}
+          disabled={
+            busy || !email || password.length < 6 || (mode === "signup" && !name.trim())
+          }
+
           className="btn-base btn-primary w-full text-sm disabled:opacity-50"
         >
           {busy ? "Working…" : mode === "signup" ? "Create account" : "Sign in"}

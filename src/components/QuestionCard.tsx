@@ -100,7 +100,7 @@ export function QuestionCard({
             <span className="rounded bg-surface-2 px-1.5 py-0.5 text-warning">Crowdsourced</span>
           )}
           <button
-            onClick={() => setBookmarks(toggleBookmark(question.id))}
+            onClick={flip}
             className="ml-auto text-base leading-none"
             aria-label={bookmarked ? "Remove bookmark" : "Revise later"}
           >

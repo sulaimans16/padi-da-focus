@@ -44,12 +44,13 @@ function AuthPage() {
     setNotice(null);
     try {
       if (mode === "signup") {
+        const username = name.trim();
         const { data, error: err } = await supabase.auth.signUp({
           email,
           password,
           options: {
             emailRedirectTo: window.location.origin,
-            data: { display_name: name.trim() || email.split("@")[0] },
+            data: { display_name: username },
           },
         });
         if (err) throw err;
@@ -57,7 +58,13 @@ function AuthPage() {
           setNotice("Check your email to confirm the account, then sign in.");
           return;
         }
+        if (data.user && username) {
+          await supabase
+            .from("profiles")
+            .upsert({ id: data.user.id, display_name: username }, { onConflict: "id" });
+        }
       } else {
+
         const { error: err } = await supabase.auth.signInWithPassword({ email, password });
         if (err) throw err;
       }

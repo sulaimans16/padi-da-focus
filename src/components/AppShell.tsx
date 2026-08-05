@@ -5,12 +5,13 @@ import { useTheme } from "@/lib/theme";
 import { AskAi } from "@/components/AskAi";
 import { UsernamePrompt } from "@/components/UsernamePrompt";
 import { doctorName } from "@/lib/doctor-name";
+import { useAccess } from "@/hooks/useAccess";
 
 
 type NavLink = {
   label: string;
   icon: string;
-  to: "/" | "/bank" | "/pyq" | "/tracker" | "/bank/fill" | "/focus" | "/learn";
+  to: "/" | "/bank" | "/pyq" | "/tracker" | "/bank/fill" | "/focus" | "/learn" | "/pricing" | "/admin";
 };
 
 const PRIMARY: NavLink[] = [
@@ -21,10 +22,10 @@ const PRIMARY: NavLink[] = [
   { label: "Analytics", icon: "monitoring", to: "/tracker" },
 ];
 
-const SECONDARY: NavLink[] = [
-  { label: "Focus Lock", icon: "lock_clock", to: "/focus" },
-  { label: "Fill Bank", icon: "cloud_download", to: "/bank/fill" },
-];
+const FOCUS_LINK: NavLink = { label: "Focus Lock", icon: "lock_clock", to: "/focus" };
+const FILL_LINK: NavLink = { label: "Fill Bank", icon: "cloud_download", to: "/bank/fill" };
+const PRICING_LINK: NavLink = { label: "Go Pro", icon: "workspace_premium", to: "/pricing" };
+const ADMIN_LINK: NavLink = { label: "Admin", icon: "admin_panel_settings", to: "/admin" };
 
 const FULL_BLEED = ["/focus", "/auth"];
 
@@ -61,6 +62,14 @@ export function AppShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { user, displayName } = useAuth();
   const { theme, toggle } = useTheme();
+  const { isPro, isAdmin } = useAccess();
+
+  const SECONDARY: NavLink[] = [
+    FOCUS_LINK,
+    ...(isPro ? [FILL_LINK] : []),
+    ...(isPro ? [] : [PRICING_LINK]),
+    ...(isAdmin ? [ADMIN_LINK] : []),
+  ];
 
   if (FULL_BLEED.some((p) => pathname.startsWith(p))) return <>{children}</>;
 
@@ -143,7 +152,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       {/* Mobile bottom navigation */}
       <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-6 border-t border-border bg-surface md:hidden">
-        {[...PRIMARY, SECONDARY[0]!].map((item) => {
+        {[...PRIMARY, FOCUS_LINK].map((item) => {
           const active =
             item.to === "/" ? pathname === "/" : pathname === item.to || pathname.startsWith(`${item.to}/`);
           return (

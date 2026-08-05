@@ -5,6 +5,8 @@ import { SUBJECTS } from "@/lib/focus-session";
 import { subjectColor } from "@/lib/questions";
 import { fetchRemoteCounts } from "@/lib/remote-questions";
 import { generateQuestionBatch } from "@/lib/questions-ai.functions";
+import { useAccess } from "@/hooks/useAccess";
+import { ProGate } from "@/components/ProGate";
 
 export const Route = createFileRoute("/bank/fill")({
   head: () => ({
@@ -28,6 +30,7 @@ export const Route = createFileRoute("/bank/fill")({
 const BATCH = 10;
 
 function FillBank() {
+  const { loading: accessLoading, isPro } = useAccess();
   const generate = useServerFn(generateQuestionBatch);
   const [counts, setCounts] = useState<Map<string, number>>(new Map());
   const [target, setTarget] = useState(50);
@@ -91,6 +94,23 @@ function FillBank() {
 
   const total = Array.from(counts.values()).reduce((a, b) => a + b, 0);
   const done = SUBJECTS.filter((s) => (counts.get(s) ?? 0) >= target).length;
+
+  if (accessLoading) return null;
+
+  if (!isPro) {
+    return (
+      <main className="mx-auto w-full max-w-2xl px-4 py-6">
+        <Link to="/bank" className="text-xs text-muted-foreground underline underline-offset-4">
+          ← Question Bank
+        </Link>
+        <h1 className="mt-2 text-3xl font-bold tracking-tight">Fill every topic</h1>
+        <p className="mb-4 text-sm text-muted-foreground">
+          Bulk-building the bank runs on paid compute, so it lives in PadiDa Pro.
+        </p>
+        <ProGate feature="Bulk bank filling">{null}</ProGate>
+      </main>
+    );
+  }
 
   return (
     <main className="mx-auto w-full max-w-2xl px-4 py-6">

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouterState } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { askStudyAi } from "@/lib/ai-help.functions";
+import { useAccess } from "@/hooks/useAccess";
 
 type Turn = { role: "you" | "ai"; text: string };
 
@@ -28,6 +29,7 @@ export function AskAi() {
   const ask = useServerFn(askStudyAi);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  const { isPro, loading: accessLoading } = useAccess();
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
@@ -49,6 +51,8 @@ export function AskAi() {
       setBusy(false);
     }
   }
+
+  if (accessLoading || !isPro) return null;
 
   return (
     <>

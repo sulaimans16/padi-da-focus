@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { QuestionCard } from "@/components/QuestionCard";
 import { GeneratePyqs } from "@/components/GeneratePyqs";
+import { ProGate } from "@/components/ProGate";
 import { Pagination, usePagination } from "@/components/Pagination";
 
 import { fetchRemoteQuestions } from "@/lib/remote-questions";
@@ -118,7 +119,9 @@ function PyqPage() {
         </div>
       </section>
 
-      <GeneratePyqs existingStems={pyqs.map((q) => q.stem)} onDone={load} />
+      <ProGate feature="Growing the PYQ vault with AI">
+        <GeneratePyqs existingStems={pyqs.map((q) => q.stem)} onDone={load} />
+      </ProGate>
 
       <div className="mt-4 space-y-4">
         {pageItems.map((q, i) => (

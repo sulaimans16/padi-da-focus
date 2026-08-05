@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ProgressRing } from "@/components/ProgressRing";
+import { useAuth } from "@/hooks/useAuth";
 import {
   DEFAULT_EXAM_DATE,
   formatClock,

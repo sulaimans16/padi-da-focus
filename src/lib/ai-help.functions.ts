@@ -35,12 +35,14 @@ export const askStudyAi = createServerFn({ method: "POST" })
         model: gateway(useOpenRouter ? OPENROUTER_MODEL : "openai/gpt-5.6-sol"),
         system: ASK_SYSTEM,
         prompt,
-        ...(useOpenRouter ? {} : { providerOptions: { lovable: { reasoningEffort: "none" } } }),
+        ...(useOpenRouter
+          ? { maxOutputTokens: 700 }
+          : { providerOptions: { lovable: { reasoningEffort: "none" } } }),
       });
       const answer = result.text;
       return { answer: answer.trim() };
     } catch (error) {
       console.error("askStudyAi failed", error);
-      throw new Error(`${friendlyAiError(error)} [raw: ${error instanceof Error ? error.message : String(error)}]`);
+      throw new Error(friendlyAiError(error));
     }
   });

@@ -94,7 +94,9 @@ export const generateQuestionBatch = createServerFn({ method: "POST" })
         system: SYSTEM,
         prompt,
         output: Output.object({ schema: BatchSchema }),
-        ...(useOpenRouter ? {} : { providerOptions: { lovable: { reasoningEffort: "none" } } }),
+        ...(useOpenRouter
+          ? { maxOutputTokens: 3500 }
+          : { providerOptions: { lovable: { reasoningEffort: "none" } } }),
       });
       parsed = output;
     } catch (error) {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -7,12 +7,15 @@ export type AuthState = {
   session: Session | null;
   user: User | null;
   displayName: string;
+  profileLoaded: boolean;
+  refreshProfile: () => Promise<void>;
 };
 
 export function useAuth(): AuthState {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [displayName, setDisplayName] = useState("");
+  const [profileLoaded, setProfileLoaded] = useState(false);
 
   useEffect(() => {
     const { data: sub } = supabase.auth.onAuthStateChange((_event, next) => {
@@ -27,18 +30,32 @@ export function useAuth(): AuthState {
   }, []);
 
   const userId = session?.user.id;
-  useEffect(() => {
+
+  const refreshProfile = useCallback(async () => {
     if (!userId) {
       setDisplayName("");
+      setProfileLoaded(false);
       return;
     }
-    void supabase
+    const { data } = await supabase
       .from("profiles")
       .select("display_name")
       .eq("id", userId)
-      .maybeSingle()
-      .then(({ data }) => setDisplayName(data?.display_name ?? ""));
+      .maybeSingle();
+    setDisplayName(data?.display_name ?? "");
+    setProfileLoaded(true);
   }, [userId]);
 
-  return { loading, session, user: session?.user ?? null, displayName };
+  useEffect(() => {
+    void refreshProfile();
+  }, [refreshProfile]);
+
+  return {
+    loading,
+    session,
+    user: session?.user ?? null,
+    displayName,
+    profileLoaded,
+    refreshProfile,
+  };
 }

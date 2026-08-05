@@ -29,6 +29,7 @@ export const Route = createFileRoute("/")({
 });
 
 const MODULES = [
+  { label: "Subject Modules", icon: "menu_book", note: "Concepts with real figures", to: "/learn" as const },
   { label: "Question Bank", icon: "quiz", note: "Subject → topic drills", to: "/bank" as const },
   { label: "PYQ Vault", icon: "history_edu", note: "Tagged by year & repeats", to: "/pyq" as const },
   { label: "Analytics", icon: "monitoring", note: "Accuracy & weak areas", to: "/tracker" as const },

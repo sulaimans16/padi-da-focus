@@ -74,8 +74,8 @@ export function AppShell({ children }: { children: ReactNode }) {
             <span className="block text-base font-extrabold tracking-tight">
               Padi<span className="text-primary">Da</span>
             </span>
-            <span className="label-eyebrow">NEET PG 2026</span>
           </span>
+
         </Link>
 
         <nav className="mt-7 flex flex-col gap-1">

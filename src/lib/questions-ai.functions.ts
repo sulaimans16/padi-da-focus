@@ -44,11 +44,13 @@ const SYSTEM = [
 export const generateQuestionBatch = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => GenerateInput.parse(input))
   .handler(async ({ data }) => {
-    const key = process.env["LOVABLE_API_KEY"];
-    if (!key) throw new Error("AI is not configured for this project yet.");
+    const openRouterKey = process.env["OPENROUTER_API_KEY"];
+    const lovableKey = process.env["LOVABLE_API_KEY"];
+    if (!openRouterKey && !lovableKey) throw new Error("AI is not configured for this project yet.");
 
     const { generateText, Output, NoObjectGeneratedError } = await import("ai");
-    const { createLovableAiGatewayProvider } = await import("./ai-gateway.server");
+    const { createLovableAiGatewayProvider, createOpenRouterProvider, OPENROUTER_MODEL } =
+      await import("./ai-gateway.server");
     const { researchTopic } = await import("./web-research.server");
 
     const count = Math.max(1, Math.min(10, Math.round(data.count)));
@@ -79,16 +81,22 @@ export const generateQuestionBatch = createServerFn({ method: "POST" })
       .filter(Boolean)
       .join("\n");
 
-    const gateway = createLovableAiGatewayProvider(key, { structuredOutputs: true });
+    const useOpenRouter = Boolean(openRouterKey);
+    const gateway = useOpenRouter
+      ? createOpenRouterProvider(openRouterKey!, { structuredOutputs: true })
+      : createLovableAiGatewayProvider(lovableKey!, { structuredOutputs: true });
+    const modelId = useOpenRouter ? OPENROUTER_MODEL : "openai/gpt-5.6-sol";
 
     let parsed: z.infer<typeof BatchSchema> | null = null;
     try {
       const { output } = await generateText({
-        model: gateway("openai/gpt-5.6-sol"),
+        model: gateway(modelId),
         system: SYSTEM,
         prompt,
         output: Output.object({ schema: BatchSchema }),
-        providerOptions: { lovable: { reasoningEffort: "none" } },
+        ...(useOpenRouter
+          ? { maxOutputTokens: 3500 }
+          : { providerOptions: { lovable: { reasoningEffort: "none" } } }),
       });
       parsed = output;
     } catch (error) {

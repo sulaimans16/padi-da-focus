@@ -5,8 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * PadiDa design system — dense, dark-first cramming UI.
- * All colors are oklch semantic tokens. Never hardcode colors in components.
+ * PadiDa design system — clinical, light-first Material-3 style prep console.
+ * All colors are semantic tokens. Never hardcode colors in components.
  */
 
 @theme inline {
@@ -15,8 +15,9 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   --radius-2xl: calc(var(--radius) + 8px);
-  --font-display: "Barlow Condensed", "Inter Tight", system-ui, sans-serif;
-  --font-sans: "Inter Tight", system-ui, sans-serif;
+  --font-display: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-serif: "Source Serif 4", Georgia, serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -43,36 +44,40 @@
   --color-ring: var(--ring);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-tint: var(--tint);
 }
 
-:root,
-.dark {
-  --radius: 0.5rem;
-  --background: oklch(0.16 0.018 265);
-  --foreground: oklch(0.97 0.005 250);
-  --surface: oklch(0.2 0.02 265);
-  --surface-2: oklch(0.25 0.022 265);
-  --card: oklch(0.2 0.02 265);
-  --card-foreground: oklch(0.97 0.005 250);
-  --popover: oklch(0.22 0.02 265);
-  --popover-foreground: oklch(0.97 0.005 250);
-  --primary: oklch(0.72 0.19 45);
-  --primary-foreground: oklch(0.17 0.02 265);
-  --secondary: oklch(0.28 0.03 265);
-  --secondary-foreground: oklch(0.96 0.005 250);
-  --muted: oklch(0.26 0.022 265);
-  --muted-foreground: oklch(0.7 0.02 260);
-  --accent: oklch(0.68 0.15 195);
-  --accent-foreground: oklch(0.17 0.02 265);
-  --destructive: oklch(0.62 0.22 22);
-  --destructive-foreground: oklch(0.98 0.005 250);
-  --success: oklch(0.7 0.17 150);
-  --success-foreground: oklch(0.17 0.02 265);
-  --warning: oklch(0.8 0.16 85);
-  --warning-foreground: oklch(0.2 0.02 265);
-  --border: oklch(0.32 0.025 265);
-  --input: oklch(0.3 0.025 265);
-  --ring: oklch(0.72 0.19 45);
+:root {
+  --radius: 0.625rem;
+  /* Clinical light theme */
+  --background: oklch(0.976 0.004 230);
+  --foreground: oklch(0.24 0.028 235);
+  --surface: oklch(1 0 0);
+  --surface-2: oklch(0.955 0.007 230);
+  --surface-3: oklch(0.925 0.011 230);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.24 0.028 235);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.24 0.028 235);
+  --primary: oklch(0.51 0.107 234);
+  --primary-foreground: oklch(1 0 0);
+  --tint: oklch(0.94 0.024 232);
+  --secondary: oklch(0.955 0.007 230);
+  --secondary-foreground: oklch(0.3 0.03 235);
+  --muted: oklch(0.955 0.007 230);
+  --muted-foreground: oklch(0.52 0.023 235);
+  --accent: oklch(0.7 0.14 232);
+  --accent-foreground: oklch(1 0 0);
+  --destructive: oklch(0.55 0.208 27);
+  --destructive-foreground: oklch(1 0 0);
+  --success: oklch(0.55 0.11 165);
+  --success-foreground: oklch(1 0 0);
+  --warning: oklch(0.7 0.13 75);
+  --warning-foreground: oklch(0.24 0.028 235);
+  --border: oklch(0.89 0.011 232);
+  --input: oklch(0.87 0.013 232);
+  --ring: oklch(0.51 0.107 234);
 }
 
 @layer base {
@@ -81,7 +86,7 @@
   }
 
   html {
-    color-scheme: dark;
+    color-scheme: light;
   }
 
   body {
@@ -96,15 +101,40 @@
   h3,
   h4 {
     font-family: var(--font-display);
-    letter-spacing: 0.01em;
-    text-transform: none;
+    letter-spacing: -0.015em;
+    font-weight: 700;
   }
 }
 
 @utility card-surface {
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
+}
+
+/* Card with a tinted header strip, like the clinical dashboard modules */
+@utility card-head {
+  background-color: color-mix(in oklab, var(--color-surface-2) 70%, transparent);
+  border-bottom: 1px solid var(--color-border);
+  padding: 0.75rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+@utility label-eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--color-muted-foreground);
+}
+
+@utility clinical-text {
+  font-family: var(--font-serif);
+  font-size: 1.0625rem;
+  line-height: 1.6;
 }
 
 @utility btn-base {
@@ -113,9 +143,9 @@
   justify-content: center;
   gap: 0.5rem;
   border-radius: var(--radius-md);
-  font-weight: 600;
-  font-size: 0.95rem;
-  padding: 0.75rem 1.1rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 0.65rem 1.1rem;
   transition:
     background-color 0.15s ease,
     opacity 0.15s ease,
@@ -125,11 +155,65 @@
 @utility btn-primary {
   background-color: var(--color-primary);
   color: var(--color-primary-foreground);
+  &:hover {
+    background-color: color-mix(in oklab, var(--color-primary) 88%, black);
+  }
 }
 
 @utility btn-ghost {
-  background-color: var(--color-surface-2);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
   color: var(--color-foreground);
+  &:hover {
+    background-color: var(--color-surface-2);
+  }
+}
+
+@utility chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: 999px;
+  background-color: var(--color-surface-2);
+  color: var(--color-muted-foreground);
+  padding: 0.2rem 0.6rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+@utility nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 999px;
+  padding: 0.6rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-muted-foreground);
+  &:hover {
+    background-color: var(--color-surface-2);
+    color: var(--color-foreground);
+  }
+}
+
+@utility nav-item-active {
+  background-color: var(--color-tint);
+  color: var(--color-primary);
+  &:hover {
+    background-color: var(--color-tint);
+    color: var(--color-primary);
+  }
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+  line-height: 1;
 }
 
 @keyframes shake-hard {

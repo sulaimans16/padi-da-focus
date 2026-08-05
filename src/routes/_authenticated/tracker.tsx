@@ -30,6 +30,45 @@ export const Route = createFileRoute("/_authenticated/tracker")({
   component: Tracker,
 });
 
+function Icon({ name, className = "" }: { name: string; className?: string }) {
+  return (
+    <span aria-hidden className={`material-symbols-outlined ${className}`}>
+      {name}
+    </span>
+  );
+}
+
+function Kpi({
+  label,
+  icon,
+  value,
+  sub,
+}: {
+  label: string;
+  icon: string;
+  value: string | number;
+  sub: string;
+}) {
+  return (
+    <div className="card-surface overflow-hidden">
+      <div className="card-head">
+        <span className="label-eyebrow">{label}</span>
+        <Icon name={icon} className="text-[20px] text-primary" />
+      </div>
+      <div className="p-5">
+        <p className="font-mono text-3xl font-bold tabular-nums">{value}</p>
+        <p className="mt-1 text-xs text-muted-foreground">{sub}</p>
+      </div>
+    </div>
+  );
+}
+
+function band(accuracy: number) {
+  if (accuracy >= 0.75) return { label: "Strong", cls: "text-success" };
+  if (accuracy >= 0.6) return { label: "Average", cls: "text-muted-foreground" };
+  return { label: "Review", cls: "text-destructive" };
+}
+
 function Tracker() {
   const { displayName, user } = useAuth();
   const navigate = useNavigate();
@@ -55,94 +94,109 @@ function Tracker() {
   };
 
   return (
-    <main className="mx-auto w-full max-w-2xl px-4 py-6">
-      <div className="flex items-center justify-between">
-        <Link to="/" className="text-xs text-muted-foreground underline underline-offset-4">
-          ← Dashboard
-        </Link>
-        <button
-          onClick={signOut}
-          className="text-xs text-muted-foreground underline underline-offset-4"
-        >
+    <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <p className="label-eyebrow">Performance dashboard</p>
+          <h1 className="text-3xl sm:text-4xl">Analytics Overview</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {displayName || user?.email} · everything below is saved to your account.
+          </p>
+        </div>
+        <button onClick={signOut} className="btn-base btn-ghost text-xs">
+          <Icon name="logout" className="text-[16px]" />
           Sign out
         </button>
       </div>
 
-      <h1 className="mt-2 text-3xl font-bold tracking-tight">My Tracker</h1>
-      <p className="text-sm text-muted-foreground">
-        {displayName || user?.email} · everything below is saved to your account.
-      </p>
+      <section className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <Kpi label="Attempted" icon="task_alt" value={rows.length} sub="Questions answered overall" />
+        <Kpi label="Overall accuracy" icon="target" value={`${accuracy}%`} sub="Target benchmark: 72%" />
+        <Kpi label="Today" icon="today" value={todayRows.length} sub="Questions attempted today" />
+        <Kpi label="Streak" icon="local_fire_department" value={`${streakDays(rows)}d`} sub="Consecutive study days" />
+      </section>
 
-      <section className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
-        {[
-          ["Attempted", rows.length],
-          ["Accuracy", `${accuracy}%`],
-          ["Today", todayRows.length],
-          ["Streak", `${streakDays(rows)}d`],
-        ].map(([label, value]) => (
-          <div key={String(label)} className="card-surface p-3">
-            <p className="font-mono text-2xl font-bold tabular-nums text-primary">{value}</p>
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</p>
+      <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-12">
+        <section className="card-surface overflow-hidden lg:col-span-7">
+          <div className="card-head">
+            <span className="label-eyebrow">Subject performance · weakest first</span>
+            <Link to="/bank" className="text-xs font-bold text-primary">
+              Practice
+            </Link>
           </div>
-        ))}
-      </section>
+          {attempts.isLoading && (
+            <p className="p-5 text-sm text-muted-foreground">Loading your history…</p>
+          )}
+          {!attempts.isLoading && stats.length === 0 && (
+            <p className="p-8 text-center text-sm text-muted-foreground">
+              No attempts yet. Answer a few questions in the{" "}
+              <Link to="/bank" className="font-bold text-primary">
+                Question Bank
+              </Link>{" "}
+              and this fills up.
+            </p>
+          )}
+          {stats.length > 0 && (
+            <table className="w-full text-left">
+              <tbody>
+                {stats.map((s) => {
+                  const b = band(s.accuracy);
+                  return (
+                    <tr key={s.subject} className="border-b border-border/60 last:border-0">
+                      <td className="px-5 py-4 text-sm font-bold">{s.subject}</td>
+                      <td className="px-5 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="h-2 flex-1 overflow-hidden rounded-full bg-surface-3">
+                            <div
+                              className="h-full rounded-full"
+                              style={{
+                                width: `${Math.max(3, s.accuracy * 100)}%`,
+                                backgroundColor: subjectColor(s.subject),
+                              }}
+                            />
+                          </div>
+                          <span className="w-20 text-right font-mono text-xs tabular-nums text-muted-foreground">
+                            {s.correct}/{s.attempts}
+                          </span>
+                          <span className="w-10 text-right font-mono text-xs font-bold tabular-nums">
+                            {Math.round(s.accuracy * 100)}%
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-5 py-4 text-right">
+                        <span className={`chip ${b.cls}`}>{b.label}</span>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
+        </section>
 
-      <section className="card-surface mt-3 flex items-center justify-between p-4">
-        <div>
-          <p className="text-sm font-semibold">Focus lock</p>
-          <p className="text-[11px] text-muted-foreground">
-            {(sessions.data ?? []).length} sessions · {minutes} min locked in
-          </p>
-        </div>
-        <Link to="/focus" className="btn-base btn-primary text-xs">
-          Lock in 🔒
-        </Link>
-      </section>
-
-      <section className="mt-6">
-        <h2 className="text-sm uppercase tracking-widest text-muted-foreground">
-          Weakest first · subject accuracy
-        </h2>
-        {attempts.isLoading && (
-          <p className="mt-2 text-sm text-muted-foreground">Loading your history…</p>
-        )}
-        {!attempts.isLoading && stats.length === 0 && (
-          <p className="card-surface mt-2 p-5 text-center text-sm text-muted-foreground">
-            No attempts yet. Answer a few questions in the{" "}
-            <Link to="/bank" className="text-primary underline underline-offset-4">
-              Question Bank
-            </Link>{" "}
-            and this fills up.
-          </p>
-        )}
-        <ul className="mt-2 space-y-1.5">
-          {stats.map((s) => (
-            <li key={s.subject} className="card-surface p-3">
-              <div className="flex items-baseline justify-between text-sm">
-                <span className="font-semibold" style={{ color: subjectColor(s.subject) }}>
-                  {s.subject}
-                </span>
-                <span className="font-mono text-xs tabular-nums text-muted-foreground">
-                  {s.correct}/{s.attempts} · {Math.round(s.accuracy * 100)}%
-                </span>
-              </div>
-              <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-surface-2">
-                <div
-                  className="h-full rounded-full"
-                  style={{
-                    width: `${Math.max(3, s.accuracy * 100)}%`,
-                    backgroundColor: subjectColor(s.subject),
-                  }}
-                />
-              </div>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <p className="mt-6 text-[11px] text-muted-foreground">
-        {(bookmarks.data ?? []).length} questions bookmarked for revision.
-      </p>
-    </main>
+        <section className="card-surface overflow-hidden lg:col-span-5">
+          <div className="card-head">
+            <span className="label-eyebrow">Discipline</span>
+            <Icon name="lock_clock" className="text-[20px] text-primary" />
+          </div>
+          <div className="space-y-4 p-5">
+            <div>
+              <p className="font-mono text-3xl font-bold tabular-nums">{minutes} min</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {(sessions.data ?? []).length} focus-lock sessions recorded
+              </p>
+            </div>
+            <div className="rounded-xl border border-border bg-surface-2 p-4">
+              <p className="text-sm font-bold">{(bookmarks.data ?? []).length} bookmarked</p>
+              <p className="text-xs text-muted-foreground">Questions saved for revision.</p>
+            </div>
+            <Link to="/focus" className="btn-base btn-primary w-full text-sm">
+              <Icon name="lock" className="text-[18px]" />
+              Lock in now
+            </Link>
+          </div>
+        </section>
+      </div>
+    </div>
   );
 }

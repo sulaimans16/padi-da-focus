@@ -4,6 +4,7 @@ import { ProgressRing } from "@/components/ProgressRing";
 import { NagOverlay } from "@/components/NagOverlay";
 import { CameraWatch } from "@/components/CameraWatch";
 import { playSuccess } from "@/lib/sfx";
+import { recordFocusSession } from "@/lib/tracker";
 
 import {
   SUBJECTS,

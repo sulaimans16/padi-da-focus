@@ -30,12 +30,12 @@ export const Route = createFileRoute("/")({
 const FEATURES = [
   { label: "Question Bank", icon: "🧠", note: "Subject → topic drills", to: "/bank" as const },
   { label: "PYQs", icon: "🔥", note: "Tagged by year & repeats", to: "/pyq" as const },
+  { label: "My Tracker", icon: "📊", note: "Accuracy & weak areas", to: "/tracker" as const },
+  { label: "Fill the bank", icon: "🌐", note: "Web-researched Qs", to: "/bank/fill" as const },
   { label: "Mock Tests", icon: "⏱️", note: "200 Q · 3h30m · NBE" },
   { label: "Quizzes", icon: "⚡", note: "Rapid-fire, 5–15 Q" },
   { label: "Flashcards", icon: "🗂️", note: "Spaced repetition" },
   { label: "Cheatsheets", icon: "📄", note: "High-yield one-pagers" },
-  { label: "Analytics", icon: "📊", note: "Weak-area heatmap" },
-  { label: "Planner", icon: "🗓️", note: "Day-by-day allocation" },
 ];
 
 function useCountdown(dateStr: string) {

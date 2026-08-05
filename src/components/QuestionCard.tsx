@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   loadBookmarks,
   logAttempt,
@@ -6,6 +6,7 @@ import {
   toggleBookmark,
   type Question,
 } from "@/lib/questions";
+import { fetchBookmarkIds, recordAttempt, toggleRemoteBookmark } from "@/lib/tracker";
 
 const DIFF_LABEL: Record<Question["difficulty"], string> = {
   easy: "Easy",
@@ -27,22 +28,49 @@ export function QuestionCard({
   const [selected, setSelected] = useState<string | null>(null);
   const [expanded, setExpanded] = useState(false);
   const [bookmarks, setBookmarks] = useState<string[]>(() => loadBookmarks());
+  const shownAt = useRef(Date.now());
   const answered = selected !== null;
   const bookmarked = bookmarks.includes(question.id);
   const accent = subjectColor(question.subject);
 
+  useEffect(() => {
+    // Signed-in users get their cloud bookmarks; signed-out users keep the local list.
+    void fetchBookmarkIds()
+      .then((ids) => {
+        if (ids.length) setBookmarks((prev) => Array.from(new Set([...ids, ...prev])));
+      })
+      .catch(() => undefined);
+  }, []);
+
   const choose = (optionId: string) => {
     if (answered) return;
     setSelected(optionId);
+    const isCorrect = optionId === question.correctOptionId;
     logAttempt({
       questionId: question.id,
       subject: question.subject,
       selectedOptionId: optionId,
-      isCorrect: optionId === question.correctOptionId,
+      isCorrect,
       context,
       attemptedAt: Date.now(),
     });
+    void recordAttempt({
+      questionId: question.id,
+      subject: question.subject,
+      topic: question.topic,
+      chosenOptionId: optionId,
+      correct: isCorrect,
+      seconds: (Date.now() - shownAt.current) / 1000,
+      context,
+    });
   };
+
+  const flip = () => {
+    const next = toggleBookmark(question.id);
+    setBookmarks(next);
+    void toggleRemoteBookmark(question.id, next.includes(question.id));
+  };
+
 
   return (
     <article className="card-surface overflow-hidden">

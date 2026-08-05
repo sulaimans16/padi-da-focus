@@ -134,7 +134,9 @@ export const generateQuestionBatch = createServerFn({ method: "POST" })
         is_pyq: q.isPyq,
         pyq_year: q.isPyq ? q.pyqYear : null,
         repeat_count: q.isPyq ? q.repeatCount : null,
-        source: "AI generated — verify against a standard text",
+        source: sources.length
+          ? "AI + web research — verify against a standard text"
+          : "AI generated — verify against a standard text",
       }));
 
     if (!rows.length) return { inserted: 0 };

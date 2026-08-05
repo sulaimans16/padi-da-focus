@@ -62,7 +62,7 @@ function Index() {
   const todaySessions = log.filter((s) => new Date(s.startedAt).toDateString() === todayKey);
   const todaySec = todaySessions.reduce((acc, s) => acc + s.actualDurationSec, 0);
   const dailyTargetSec = 4 * 60 * 60;
-  const name = (displayName || user?.email?.split("@")[0] || "Doctor").split(" ")[0];
+  const name = doctorName(displayName, user?.email);
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:px-8">

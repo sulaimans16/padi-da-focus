@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
-import { getModule, LEARN_MODULES } from "@/lib/learn";
+import { figureSource, figureUrl, getModule, LEARN_MODULES } from "@/lib/learn";
 
 export const Route = createFileRoute("/learn/$subject")({
   loader: ({ params }) => {
@@ -57,18 +57,20 @@ function LearnSubject() {
 
       <section className="card-surface mt-3 overflow-hidden">
         <img
-          src={mod.image}
-          alt={`${mod.subject} concept illustration`}
-          width={768}
-          height={512}
-          className="h-44 w-full bg-surface-2 object-cover sm:h-56"
+          src={figureUrl(mod.cover.file, 1200)}
+          alt={mod.cover.caption}
+          className="h-48 w-full bg-surface object-contain p-3 sm:h-60"
         />
-        <div className="p-5">
+        <div className="border-t border-border p-5">
           <p className="label-eyebrow">Subject module</p>
           <h1 className="text-3xl">{mod.subject}</h1>
           <p className="mt-1 text-sm text-muted-foreground">{mod.blurb}</p>
           <div className="mt-4 flex flex-wrap gap-2">
-            <Link to="/bank/$subject" params={{ subject: mod.subject }} className="btn-base btn-primary text-xs">
+            <Link
+              to="/bank/$subject"
+              params={{ subject: mod.subject }}
+              className="btn-base btn-primary text-xs"
+            >
               <span aria-hidden className="material-symbols-outlined text-[16px]">
                 quiz
               </span>
@@ -111,6 +113,26 @@ function LearnSubject() {
 
               {expanded && (
                 <div className="p-5">
+                  <figure className="mb-4 overflow-hidden rounded-xl border border-border bg-surface">
+                    <img
+                      src={figureUrl(c.figure.file, 1200)}
+                      alt={c.figure.caption}
+                      loading="lazy"
+                      className="max-h-80 w-full object-contain p-3"
+                    />
+                    <figcaption className="flex flex-wrap items-center justify-between gap-2 border-t border-border bg-surface-2 px-4 py-2">
+                      <span className="text-xs font-semibold">{c.figure.caption}</span>
+                      <a
+                        href={figureSource(c.figure.file)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="label-eyebrow text-primary"
+                      >
+                        {c.figure.credit} ↗
+                      </a>
+                    </figcaption>
+                  </figure>
+
                   <p className="clinical-text">{c.summary}</p>
                   <ul className="mt-4 space-y-2">
                     {c.points.map((p) => (

@@ -60,6 +60,7 @@ export function GeneratePyqs({
             count: Math.min(BATCH, want - produced),
             avoid: existingStems.slice(0, 60),
             pyqOnly: true,
+            tricky,
             year: year === "mixed" ? null : Number(year),
           },
         });

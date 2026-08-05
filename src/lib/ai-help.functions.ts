@@ -40,6 +40,7 @@ export const askStudyAi = createServerFn({ method: "POST" })
       const answer = await result.text;
       return { answer: answer.trim() };
     } catch (error) {
-      throw new Error(friendlyAiError(error));
+      console.error("askStudyAi failed", error);
+      throw new Error(`${friendlyAiError(error)} [raw: ${error instanceof Error ? error.message : String(error)}]`);
     }
   });

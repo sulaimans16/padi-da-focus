@@ -38,6 +38,13 @@ function AuthPage() {
     });
   }, [navigate]);
 
+  // Admins and members can sign in with a bare username; it maps to the
+  // account email under the app domain.
+  const resolvedEmail = () => {
+    const value = email.trim().toLowerCase();
+    return value.includes("@") ? value : `${value}@padida.app`;
+  };
+
   const submit = async () => {
     setBusy(true);
     setError(null);
@@ -46,7 +53,7 @@ function AuthPage() {
       if (mode === "signup") {
         const username = name.trim();
         const { data, error: err } = await supabase.auth.signUp({
-          email,
+          email: resolvedEmail(),
           password,
           options: {
             emailRedirectTo: window.location.origin,
@@ -65,7 +72,10 @@ function AuthPage() {
         }
       } else {
 
-        const { error: err } = await supabase.auth.signInWithPassword({ email, password });
+        const { error: err } = await supabase.auth.signInWithPassword({
+          email: resolvedEmail(),
+          password,
+        });
         if (err) throw err;
       }
       await navigate({ to: "/tracker", replace: true });
@@ -127,9 +137,9 @@ function AuthPage() {
         <input
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          type="email"
-          autoComplete="email"
-          placeholder="you@example.com"
+          type="text"
+          autoComplete="username"
+          placeholder="you@example.com or username"
           className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
         />
         <input
@@ -143,7 +153,7 @@ function AuthPage() {
         <button
           onClick={submit}
           disabled={
-            busy || !email || password.length < 6 || (mode === "signup" && !name.trim())
+            busy || !email.trim() || password.length < 6 || (mode === "signup" && !name.trim())
           }
 
           className="btn-base btn-primary w-full text-sm disabled:opacity-50"

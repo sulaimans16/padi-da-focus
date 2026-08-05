@@ -115,8 +115,14 @@ function PyqPage() {
       <GeneratePyqs existingStems={pyqs.map((q) => q.stem)} onDone={load} />
 
       <div className="mt-4 space-y-4">
-        {shown.map((q, i) => (
-          <QuestionCard key={q.id} question={q} index={i} total={shown.length} context="pyq" />
+        {pageItems.map((q, i) => (
+          <QuestionCard
+            key={q.id}
+            question={q}
+            index={offset + i}
+            total={shown.length}
+            context="pyq"
+          />
         ))}
         {shown.length === 0 && (
           <p className="card-surface p-8 text-center text-sm text-muted-foreground">
@@ -124,6 +130,14 @@ function PyqPage() {
           </p>
         )}
       </div>
+
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        onChange={setPage}
+        totalItems={shown.length}
+      />
+
     </div>
   );
 }

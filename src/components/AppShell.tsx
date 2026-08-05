@@ -1,15 +1,17 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useTheme } from "@/lib/theme";
 
 type NavLink = {
   label: string;
   icon: string;
-  to: "/" | "/bank" | "/pyq" | "/tracker" | "/bank/fill" | "/focus";
+  to: "/" | "/bank" | "/pyq" | "/tracker" | "/bank/fill" | "/focus" | "/learn";
 };
 
 const PRIMARY: NavLink[] = [
   { label: "Dashboard", icon: "dashboard", to: "/" },
+  { label: "Learn", icon: "menu_book", to: "/learn" },
   { label: "QBank", icon: "quiz", to: "/bank" },
   { label: "PYQ Vault", icon: "history_edu", to: "/pyq" },
   { label: "Analytics", icon: "monitoring", to: "/tracker" },

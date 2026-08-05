@@ -49,6 +49,8 @@ function SubjectPractice() {
     [questions],
   );
   const shown = topic === "all" ? questions : questions.filter((q) => q.topic === topic);
+  const { page, setPage, totalPages, pageItems, offset } = usePagination(shown);
+
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:px-8">

@@ -32,6 +32,27 @@ function LearnIndex() {
         actually tests.
       </p>
 
+      <Link
+        to="/videos"
+        className="card-surface mt-4 flex items-center gap-3 p-4 transition-colors hover:bg-surface-2"
+      >
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-tint text-primary">
+          <span aria-hidden className="material-symbols-outlined text-[22px]">
+            play_circle
+          </span>
+        </span>
+        <span className="min-w-0">
+          <span className="block text-sm font-bold">Prefer watching? Open the video modules</span>
+          <span className="block text-xs text-muted-foreground">
+            Curated lecture videos for every subject — included with PadiDa Pro.
+          </span>
+        </span>
+        <span aria-hidden className="material-symbols-outlined ml-auto text-muted-foreground">
+          chevron_right
+        </span>
+      </Link>
+
+
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {LEARN_MODULES.map((m) => (
           <Link

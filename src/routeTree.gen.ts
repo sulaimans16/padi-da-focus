@@ -15,6 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as FocusRouteImport } from './routes/focus'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PyqRouteImport } from './routes/pyq'
+import { Route as VideosRouteImport } from './routes/videos'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedTrackerRouteImport } from './routes/_authenticated/tracker'
 import { Route as BankIndexRouteImport } from './routes/bank.index'
@@ -50,6 +51,11 @@ const PricingRoute = PricingRouteImport.update({
 const PyqRoute = PyqRouteImport.update({
   id: '/pyq',
   path: '/pyq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VideosRoute = VideosRouteImport.update({
+  id: '/videos',
+  path: '/videos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
@@ -94,6 +100,7 @@ export interface FileRoutesByFullPath {
   '/focus': typeof FocusRoute
   '/pricing': typeof PricingRoute
   '/pyq': typeof PyqRoute
+  '/videos': typeof VideosRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/tracker': typeof AuthenticatedTrackerRoute
   '/bank/$subject': typeof BankSubjectRoute
@@ -108,6 +115,7 @@ export interface FileRoutesByTo {
   '/focus': typeof FocusRoute
   '/pricing': typeof PricingRoute
   '/pyq': typeof PyqRoute
+  '/videos': typeof VideosRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/tracker': typeof AuthenticatedTrackerRoute
   '/bank/$subject': typeof BankSubjectRoute
@@ -124,6 +132,7 @@ export interface FileRoutesById {
   '/focus': typeof FocusRoute
   '/pricing': typeof PricingRoute
   '/pyq': typeof PyqRoute
+  '/videos': typeof VideosRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/tracker': typeof AuthenticatedTrackerRoute
   '/bank/$subject': typeof BankSubjectRoute
@@ -140,6 +149,7 @@ export interface FileRouteTypes {
     | '/focus'
     | '/pricing'
     | '/pyq'
+    | '/videos'
     | '/admin'
     | '/tracker'
     | '/bank/$subject'
@@ -154,6 +164,7 @@ export interface FileRouteTypes {
     | '/focus'
     | '/pricing'
     | '/pyq'
+    | '/videos'
     | '/admin'
     | '/tracker'
     | '/bank/$subject'
@@ -169,6 +180,7 @@ export interface FileRouteTypes {
     | '/focus'
     | '/pricing'
     | '/pyq'
+    | '/videos'
     | '/_authenticated/admin'
     | '/_authenticated/tracker'
     | '/bank/$subject'
@@ -185,6 +197,7 @@ export interface RootRouteChildren {
   FocusRoute: typeof FocusRoute
   PricingRoute: typeof PricingRoute
   PyqRoute: typeof PyqRoute
+  VideosRoute: typeof VideosRoute
   BankSubjectRoute: typeof BankSubjectRoute
   BankFillRoute: typeof BankFillRoute
   LearnSubjectRoute: typeof LearnSubjectRoute
@@ -234,6 +247,13 @@ declare module '@tanstack/react-router' {
       path: '/pyq'
       fullPath: '/pyq'
       preLoaderRoute: typeof PyqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/videos': {
+      id: '/videos'
+      path: '/videos'
+      fullPath: '/videos'
+      preLoaderRoute: typeof VideosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin': {
@@ -308,6 +328,7 @@ const rootRouteChildren: RootRouteChildren = {
   FocusRoute: FocusRoute,
   PricingRoute: PricingRoute,
   PyqRoute: PyqRoute,
+  VideosRoute: VideosRoute,
   BankSubjectRoute: BankSubjectRoute,
   BankFillRoute: BankFillRoute,
   LearnSubjectRoute: LearnSubjectRoute,

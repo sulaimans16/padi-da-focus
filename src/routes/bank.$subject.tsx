@@ -71,7 +71,7 @@ function SubjectPractice() {
       </div>
 
       {topics.length > 2 && (
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div className="mt-4 flex max-h-32 flex-wrap gap-2 overflow-y-auto pr-1">
           {topics.map((t) => (
             <button
               key={t}

@@ -113,7 +113,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <Icon name="search" className="text-[18px]" />
             <span>Search topics, PYQs, high-yield facts</span>
           </div>
-          <Link to="/focus" className="btn-base btn-primary px-3 py-2 text-xs">
+          <Link to="/focus" className="btn-base btn-primary whitespace-nowrap px-3 py-2 text-xs">
             <Icon name="lock" className="text-[16px]" />
             Lock in
           </Link>

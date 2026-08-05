@@ -49,22 +49,34 @@ function SubjectPractice() {
   const shown = topic === "all" ? questions : questions.filter((q) => q.topic === topic);
 
   return (
-    <main className="mx-auto w-full max-w-2xl px-4 py-6">
-      <Link to="/bank" className="text-xs text-muted-foreground underline underline-offset-4">
-        ← Question Bank
+    <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
+      <Link
+        to="/bank"
+        className="label-eyebrow inline-flex items-center gap-1 text-muted-foreground hover:text-primary"
+      >
+        <span aria-hidden className="material-symbols-outlined text-[16px]">
+          arrow_back
+        </span>
+        Question Bank
       </Link>
-      <h1 className="mt-2 text-3xl font-bold" style={{ color: subjectColor(subject) }}>
-        {subject}
-      </h1>
-      <p className="text-sm text-muted-foreground">{shown.length} questions loaded</p>
+
+      <div className="mt-2 flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <p className="label-eyebrow" style={{ color: subjectColor(subject) }}>
+            Subject drill
+          </p>
+          <h1 className="text-3xl sm:text-4xl">{subject}</h1>
+          <p className="mt-1 text-sm text-muted-foreground">{shown.length} questions loaded</p>
+        </div>
+      </div>
 
       {topics.length > 2 && (
-        <div className="mt-3 flex flex-wrap gap-1.5">
+        <div className="mt-4 flex max-h-32 flex-wrap gap-2 overflow-y-auto pr-1">
           {topics.map((t) => (
             <button
               key={t}
               onClick={() => setTopic(t)}
-              className={`rounded-full px-3 py-1.5 text-xs ${topic === t ? "btn-primary" : "btn-ghost"}`}
+              className={`rounded-full px-3.5 py-1.5 text-xs font-bold ${topic === t ? "btn-primary" : "btn-ghost"}`}
             >
               {t === "all" ? "All topics" : t}
             </button>
@@ -80,8 +92,7 @@ function SubjectPractice() {
         onDone={load}
       />
 
-
-      <div className="mt-4 space-y-3">
+      <div className="mt-4 space-y-4">
         {shown.map((q, i) => (
           <QuestionCard
             key={q.id}
@@ -92,11 +103,12 @@ function SubjectPractice() {
           />
         ))}
         {shown.length === 0 && (
-          <p className="card-surface p-6 text-center text-sm text-muted-foreground">
-            No questions here yet. Add your own from the Question Bank screen, or import real content.
+          <p className="card-surface p-8 text-center text-sm text-muted-foreground">
+            No questions here yet. Generate a batch above, or add your own from the Question Bank
+            screen.
           </p>
         )}
       </div>
-    </main>
+    </div>
   );
 }

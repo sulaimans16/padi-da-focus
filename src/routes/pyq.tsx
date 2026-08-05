@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { QuestionCard } from "@/components/QuestionCard";
 import { allQuestions, type Question } from "@/lib/questions";
@@ -37,10 +37,7 @@ function PyqPage() {
       ),
     [pyqs],
   );
-  const subjects = useMemo(
-    () => Array.from(new Set(pyqs.map((q) => q.subject))).sort(),
-    [pyqs],
-  );
+  const subjects = useMemo(() => Array.from(new Set(pyqs.map((q) => q.subject))).sort(), [pyqs]);
 
   const shown = pyqs.filter(
     (q) =>
@@ -54,23 +51,26 @@ function PyqPage() {
       ? "All PYQs"
       : `${year === "all" ? "All years" : year} Paper — ${subject === "all" ? "All subjects" : subject}`;
 
-  return (
-    <main className="mx-auto w-full max-w-2xl px-4 py-6">
-      <Link to="/" className="text-xs text-muted-foreground underline underline-offset-4">
-        ← Dashboard
-      </Link>
-      <h1 className="mt-2 text-3xl font-bold">PYQs</h1>
-      <p className="text-sm text-muted-foreground">
-        {themeLabel} · {shown.length} questions
-      </p>
+  const field =
+    "w-full rounded-lg border border-input bg-surface px-3 py-2 text-sm outline-none focus:border-ring";
 
-      <div className="card-surface mt-4 space-y-2 p-3">
-        <div className="grid grid-cols-2 gap-2">
-          <select
-            value={year}
-            onChange={(e) => setYear(e.target.value)}
-            className="rounded-md border border-input bg-background px-2 py-2 text-sm"
-          >
+  return (
+    <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
+      <div>
+        <p className="label-eyebrow">Archive</p>
+        <h1 className="text-3xl sm:text-4xl">PYQ Vault</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          {themeLabel} · {shown.length} questions
+        </p>
+      </div>
+
+      <section className="card-surface mt-5 overflow-hidden">
+        <div className="card-head">
+          <span className="label-eyebrow">Filters</span>
+          <span className="label-eyebrow">{shown.length} matching</span>
+        </div>
+        <div className="grid gap-3 p-5 sm:grid-cols-3">
+          <select value={year} onChange={(e) => setYear(e.target.value)} className={field}>
             <option value="all">All years</option>
             {years.map((y) => (
               <option key={y} value={String(y)}>
@@ -78,11 +78,7 @@ function PyqPage() {
               </option>
             ))}
           </select>
-          <select
-            value={subject}
-            onChange={(e) => setSubject(e.target.value)}
-            className="rounded-md border border-input bg-background px-2 py-2 text-sm"
-          >
+          <select value={subject} onChange={(e) => setSubject(e.target.value)} className={field}>
             <option value="all">All subjects</option>
             {subjects.map((s) => (
               <option key={s} value={s}>
@@ -90,25 +86,28 @@ function PyqPage() {
               </option>
             ))}
           </select>
+          <button
+            onClick={() => setHotOnly((v) => !v)}
+            className={`btn-base text-sm ${hotOnly ? "btn-primary" : "btn-ghost"}`}
+          >
+            <span aria-hidden className="material-symbols-outlined text-[18px]">
+              local_fire_department
+            </span>
+            Frequently repeated
+          </button>
         </div>
-        <button
-          onClick={() => setHotOnly((v) => !v)}
-          className={`btn-base w-full text-sm ${hotOnly ? "btn-primary" : "btn-ghost"}`}
-        >
-          🔥 Frequently repeated only
-        </button>
-      </div>
+      </section>
 
-      <div className="mt-4 space-y-3">
+      <div className="mt-4 space-y-4">
         {shown.map((q, i) => (
           <QuestionCard key={q.id} question={q} index={i} total={shown.length} context="pyq" />
         ))}
         {shown.length === 0 && (
-          <p className="card-surface p-6 text-center text-sm text-muted-foreground">
+          <p className="card-surface p-8 text-center text-sm text-muted-foreground">
             No PYQs match this filter yet.
           </p>
         )}
       </div>
-    </main>
+    </div>
   );
 }

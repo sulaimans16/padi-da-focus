@@ -38,6 +38,7 @@ export function GeneratePyqs({
   const [subject, setSubject] = useState("Medicine");
   const [year, setYear] = useState<string>("mixed");
   const [want, setWant] = useState(20);
+  const [tricky, setTricky] = useState(false);
   const [busy, setBusy] = useState(false);
   const [made, setMade] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -59,6 +60,7 @@ export function GeneratePyqs({
             count: Math.min(BATCH, want - produced),
             avoid: existingStems.slice(0, 60),
             pyqOnly: true,
+            tricky,
             year: year === "mixed" ? null : Number(year),
           },
         });
@@ -125,6 +127,22 @@ export function GeneratePyqs({
             ))}
           </select>
         </div>
+        <label className="flex cursor-pointer items-start gap-2 rounded-lg border border-input bg-surface p-2.5">
+          <input
+            type="checkbox"
+            checked={tricky}
+            onChange={(e) => setTricky(e.target.checked)}
+            disabled={busy}
+            className="mt-0.5 accent-primary"
+          />
+          <span className="text-[11px] leading-snug">
+            <span className="font-semibold">Tricky mode</span>
+            <span className="text-muted-foreground">
+              {" "}
+              — exam traps with four near-identical options decided by one detail.
+            </span>
+          </span>
+        </label>
         <div className="flex flex-wrap items-center gap-3">
           <button
             type="button"

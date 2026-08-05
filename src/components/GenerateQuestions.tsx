@@ -21,6 +21,7 @@ export function GenerateQuestions({
   const [busy, setBusy] = useState(false);
   const [made, setMade] = useState(0);
   const [target, setTarget] = useState(0);
+  const [tricky, setTricky] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const run = async (want: number) => {
@@ -34,7 +35,7 @@ export function GenerateQuestions({
       while (produced < want) {
         const batch = Math.min(BATCH, want - produced);
         const res = await generate({
-          data: { subject, topic, count: batch, avoid: avoid.slice(0, 60) },
+          data: { subject, topic, count: batch, avoid: avoid.slice(0, 60), tricky },
         });
         if (!res.inserted) break;
         produced += res.inserted;
@@ -61,6 +62,24 @@ export function GenerateQuestions({
           trusting a fact.
         </p>
       </div>
+
+      <label className="flex cursor-pointer items-start gap-2 rounded-lg border border-input bg-surface p-2.5">
+        <input
+          type="checkbox"
+          checked={tricky}
+          onChange={(e) => setTricky(e.target.checked)}
+          disabled={busy}
+          className="mt-0.5 accent-primary"
+        />
+        <span className="text-[11px] leading-snug">
+          <span className="font-semibold">Tricky mode</span>
+          <span className="text-muted-foreground">
+            {" "}
+            — hard, exam-trap questions where all four options look almost identical and one
+            detail decides the answer.
+          </span>
+        </span>
+      </label>
 
       <div className="grid grid-cols-3 gap-2">
         <button

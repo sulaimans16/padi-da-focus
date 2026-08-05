@@ -74,8 +74,8 @@ export function AppShell({ children }: { children: ReactNode }) {
             <span className="block text-base font-extrabold tracking-tight">
               Padi<span className="text-primary">Da</span>
             </span>
-            <span className="label-eyebrow">NEET PG 2026</span>
           </span>
+
         </Link>
 
         <nav className="mt-7 flex flex-col gap-1">
@@ -111,25 +111,28 @@ export function AppShell({ children }: { children: ReactNode }) {
           </span>
         </Link>
 
-        <div className="ml-auto flex items-center gap-2 md:ml-0 md:w-full md:max-w-md">
-          <div className="hidden w-full items-center gap-2 rounded-full border border-border bg-surface-2 px-4 py-2 text-sm text-muted-foreground md:flex">
-            <Icon name="search" className="text-[18px]" />
-            <span>Search topics, PYQs, high-yield facts</span>
+        <div className="ml-auto flex min-w-0 flex-1 items-center justify-end gap-2 md:justify-between">
+          <div className="hidden min-w-0 flex-1 items-center gap-2 rounded-full border border-border bg-surface-2 px-4 py-2 text-sm text-muted-foreground md:flex md:max-w-md">
+            <Icon name="search" className="shrink-0 text-[18px]" />
+            <span className="truncate">Search topics, PYQs, high-yield facts</span>
           </div>
-          <button
-            type="button"
-            onClick={toggle}
-            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-            title={theme === "dark" ? "Light mode" : "Dark mode"}
-            className="btn-base btn-ghost px-2.5 py-2"
-          >
-            <Icon name={theme === "dark" ? "light_mode" : "dark_mode"} className="text-[18px]" />
-          </button>
-          <Link to="/focus" className="btn-base btn-primary whitespace-nowrap px-3 py-2 text-xs">
-            <Icon name="lock" className="text-[16px]" />
-            Lock in
-          </Link>
+          <div className="flex shrink-0 items-center gap-2">
+            <button
+              type="button"
+              onClick={toggle}
+              aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+              title={theme === "dark" ? "Light mode" : "Dark mode"}
+              className="btn-base btn-ghost h-9 w-9 justify-center p-0"
+            >
+              <Icon name={theme === "dark" ? "light_mode" : "dark_mode"} className="text-[18px]" />
+            </button>
+            <Link to="/focus" className="btn-base btn-primary h-9 whitespace-nowrap px-3 text-xs">
+              <Icon name="lock" className="text-[16px]" />
+              Lock in
+            </Link>
+          </div>
         </div>
+
       </header>
 
       <main className="pb-24 pt-16 md:ml-64 md:pb-8">{children}</main>

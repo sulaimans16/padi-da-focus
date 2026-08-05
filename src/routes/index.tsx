@@ -1,13 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { GoalCountdown } from "@/components/GoalCountdown";
 import { ProgressRing } from "@/components/ProgressRing";
 import { useAuth } from "@/hooks/useAuth";
-import {
-  DEFAULT_EXAM_DATE,
-  formatClock,
-  loadSessionLog,
-  type CompletedSession,
-} from "@/lib/focus-session";
+import { formatClock, loadSessionLog, type CompletedSession } from "@/lib/focus-session";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -48,24 +45,6 @@ function Icon({ name, className = "" }: { name: string; className?: string }) {
   );
 }
 
-function useCountdown(dateStr: string) {
-  const [now, setNow] = useState<number | null>(null);
-  useEffect(() => {
-    setNow(Date.now());
-    const id = setInterval(() => setNow(Date.now()), 1000);
-    return () => clearInterval(id);
-  }, []);
-  const target = new Date(`${dateStr}T09:00:00+05:30`).getTime();
-  if (now === null) return null;
-  const diff = Math.max(0, target - now);
-  return {
-    days: Math.floor(diff / 86400000),
-    hours: Math.floor((diff % 86400000) / 3600000),
-    minutes: Math.floor((diff % 3600000) / 60000),
-    seconds: Math.floor((diff % 60000) / 1000),
-  };
-}
-
 function greeting() {
   const h = new Date().getHours();
   if (h < 12) return "Good morning";
@@ -75,7 +54,7 @@ function greeting() {
 
 function Index() {
   const { user, displayName } = useAuth();
-  const countdown = useCountdown(DEFAULT_EXAM_DATE);
+
   const [log, setLog] = useState<CompletedSession[]>([]);
   useEffect(() => setLog(loadSessionLog()), []);
 
@@ -111,31 +90,9 @@ function Index() {
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-12">
-        {/* Countdown */}
-        <section className="card-surface overflow-hidden lg:col-span-7">
-          <div className="card-head">
-            <span className="label-eyebrow">Exam countdown · 30 Aug 2026</span>
-            <Icon name="event" className="text-[20px] text-primary" />
-          </div>
-          <div className="grid grid-cols-4 gap-3 p-5">
-            {[
-              ["Days", countdown?.days],
-              ["Hrs", countdown?.hours],
-              ["Min", countdown?.minutes],
-              ["Sec", countdown?.seconds],
-            ].map(([label, value]) => (
-              <div
-                key={String(label)}
-                className="rounded-xl border border-border bg-surface-2 px-2 py-4 text-center"
-              >
-                <p className="font-mono text-2xl font-bold tabular-nums text-primary sm:text-3xl">
-                  {value === undefined || value === null ? "--" : String(value).padStart(2, "0")}
-                </p>
-                <p className="label-eyebrow mt-1">{label}</p>
-              </div>
-            ))}
-          </div>
-        </section>
+        {/* Goal countdown */}
+        <GoalCountdown />
+
 
         {/* Focus lock */}
         <section className="card-surface overflow-hidden lg:col-span-5">

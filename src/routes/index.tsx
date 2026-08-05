@@ -1,13 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { GoalCountdown } from "@/components/GoalCountdown";
 import { ProgressRing } from "@/components/ProgressRing";
 import { useAuth } from "@/hooks/useAuth";
-import {
-  DEFAULT_EXAM_DATE,
-  formatClock,
-  loadSessionLog,
-  type CompletedSession,
-} from "@/lib/focus-session";
+import { formatClock, loadSessionLog, type CompletedSession } from "@/lib/focus-session";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({

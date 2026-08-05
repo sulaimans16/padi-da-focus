@@ -11,8 +11,8 @@ export const ASK_SYSTEM = [
 
 export function friendlyAiError(error: unknown) {
   const message = error instanceof Error ? error.message : "AI request failed.";
-  if (/429|rate/i.test(message)) return "AI is rate limited right now — try again in a few seconds.";
-  if (/402|credit|insufficient/i.test(message)) return "AI credits are exhausted for this workspace.";
-  if (/401|403|unauthor/i.test(message)) return "AI key was rejected — please check the OpenRouter key.";
+  if (/\b429\b|rate limit|rate_limit/i.test(message)) return "AI is rate limited right now — try again in a few seconds.";
+  if (/\b402\b|credit|insufficient/i.test(message)) return "AI credits are exhausted for this workspace.";
+  if (/\b401\b|\b403\b|unauthor/i.test(message)) return "AI key was rejected — please check the OpenRouter key.";
   return message;
 }

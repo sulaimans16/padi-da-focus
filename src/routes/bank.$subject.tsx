@@ -89,13 +89,16 @@ function SubjectPractice() {
         </div>
       )}
 
-      <GenerateQuestions
-        subject={subject}
-        topic={topic}
-        currentCount={shown.length}
-        existingStems={shown.map((q) => q.stem.slice(0, 90))}
-        onDone={load}
-      />
+      <ProGate feature="AI question generation">
+        <GenerateQuestions
+          subject={subject}
+          topic={topic}
+          currentCount={shown.length}
+          existingStems={shown.map((q) => q.stem.slice(0, 90))}
+          onDone={load}
+        />
+      </ProGate>
+
 
       <div className="mt-4 space-y-4">
         {pageItems.map((q, i) => (

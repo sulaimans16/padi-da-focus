@@ -18,6 +18,8 @@ import { Route as AuthenticatedTrackerRouteImport } from './routes/_authenticate
 import { Route as BankIndexRouteImport } from './routes/bank.index'
 import { Route as BankSubjectRouteImport } from './routes/bank.$subject'
 import { Route as BankFillRouteImport } from './routes/bank.fill'
+import { Route as LearnIndexRouteImport } from './routes/learn.index'
+import { Route as LearnSubjectRouteImport } from './routes/learn.$subject'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -63,6 +65,16 @@ const BankFillRoute = BankFillRouteImport.update({
   path: '/bank/fill',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LearnIndexRoute = LearnIndexRouteImport.update({
+  id: '/learn/',
+  path: '/learn/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearnSubjectRoute = LearnSubjectRouteImport.update({
+  id: '/learn/$subject',
+  path: '/learn/$subject',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -72,7 +84,9 @@ export interface FileRoutesByFullPath {
   '/tracker': typeof AuthenticatedTrackerRoute
   '/bank/$subject': typeof BankSubjectRoute
   '/bank/fill': typeof BankFillRoute
+  '/learn/$subject': typeof LearnSubjectRoute
   '/bank/': typeof BankIndexRoute
+  '/learn/': typeof LearnIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -82,7 +96,9 @@ export interface FileRoutesByTo {
   '/tracker': typeof AuthenticatedTrackerRoute
   '/bank/$subject': typeof BankSubjectRoute
   '/bank/fill': typeof BankFillRoute
+  '/learn/$subject': typeof LearnSubjectRoute
   '/bank': typeof BankIndexRoute
+  '/learn': typeof LearnIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -94,7 +110,9 @@ export interface FileRoutesById {
   '/_authenticated/tracker': typeof AuthenticatedTrackerRoute
   '/bank/$subject': typeof BankSubjectRoute
   '/bank/fill': typeof BankFillRoute
+  '/learn/$subject': typeof LearnSubjectRoute
   '/bank/': typeof BankIndexRoute
+  '/learn/': typeof LearnIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -106,7 +124,9 @@ export interface FileRouteTypes {
     | '/tracker'
     | '/bank/$subject'
     | '/bank/fill'
+    | '/learn/$subject'
     | '/bank/'
+    | '/learn/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -116,7 +136,9 @@ export interface FileRouteTypes {
     | '/tracker'
     | '/bank/$subject'
     | '/bank/fill'
+    | '/learn/$subject'
     | '/bank'
+    | '/learn'
   id:
     | '__root__'
     | '/'
@@ -127,7 +149,9 @@ export interface FileRouteTypes {
     | '/_authenticated/tracker'
     | '/bank/$subject'
     | '/bank/fill'
+    | '/learn/$subject'
     | '/bank/'
+    | '/learn/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -138,7 +162,9 @@ export interface RootRouteChildren {
   PyqRoute: typeof PyqRoute
   BankSubjectRoute: typeof BankSubjectRoute
   BankFillRoute: typeof BankFillRoute
+  LearnSubjectRoute: typeof LearnSubjectRoute
   BankIndexRoute: typeof BankIndexRoute
+  LearnIndexRoute: typeof LearnIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -206,6 +232,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BankFillRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/learn/': {
+      id: '/learn/'
+      path: '/learn'
+      fullPath: '/learn/'
+      preLoaderRoute: typeof LearnIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learn/$subject': {
+      id: '/learn/$subject'
+      path: '/learn/$subject'
+      fullPath: '/learn/$subject'
+      preLoaderRoute: typeof LearnSubjectRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -228,7 +268,9 @@ const rootRouteChildren: RootRouteChildren = {
   PyqRoute: PyqRoute,
   BankSubjectRoute: BankSubjectRoute,
   BankFillRoute: BankFillRoute,
+  LearnSubjectRoute: LearnSubjectRoute,
   BankIndexRoute: BankIndexRoute,
+  LearnIndexRoute: LearnIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

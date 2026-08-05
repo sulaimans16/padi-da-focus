@@ -160,6 +160,8 @@ export function AppShell({ children }: { children: ReactNode }) {
       </nav>
 
       <AskAi />
+      <UsernamePrompt />
+
     </div>
   );
 }

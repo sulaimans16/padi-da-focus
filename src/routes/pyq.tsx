@@ -62,6 +62,10 @@ function PyqPage() {
       (!hotOnly || (q.repeatCount ?? 0) >= 3),
   );
 
+  const { page, setPage, totalPages, pageItems, offset } = usePagination(shown);
+
+
+
   const themeLabel =
     year === "all" && subject === "all"
       ? "All PYQs"

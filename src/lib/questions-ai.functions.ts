@@ -49,6 +49,7 @@ export const generateQuestionBatch = createServerFn({ method: "POST" })
 
     const { generateText, Output, NoObjectGeneratedError } = await import("ai");
     const { createLovableAiGatewayProvider } = await import("./ai-gateway.server");
+    const { researchTopic } = await import("./web-research.server");
 
     const count = Math.max(1, Math.min(10, Math.round(data.count)));
     const topicLine =
@@ -56,9 +57,20 @@ export const generateQuestionBatch = createServerFn({ method: "POST" })
         ? `Spread them across the major high-yield topics of ${data.subject}.`
         : `All of them must be on the topic "${data.topic}" within ${data.subject}.`;
 
+    // Scout the public web first so questions mirror what is actually being asked/discussed.
+    const sources = await researchTopic(data.subject, data.topic);
+    const researchBlock = sources.length
+      ? [
+          "Use the following freshly scouted web material as your factual and pattern reference.",
+          "Only keep facts that agree with standard textbooks; ignore anything dubious or promotional.",
+          ...sources.map((s, i) => `[S${i + 1}] ${s.title} (${s.url})\n${s.text.slice(0, 2500)}`),
+        ].join("\n\n")
+      : "";
+
     const prompt = [
       `Write ${count} NEET PG questions for the subject "${data.subject}".`,
       topicLine,
+      researchBlock,
       data.avoid.length
         ? `Already covered (do NOT repeat these concepts): ${data.avoid.slice(0, 60).join(" | ")}`
         : "",

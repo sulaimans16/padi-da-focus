@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const AskInput = z.object({
   question: z.string().min(2).max(2000),
@@ -7,8 +8,11 @@ const AskInput = z.object({
 });
 
 export const askStudyAi = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => AskInput.parse(input))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    const { assertPro } = await import("./access.server");
+    await assertPro(context.supabase, context.userId);
     const openRouterKey = process.env["OPENROUTER_API_KEY"];
     const lovableKey = process.env["LOVABLE_API_KEY"];
     if (!openRouterKey && !lovableKey) throw new Error("AI is not configured for this project yet.");

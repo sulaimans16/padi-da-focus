@@ -45,24 +45,6 @@ function Icon({ name, className = "" }: { name: string; className?: string }) {
   );
 }
 
-function useCountdown(dateStr: string) {
-  const [now, setNow] = useState<number | null>(null);
-  useEffect(() => {
-    setNow(Date.now());
-    const id = setInterval(() => setNow(Date.now()), 1000);
-    return () => clearInterval(id);
-  }, []);
-  const target = new Date(`${dateStr}T09:00:00+05:30`).getTime();
-  if (now === null) return null;
-  const diff = Math.max(0, target - now);
-  return {
-    days: Math.floor(diff / 86400000),
-    hours: Math.floor((diff % 86400000) / 3600000),
-    minutes: Math.floor((diff % 3600000) / 60000),
-    seconds: Math.floor((diff % 60000) / 1000),
-  };
-}
-
 function greeting() {
   const h = new Date().getHours();
   if (h < 12) return "Good morning";
@@ -72,7 +54,7 @@ function greeting() {
 
 function Index() {
   const { user, displayName } = useAuth();
-  const countdown = useCountdown(DEFAULT_EXAM_DATE);
+
   const [log, setLog] = useState<CompletedSession[]>([]);
   useEffect(() => setLog(loadSessionLog()), []);
 

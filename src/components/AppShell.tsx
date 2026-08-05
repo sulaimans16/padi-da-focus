@@ -61,7 +61,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   if (FULL_BLEED.some((p) => pathname.startsWith(p))) return <>{children}</>;
 
-  const name = displayName || user?.email?.split("@")[0] || "Guest";
+  const name = user ? doctorName(displayName, user.email) : "Guest";
 
   return (
     <div className="min-h-screen bg-background">

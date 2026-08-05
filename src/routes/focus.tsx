@@ -4,6 +4,7 @@ import { ProgressRing } from "@/components/ProgressRing";
 import { NagOverlay } from "@/components/NagOverlay";
 import { CameraWatch } from "@/components/CameraWatch";
 import { playSuccess } from "@/lib/sfx";
+import { recordFocusSession } from "@/lib/tracker";
 
 import {
   SUBJECTS,
@@ -106,6 +107,13 @@ function FocusPage() {
             subject: prev.subject,
             escapeAttempts: prev.escapeAttempts,
             completed,
+          });
+          void recordFocusSession({
+            minutes: Math.round((Date.now() - prev.startedAt) / 60000),
+            plannedMinutes: Math.round(prev.durationSec / 60),
+            escapes: prev.escapeAttempts,
+            completed,
+            startedAt: new Date(prev.startedAt).toISOString(),
           });
         }
         return null;

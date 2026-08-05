@@ -10,14 +10,27 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as FocusRouteImport } from './routes/focus'
 import { Route as PyqRouteImport } from './routes/pyq'
+import { Route as AuthenticatedTrackerRouteImport } from './routes/_authenticated/tracker'
 import { Route as BankIndexRouteImport } from './routes/bank.index'
 import { Route as BankSubjectRouteImport } from './routes/bank.$subject'
+import { Route as BankFillRouteImport } from './routes/bank.fill'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FocusRoute = FocusRouteImport.update({
@@ -30,6 +43,11 @@ const PyqRoute = PyqRouteImport.update({
   path: '/pyq',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedTrackerRoute = AuthenticatedTrackerRouteImport.update({
+  id: '/tracker',
+  path: '/tracker',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const BankIndexRoute = BankIndexRouteImport.update({
   id: '/bank/',
   path: '/bank/',
@@ -40,42 +58,86 @@ const BankSubjectRoute = BankSubjectRouteImport.update({
   path: '/bank/$subject',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BankFillRoute = BankFillRouteImport.update({
+  id: '/bank/fill',
+  path: '/bank/fill',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/focus': typeof FocusRoute
   '/pyq': typeof PyqRoute
+  '/tracker': typeof AuthenticatedTrackerRoute
   '/bank/$subject': typeof BankSubjectRoute
+  '/bank/fill': typeof BankFillRoute
   '/bank/': typeof BankIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/focus': typeof FocusRoute
   '/pyq': typeof PyqRoute
+  '/tracker': typeof AuthenticatedTrackerRoute
   '/bank/$subject': typeof BankSubjectRoute
+  '/bank/fill': typeof BankFillRoute
   '/bank': typeof BankIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
   '/focus': typeof FocusRoute
   '/pyq': typeof PyqRoute
+  '/_authenticated/tracker': typeof AuthenticatedTrackerRoute
   '/bank/$subject': typeof BankSubjectRoute
+  '/bank/fill': typeof BankFillRoute
   '/bank/': typeof BankIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/focus' | '/pyq' | '/bank/$subject' | '/bank/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/focus'
+    | '/pyq'
+    | '/tracker'
+    | '/bank/$subject'
+    | '/bank/fill'
+    | '/bank/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/focus' | '/pyq' | '/bank/$subject' | '/bank'
-  id: '__root__' | '/' | '/focus' | '/pyq' | '/bank/$subject' | '/bank/'
+  to:
+    | '/'
+    | '/auth'
+    | '/focus'
+    | '/pyq'
+    | '/tracker'
+    | '/bank/$subject'
+    | '/bank/fill'
+    | '/bank'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/focus'
+    | '/pyq'
+    | '/_authenticated/tracker'
+    | '/bank/$subject'
+    | '/bank/fill'
+    | '/bank/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
   FocusRoute: typeof FocusRoute
   PyqRoute: typeof PyqRoute
   BankSubjectRoute: typeof BankSubjectRoute
+  BankFillRoute: typeof BankFillRoute
   BankIndexRoute: typeof BankIndexRoute
 }
 
@@ -86,6 +148,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/focus': {
@@ -102,6 +178,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PyqRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/tracker': {
+      id: '/_authenticated/tracker'
+      path: '/tracker'
+      fullPath: '/tracker'
+      preLoaderRoute: typeof AuthenticatedTrackerRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/bank/': {
       id: '/bank/'
       path: '/bank'
@@ -116,14 +199,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BankSubjectRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/bank/fill': {
+      id: '/bank/fill'
+      path: '/bank/fill'
+      fullPath: '/bank/fill'
+      preLoaderRoute: typeof BankFillRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedTrackerRoute: typeof AuthenticatedTrackerRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedTrackerRoute: AuthenticatedTrackerRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
   FocusRoute: FocusRoute,
   PyqRoute: PyqRoute,
   BankSubjectRoute: BankSubjectRoute,
+  BankFillRoute: BankFillRoute,
   BankIndexRoute: BankIndexRoute,
 }
 export const routeTree = rootRouteImport

@@ -64,6 +64,11 @@ function BankIndex() {
         {total} questions loaded. Open a subject and use “Fill to 50/100” to grow it.
       </p>
 
+      <Link to="/bank/fill" className="btn-base btn-primary mt-3 w-full text-sm">
+        🌐 Fill every subject from web research
+      </Link>
+
+
 
       <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
         {SUBJECTS.map((s) => {

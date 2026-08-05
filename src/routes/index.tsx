@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ProgressRing } from "@/components/ProgressRing";
+import { useAuth } from "@/hooks/useAuth";
 import {
   DEFAULT_EXAM_DATE,
   formatClock,
@@ -30,12 +31,12 @@ export const Route = createFileRoute("/")({
 const FEATURES = [
   { label: "Question Bank", icon: "🧠", note: "Subject → topic drills", to: "/bank" as const },
   { label: "PYQs", icon: "🔥", note: "Tagged by year & repeats", to: "/pyq" as const },
+  { label: "My Tracker", icon: "📊", note: "Accuracy & weak areas", to: "/tracker" as const },
+  { label: "Fill the bank", icon: "🌐", note: "Web-researched Qs", to: "/bank/fill" as const },
   { label: "Mock Tests", icon: "⏱️", note: "200 Q · 3h30m · NBE" },
   { label: "Quizzes", icon: "⚡", note: "Rapid-fire, 5–15 Q" },
   { label: "Flashcards", icon: "🗂️", note: "Spaced repetition" },
   { label: "Cheatsheets", icon: "📄", note: "High-yield one-pagers" },
-  { label: "Analytics", icon: "📊", note: "Weak-area heatmap" },
-  { label: "Planner", icon: "🗓️", note: "Day-by-day allocation" },
 ];
 
 function useCountdown(dateStr: string) {
@@ -57,6 +58,7 @@ function useCountdown(dateStr: string) {
 }
 
 function Index() {
+  const { user, displayName } = useAuth();
   const countdown = useCountdown(DEFAULT_EXAM_DATE);
   const [log, setLog] = useState<CompletedSession[]>([]);
   useEffect(() => setLog(loadSessionLog()), []);
@@ -75,9 +77,21 @@ function Index() {
           </h1>
           <p className="text-xs text-muted-foreground">30 days. 200 questions. No excuses.</p>
         </div>
-        <span className="rounded-full bg-surface-2 px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
-          NEET PG 2026
-        </span>
+        {user ? (
+          <Link
+            to="/tracker"
+            className="rounded-full bg-surface-2 px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-primary"
+          >
+            {(displayName || user.email || "me").split("@")[0]} · tracker
+          </Link>
+        ) : (
+          <Link
+            to="/auth"
+            className="rounded-full bg-surface-2 px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-muted-foreground"
+          >
+            Sign in
+          </Link>
+        )}
       </header>
 
       <section className="card-surface mt-5 p-4">

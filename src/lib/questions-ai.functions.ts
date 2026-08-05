@@ -174,7 +174,11 @@ export const generateQuestionBatch = createServerFn({ method: "POST" })
         explanation: q.explanation.trim(),
         distractors: Object.fromEntries(q.distractors.map((d) => [d.optionId, d.why])),
         high_yield: q.highYield.trim(),
-        difficulty: ["easy", "med", "hard"].includes(q.difficulty) ? q.difficulty : "med",
+        difficulty: data.tricky
+          ? "hard"
+          : ["easy", "med", "hard"].includes(q.difficulty)
+            ? q.difficulty
+            : "med",
         is_pyq: data.pyqOnly ? true : q.isPyq,
         pyq_year: data.pyqOnly
           ? (data.year ?? q.pyqYear ?? 2024)

@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { QuestionCard } from "@/components/QuestionCard";
 import { GeneratePyqs } from "@/components/GeneratePyqs";
+import { Pagination, usePagination } from "@/components/Pagination";
+
 import { fetchRemoteQuestions } from "@/lib/remote-questions";
 import { allQuestions, type Question } from "@/lib/questions";
 

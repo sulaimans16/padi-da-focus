@@ -38,6 +38,7 @@ export function GeneratePyqs({
   const [subject, setSubject] = useState("Medicine");
   const [year, setYear] = useState<string>("mixed");
   const [want, setWant] = useState(20);
+  const [tricky, setTricky] = useState(false);
   const [busy, setBusy] = useState(false);
   const [made, setMade] = useState(0);
   const [error, setError] = useState<string | null>(null);

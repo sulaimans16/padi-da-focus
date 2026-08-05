@@ -56,6 +56,7 @@ function NavList({ items, pathname }: { items: NavLink[]; pathname: string }) {
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { user, displayName } = useAuth();
+  const { theme, toggle } = useTheme();
 
   if (FULL_BLEED.some((p) => pathname.startsWith(p))) return <>{children}</>;
 
@@ -115,6 +116,15 @@ export function AppShell({ children }: { children: ReactNode }) {
             <Icon name="search" className="text-[18px]" />
             <span>Search topics, PYQs, high-yield facts</span>
           </div>
+          <button
+            type="button"
+            onClick={toggle}
+            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            title={theme === "dark" ? "Light mode" : "Dark mode"}
+            className="btn-base btn-ghost px-2.5 py-2"
+          >
+            <Icon name={theme === "dark" ? "light_mode" : "dark_mode"} className="text-[18px]" />
+          </button>
           <Link to="/focus" className="btn-base btn-primary whitespace-nowrap px-3 py-2 text-xs">
             <Icon name="lock" className="text-[16px]" />
             Lock in
@@ -125,7 +135,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <main className="pb-24 pt-16 md:ml-64 md:pb-8">{children}</main>
 
       {/* Mobile bottom navigation */}
-      <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-border bg-surface md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-6 border-t border-border bg-surface md:hidden">
         {[...PRIMARY, SECONDARY[0]!].map((item) => {
           const active =
             item.to === "/" ? pathname === "/" : pathname === item.to || pathname.startsWith(`${item.to}/`);

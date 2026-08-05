@@ -110,13 +110,20 @@ function AuthPage() {
         </div>
 
         {mode === "signup" && (
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Display name"
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-          />
+          <div>
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Username, e.g. Rahul"
+              maxLength={40}
+              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+            />
+            <p className="mt-1 text-[11px] text-muted-foreground">
+              We&apos;ll greet you as Dr. {name.trim() || "…"}
+            </p>
+          </div>
         )}
+
         <input
           value={email}
           onChange={(e) => setEmail(e.target.value)}

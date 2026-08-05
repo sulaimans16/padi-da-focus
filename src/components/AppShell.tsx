@@ -2,6 +2,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useTheme } from "@/lib/theme";
+import { AskAi } from "@/components/AskAi";
 
 type NavLink = {
   label: string;
@@ -154,6 +155,8 @@ export function AppShell({ children }: { children: ReactNode }) {
           );
         })}
       </nav>
+
+      <AskAi />
     </div>
   );
 }

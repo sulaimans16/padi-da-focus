@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { GoalCountdown } from "@/components/GoalCountdown";
 import { ProgressRing } from "@/components/ProgressRing";
 import { useAuth } from "@/hooks/useAuth";
+import { doctorName } from "@/lib/doctor-name";
+
 import { formatClock, loadSessionLog, type CompletedSession } from "@/lib/focus-session";
 
 

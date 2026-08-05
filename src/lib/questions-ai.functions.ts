@@ -44,8 +44,12 @@ const SYSTEM = [
 ].join(" ");
 
 export const generateQuestionBatch = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => GenerateInput.parse(input))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    const { assertPro } = await import("./access.server");
+    await assertPro(context.supabase, context.userId);
+
     const openRouterKey = process.env["OPENROUTER_API_KEY"];
     const lovableKey = process.env["LOVABLE_API_KEY"];
     if (!openRouterKey && !lovableKey) throw new Error("AI is not configured for this project yet.");

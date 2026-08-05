@@ -57,6 +57,7 @@ function useCountdown(dateStr: string) {
 }
 
 function Index() {
+  const { user, displayName } = useAuth();
   const countdown = useCountdown(DEFAULT_EXAM_DATE);
   const [log, setLog] = useState<CompletedSession[]>([]);
   useEffect(() => setLog(loadSessionLog()), []);

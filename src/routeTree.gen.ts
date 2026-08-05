@@ -15,6 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as FocusRouteImport } from './routes/focus'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PyqRouteImport } from './routes/pyq'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedTrackerRouteImport } from './routes/_authenticated/tracker'
 import { Route as BankIndexRouteImport } from './routes/bank.index'
 import { Route as BankSubjectRouteImport } from './routes/bank.$subject'
@@ -50,6 +51,11 @@ const PyqRoute = PyqRouteImport.update({
   id: '/pyq',
   path: '/pyq',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedTrackerRoute = AuthenticatedTrackerRouteImport.update({
   id: '/tracker',
@@ -88,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/focus': typeof FocusRoute
   '/pricing': typeof PricingRoute
   '/pyq': typeof PyqRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/tracker': typeof AuthenticatedTrackerRoute
   '/bank/$subject': typeof BankSubjectRoute
   '/bank/fill': typeof BankFillRoute
@@ -101,6 +108,7 @@ export interface FileRoutesByTo {
   '/focus': typeof FocusRoute
   '/pricing': typeof PricingRoute
   '/pyq': typeof PyqRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/tracker': typeof AuthenticatedTrackerRoute
   '/bank/$subject': typeof BankSubjectRoute
   '/bank/fill': typeof BankFillRoute
@@ -116,6 +124,7 @@ export interface FileRoutesById {
   '/focus': typeof FocusRoute
   '/pricing': typeof PricingRoute
   '/pyq': typeof PyqRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/tracker': typeof AuthenticatedTrackerRoute
   '/bank/$subject': typeof BankSubjectRoute
   '/bank/fill': typeof BankFillRoute
@@ -131,6 +140,7 @@ export interface FileRouteTypes {
     | '/focus'
     | '/pricing'
     | '/pyq'
+    | '/admin'
     | '/tracker'
     | '/bank/$subject'
     | '/bank/fill'
@@ -144,6 +154,7 @@ export interface FileRouteTypes {
     | '/focus'
     | '/pricing'
     | '/pyq'
+    | '/admin'
     | '/tracker'
     | '/bank/$subject'
     | '/bank/fill'
@@ -158,6 +169,7 @@ export interface FileRouteTypes {
     | '/focus'
     | '/pricing'
     | '/pyq'
+    | '/_authenticated/admin'
     | '/_authenticated/tracker'
     | '/bank/$subject'
     | '/bank/fill'
@@ -224,6 +236,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PyqRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/tracker': {
       id: '/_authenticated/tracker'
       path: '/tracker'
@@ -270,10 +289,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedTrackerRoute: typeof AuthenticatedTrackerRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedTrackerRoute: AuthenticatedTrackerRoute,
 }
 

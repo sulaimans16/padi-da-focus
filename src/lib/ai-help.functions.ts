@@ -13,7 +13,7 @@ export const askStudyAi = createServerFn({ method: "POST" })
     const lovableKey = process.env["LOVABLE_API_KEY"];
     if (!openRouterKey && !lovableKey) throw new Error("AI is not configured for this project yet.");
 
-    const { streamText } = await import("ai");
+    const { generateText } = await import("ai");
     const { createLovableAiGatewayProvider, createOpenRouterProvider, OPENROUTER_MODEL } =
       await import("./ai-gateway.server");
     const { ASK_SYSTEM, friendlyAiError } = await import("./ai-help.server");
@@ -31,13 +31,13 @@ export const askStudyAi = createServerFn({ method: "POST" })
       .join("\n\n");
 
     try {
-      const result = streamText({
+      const result = await generateText({
         model: gateway(useOpenRouter ? OPENROUTER_MODEL : "openai/gpt-5.6-sol"),
         system: ASK_SYSTEM,
         prompt,
         ...(useOpenRouter ? {} : { providerOptions: { lovable: { reasoningEffort: "none" } } }),
       });
-      const answer = await result.text;
+      const answer = result.text;
       return { answer: answer.trim() };
     } catch (error) {
       console.error("askStudyAi failed", error);

@@ -94,18 +94,28 @@ function LessonCard({ lesson, unlocked }: { lesson: VideoLesson; unlocked: boole
         <p className="mt-3 flex items-center justify-between gap-2">
           <span className="label-eyebrow text-primary">{lesson.channel}</span>
           {unlocked ? (
-            <button
-              type="button"
-              onClick={() => {
-                const url = videoWatchUrl(lesson.id);
-                const win = window.open(url, "_blank", "noopener,noreferrer");
-                if (!win) window.top!.location.href = url;
-              }}
-              className="label-eyebrow text-muted-foreground hover:text-primary"
-            >
-              Open on YouTube ↗
-            </button>
+            <span className="flex items-center gap-3">
+              <a
+                href={videoWatchUrl(lesson.id)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="label-eyebrow text-muted-foreground hover:text-primary"
+              >
+                Open on YouTube ↗
+              </a>
+              <button
+                type="button"
+                onClick={() => {
+                  void navigator.clipboard?.writeText(videoWatchUrl(lesson.id));
+                }}
+                className="label-eyebrow text-muted-foreground hover:text-primary"
+                title="Copy the video link"
+              >
+                Copy link
+              </button>
+            </span>
           ) : null}
+
 
         </p>
       </div>

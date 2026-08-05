@@ -27,8 +27,6 @@ export const Route = createFileRoute("/bank/fill")({
 
 const BATCH = 10;
 
-export default function noop() {}
-
 function FillBank() {
   const generate = useServerFn(generateQuestionBatch);
   const [counts, setCounts] = useState<Map<string, number>>(new Map());

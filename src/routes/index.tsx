@@ -75,9 +75,21 @@ function Index() {
           </h1>
           <p className="text-xs text-muted-foreground">30 days. 200 questions. No excuses.</p>
         </div>
-        <span className="rounded-full bg-surface-2 px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
-          NEET PG 2026
-        </span>
+        {user ? (
+          <Link
+            to="/tracker"
+            className="rounded-full bg-surface-2 px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-primary"
+          >
+            {(displayName || user.email || "me").split("@")[0]} · tracker
+          </Link>
+        ) : (
+          <Link
+            to="/auth"
+            className="rounded-full bg-surface-2 px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-muted-foreground"
+          >
+            Sign in
+          </Link>
+        )}
       </header>
 
       <section className="card-surface mt-5 p-4">

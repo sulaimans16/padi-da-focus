@@ -6,6 +6,8 @@ const GenerateInput = z.object({
   topic: z.string(),
   count: z.number(),
   avoid: z.array(z.string()),
+  pyqOnly: z.boolean().optional(),
+  year: z.number().nullable().optional(),
 });
 
 const QuestionSchema = z.object({
@@ -69,9 +71,20 @@ export const generateQuestionBatch = createServerFn({ method: "POST" })
         ].join("\n\n")
       : "";
 
+    const pyqLine = data.pyqOnly
+      ? [
+          "Every question must be a previous-year style question: model it on concepts that have",
+          "genuinely been asked in NEET PG / AIIMS / INICET papers.",
+          data.year
+            ? `Set isPyq true, pyqYear ${data.year}, and repeatCount 1-6 for all of them.`
+            : "Set isPyq true, pick pyqYear between 2016 and 2025, and repeatCount 1-6.",
+        ].join(" ")
+      : "";
+
     const prompt = [
       `Write ${count} NEET PG questions for the subject "${data.subject}".`,
       topicLine,
+      pyqLine,
       researchBlock,
       data.avoid.length
         ? `Already covered (do NOT repeat these concepts): ${data.avoid.slice(0, 60).join(" | ")}`
@@ -139,9 +152,17 @@ export const generateQuestionBatch = createServerFn({ method: "POST" })
         distractors: Object.fromEntries(q.distractors.map((d) => [d.optionId, d.why])),
         high_yield: q.highYield.trim(),
         difficulty: ["easy", "med", "hard"].includes(q.difficulty) ? q.difficulty : "med",
-        is_pyq: q.isPyq,
-        pyq_year: q.isPyq ? q.pyqYear : null,
-        repeat_count: q.isPyq ? q.repeatCount : null,
+        is_pyq: data.pyqOnly ? true : q.isPyq,
+        pyq_year: data.pyqOnly
+          ? (data.year ?? q.pyqYear ?? 2024)
+          : q.isPyq
+            ? q.pyqYear
+            : null,
+        repeat_count: data.pyqOnly
+          ? (q.repeatCount ?? 2)
+          : q.isPyq
+            ? q.repeatCount
+            : null,
         source: sources.length
           ? "AI + web research — verify against a standard text"
           : "AI generated — verify against a standard text",

@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as FocusRouteImport } from './routes/focus'
+import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PyqRouteImport } from './routes/pyq'
 import { Route as AuthenticatedTrackerRouteImport } from './routes/_authenticated/tracker'
 import { Route as BankIndexRouteImport } from './routes/bank.index'
@@ -38,6 +39,11 @@ const AuthRoute = AuthRouteImport.update({
 const FocusRoute = FocusRouteImport.update({
   id: '/focus',
   path: '/focus',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PyqRoute = PyqRouteImport.update({
@@ -80,6 +86,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/focus': typeof FocusRoute
+  '/pricing': typeof PricingRoute
   '/pyq': typeof PyqRoute
   '/tracker': typeof AuthenticatedTrackerRoute
   '/bank/$subject': typeof BankSubjectRoute
@@ -92,6 +99,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/focus': typeof FocusRoute
+  '/pricing': typeof PricingRoute
   '/pyq': typeof PyqRoute
   '/tracker': typeof AuthenticatedTrackerRoute
   '/bank/$subject': typeof BankSubjectRoute
@@ -106,6 +114,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/focus': typeof FocusRoute
+  '/pricing': typeof PricingRoute
   '/pyq': typeof PyqRoute
   '/_authenticated/tracker': typeof AuthenticatedTrackerRoute
   '/bank/$subject': typeof BankSubjectRoute
@@ -120,6 +129,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/focus'
+    | '/pricing'
     | '/pyq'
     | '/tracker'
     | '/bank/$subject'
@@ -132,6 +142,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/focus'
+    | '/pricing'
     | '/pyq'
     | '/tracker'
     | '/bank/$subject'
@@ -145,6 +156,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/focus'
+    | '/pricing'
     | '/pyq'
     | '/_authenticated/tracker'
     | '/bank/$subject'
@@ -159,6 +171,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   FocusRoute: typeof FocusRoute
+  PricingRoute: typeof PricingRoute
   PyqRoute: typeof PyqRoute
   BankSubjectRoute: typeof BankSubjectRoute
   BankFillRoute: typeof BankFillRoute
@@ -195,6 +208,13 @@ declare module '@tanstack/react-router' {
       path: '/focus'
       fullPath: '/focus'
       preLoaderRoute: typeof FocusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pyq': {
@@ -265,6 +285,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   FocusRoute: FocusRoute,
+  PricingRoute: PricingRoute,
   PyqRoute: PyqRoute,
   BankSubjectRoute: BankSubjectRoute,
   BankFillRoute: BankFillRoute,

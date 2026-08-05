@@ -9,6 +9,7 @@ const GenerateInput = z.object({
   avoid: z.array(z.string()),
   pyqOnly: z.boolean().optional(),
   year: z.number().nullable().optional(),
+  tricky: z.boolean().optional(),
 });
 
 const QuestionSchema = z.object({

@@ -595,7 +595,7 @@ export function videoThumb(id: string) {
 }
 
 export function videoWatchUrl(id: string) {
-  return `https://www.youtube.com/watch?v=${id}`;
+  return `https://youtu.be/${id}`;
 }
 
 export function videoEmbedUrl(id: string) {

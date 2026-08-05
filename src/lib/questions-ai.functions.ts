@@ -87,10 +87,27 @@ export const generateQuestionBatch = createServerFn({ method: "POST" })
         ].join(" ")
       : "";
 
+
+    const trickyLine = data.tricky
+      ? [
+          "TRICKY MODE: make every question genuinely hard (difficulty 'hard').",
+          "All four options must be closely related and highly plausible — same drug class,",
+          "same organism family, adjacent anatomical structures, or near-identical syndromes —",
+          "so the answer turns on one discriminating detail (a single lab value, timing,",
+          "age, receptor, enzyme step, nerve root, or exception to a rule).",
+          "Use second-order clinical vignettes and 'most likely / next best step / except' framing.",
+          "No option may be obviously absurd or eliminable at a glance, and option lengths",
+          "should be similar so length gives no clue. The correct answer must still be",
+          "unambiguously defensible from standard textbooks, and the explanation must state",
+          "the exact discriminator that rules each distractor out.",
+        ].join(" ")
+      : "";
+
     const prompt = [
       `Write ${count} NEET PG questions for the subject "${data.subject}".`,
       topicLine,
       pyqLine,
+      trickyLine,
       researchBlock,
       data.avoid.length
         ? `Already covered (do NOT repeat these concepts): ${data.avoid.slice(0, 60).join(" | ")}`

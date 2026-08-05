@@ -2,6 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { QuestionCard } from "@/components/QuestionCard";
 import { GenerateQuestions } from "@/components/GenerateQuestions";
+import { Pagination, usePagination } from "@/components/Pagination";
+
 import { fetchRemoteQuestions } from "@/lib/remote-questions";
 import { allQuestions, subjectColor, type Question } from "@/lib/questions";
 
@@ -47,6 +49,8 @@ function SubjectPractice() {
     [questions],
   );
   const shown = topic === "all" ? questions : questions.filter((q) => q.topic === topic);
+  const { page, setPage, totalPages, pageItems, offset } = usePagination(shown);
+
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
@@ -93,11 +97,11 @@ function SubjectPractice() {
       />
 
       <div className="mt-4 space-y-4">
-        {shown.map((q, i) => (
+        {pageItems.map((q, i) => (
           <QuestionCard
             key={q.id}
             question={q}
-            index={i}
+            index={offset + i}
             total={shown.length}
             context="question_bank"
           />
@@ -109,6 +113,14 @@ function SubjectPractice() {
           </p>
         )}
       </div>
+
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        onChange={setPage}
+        totalItems={shown.length}
+      />
     </div>
   );
 }
+

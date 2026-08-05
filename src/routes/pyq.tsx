@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { QuestionCard } from "@/components/QuestionCard";
 import { GeneratePyqs } from "@/components/GeneratePyqs";
+import { Pagination, usePagination } from "@/components/Pagination";
+
 import { fetchRemoteQuestions } from "@/lib/remote-questions";
 import { allQuestions, type Question } from "@/lib/questions";
 
@@ -60,6 +62,10 @@ function PyqPage() {
       (!hotOnly || (q.repeatCount ?? 0) >= 3),
   );
 
+  const { page, setPage, totalPages, pageItems, offset } = usePagination(shown);
+
+
+
   const themeLabel =
     year === "all" && subject === "all"
       ? "All PYQs"
@@ -115,8 +121,14 @@ function PyqPage() {
       <GeneratePyqs existingStems={pyqs.map((q) => q.stem)} onDone={load} />
 
       <div className="mt-4 space-y-4">
-        {shown.map((q, i) => (
-          <QuestionCard key={q.id} question={q} index={i} total={shown.length} context="pyq" />
+        {pageItems.map((q, i) => (
+          <QuestionCard
+            key={q.id}
+            question={q}
+            index={offset + i}
+            total={shown.length}
+            context="pyq"
+          />
         ))}
         {shown.length === 0 && (
           <p className="card-surface p-8 text-center text-sm text-muted-foreground">
@@ -124,6 +136,14 @@ function PyqPage() {
           </p>
         )}
       </div>
+
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        onChange={setPage}
+        totalItems={shown.length}
+      />
+
     </div>
   );
 }

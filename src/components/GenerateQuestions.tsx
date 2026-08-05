@@ -63,6 +63,24 @@ export function GenerateQuestions({
         </p>
       </div>
 
+      <label className="flex cursor-pointer items-start gap-2 rounded-lg border border-input bg-surface p-2.5">
+        <input
+          type="checkbox"
+          checked={tricky}
+          onChange={(e) => setTricky(e.target.checked)}
+          disabled={busy}
+          className="mt-0.5 accent-primary"
+        />
+        <span className="text-[11px] leading-snug">
+          <span className="font-semibold">Tricky mode</span>
+          <span className="text-muted-foreground">
+            {" "}
+            — hard, exam-trap questions where all four options look almost identical and one
+            detail decides the answer.
+          </span>
+        </span>
+      </label>
+
       <div className="grid grid-cols-3 gap-2">
         <button
           disabled={busy}

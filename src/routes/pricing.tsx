@@ -41,12 +41,14 @@ const PLANS = [
 ];
 
 const PRO_FEATURES = [
+  "Video modules — curated lecture videos for every subject",
   "AI doubt solver (the floating brain button)",
   "AI question generation in every subject",
   "PYQ vault builder with web-researched vignettes",
   "Bulk “Fill the Bank” runs",
   "Every AI tool we add later",
 ];
+
 
 const FREE_FEATURES = [
   "Full Learn modules and concept notes",

@@ -11,12 +11,23 @@ import { useAccess } from "@/hooks/useAccess";
 type NavLink = {
   label: string;
   icon: string;
-  to: "/" | "/bank" | "/pyq" | "/tracker" | "/bank/fill" | "/focus" | "/learn" | "/pricing" | "/admin";
+  to:
+    | "/"
+    | "/bank"
+    | "/pyq"
+    | "/tracker"
+    | "/bank/fill"
+    | "/focus"
+    | "/learn"
+    | "/videos"
+    | "/pricing"
+    | "/admin";
 };
 
 const PRIMARY: NavLink[] = [
   { label: "Dashboard", icon: "dashboard", to: "/" },
   { label: "Learn", icon: "menu_book", to: "/learn" },
+  { label: "Videos", icon: "play_circle", to: "/videos" },
   { label: "QBank", icon: "quiz", to: "/bank" },
   { label: "PYQ Vault", icon: "history_edu", to: "/pyq" },
   { label: "Analytics", icon: "monitoring", to: "/tracker" },
@@ -26,6 +37,7 @@ const FOCUS_LINK: NavLink = { label: "Focus Lock", icon: "lock_clock", to: "/foc
 const FILL_LINK: NavLink = { label: "Fill Bank", icon: "cloud_download", to: "/bank/fill" };
 const PRICING_LINK: NavLink = { label: "Go Pro", icon: "workspace_premium", to: "/pricing" };
 const ADMIN_LINK: NavLink = { label: "Admin", icon: "admin_panel_settings", to: "/admin" };
+
 
 const FULL_BLEED = ["/focus", "/auth"];
 

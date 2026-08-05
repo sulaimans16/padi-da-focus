@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { QuestionCard } from "@/components/QuestionCard";
+import { GeneratePyqs } from "@/components/GeneratePyqs";
+import { fetchRemoteQuestions } from "@/lib/remote-questions";
 import { allQuestions, type Question } from "@/lib/questions";
 
 export const Route = createFileRoute("/pyq")({
@@ -28,7 +30,19 @@ function PyqPage() {
   const [subject, setSubject] = useState<string>("all");
   const [hotOnly, setHotOnly] = useState(false);
 
-  useEffect(() => setPyqs(allQuestions().filter((q) => q.isPyq)), []);
+  const load = useCallback(async () => {
+    const local = allQuestions().filter((q) => q.isPyq);
+    try {
+      const remote = await fetchRemoteQuestions();
+      setPyqs([...remote.filter((q) => q.isPyq), ...local]);
+    } catch {
+      setPyqs(local);
+    }
+  }, []);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
 
   const years = useMemo(
     () =>
@@ -97,6 +111,8 @@ function PyqPage() {
           </button>
         </div>
       </section>
+
+      <GeneratePyqs existingStems={pyqs.map((q) => q.stem)} onDone={load} />
 
       <div className="mt-4 space-y-4">
         {shown.map((q, i) => (

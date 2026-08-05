@@ -3,6 +3,9 @@ import type { ReactNode } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useTheme } from "@/lib/theme";
 import { AskAi } from "@/components/AskAi";
+import { UsernamePrompt } from "@/components/UsernamePrompt";
+import { doctorName } from "@/lib/doctor-name";
+
 
 type NavLink = {
   label: string;

@@ -107,6 +107,13 @@ function FocusPage() {
             escapeAttempts: prev.escapeAttempts,
             completed,
           });
+          void recordFocusSession({
+            minutes: Math.round((Date.now() - prev.startedAt) / 60000),
+            plannedMinutes: Math.round(prev.durationSec / 60),
+            escapes: prev.escapeAttempts,
+            completed,
+            startedAt: new Date(prev.startedAt).toISOString(),
+          });
         }
         return null;
       });

@@ -115,6 +115,14 @@ export function QuestionCard({
         <div className="border-b border-border p-5 lg:col-span-7 lg:border-b-0 lg:border-r">
           <p className="label-eyebrow mb-2">Clinical vignette</p>
           <p className="clinical-text text-foreground">{question.stem}</p>
+          {question.imageUrl ? (
+            <img
+              src={question.imageUrl}
+              alt={`Clinical figure for: ${question.stem.slice(0, 80)}`}
+              loading="lazy"
+              className="mt-3 max-h-72 w-full rounded-lg border border-border bg-surface-2 object-contain"
+            />
+          ) : null}
         </div>
 
         {/* Options + feedback */}

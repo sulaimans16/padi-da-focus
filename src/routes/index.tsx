@@ -58,7 +58,11 @@ function Index() {
   const { user, displayName } = useAuth();
 
   const [log, setLog] = useState<CompletedSession[]>([]);
-  useEffect(() => setLog(loadSessionLog()), []);
+  const [hello, setHello] = useState("Hello");
+  useEffect(() => {
+    setLog(loadSessionLog());
+    setHello(greeting());
+  }, []);
 
   const todayKey = new Date().toDateString();
   const todaySessions = log.filter((s) => new Date(s.startedAt).toDateString() === todayKey);
@@ -72,7 +76,7 @@ function Index() {
         <div>
           <p className="label-eyebrow">Preparation console</p>
           <h1 className="text-3xl sm:text-4xl">
-            {greeting()}, {name}
+            {hello}, {name}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
             30 days. 200 questions. No excuses.

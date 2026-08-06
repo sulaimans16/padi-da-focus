@@ -1,5 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
-import type { Difficulty, Question } from "./questions";
+import { SUBJECT_HUE, type Difficulty, type Question } from "./questions";
 
 type Row = {
   id: string;
@@ -46,19 +46,39 @@ export async function fetchRemoteQuestions(subject?: string): Promise<Question[]
     .from("questions")
     .select("*")
     .order("created_at", { ascending: false })
-    .limit(5000);
+    .limit(subject ? 2000 : 400);
   if (subject) query = query.eq("subject", subject);
   const { data, error } = await query;
   if (error) throw new Error(error.message);
   return ((data ?? []) as Row[]).map(toQuestion);
 }
 
-export async function fetchRemoteCounts(): Promise<Map<string, number>> {
-  const { data, error } = await supabase.from("questions").select("subject").limit(20000);
+/** Only previous-year questions — keeps the PYQ vault light now the bank is large. */
+export async function fetchRemotePyqs(): Promise<Question[]> {
+  const { data, error } = await supabase
+    .from("questions")
+    .select("*")
+    .eq("is_pyq", true)
+    .order("pyq_year", { ascending: false })
+    .limit(3000);
   if (error) throw new Error(error.message);
-  const map = new Map<string, number>();
-  ((data ?? []) as { subject: string }[]).forEach((r) =>
-    map.set(r.subject, (map.get(r.subject) ?? 0) + 1),
+  return ((data ?? []) as Row[]).map(toQuestion);
+}
+
+export async function fetchRemoteCounts(): Promise<Map<string, number>> {
+  const subjects = Object.keys(SUBJECT_HUE);
+  const results = await Promise.all(
+    subjects.map(async (s) => {
+      const { count } = await supabase
+        .from("questions")
+        .select("id", { count: "exact", head: true })
+        .eq("subject", s);
+      return [s, count ?? 0] as const;
+    }),
   );
+  const map = new Map<string, number>();
+  results.forEach(([s, c]) => {
+    if (c > 0) map.set(s, c);
+  });
   return map;
 }

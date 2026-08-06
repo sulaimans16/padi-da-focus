@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { fetchRemoteQuestions } from "@/lib/remote-questions";
+import { fetchRemotePyqs } from "@/lib/remote-questions";
 import { allQuestions, type Question } from "@/lib/questions";
 import { buildPaperHtml, downloadHtml, printHtml, slug } from "@/lib/paper-export";
 
@@ -42,7 +42,7 @@ function PapersPage() {
     const local = allQuestions().filter((q) => q.isPyq);
     void (async () => {
       try {
-        const remote = await fetchRemoteQuestions();
+        const remote = await fetchRemotePyqs();
         setPyqs([...remote.filter((q) => q.isPyq), ...local]);
       } catch {
         setPyqs(local);

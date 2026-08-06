@@ -13,6 +13,7 @@ export function buildPaperHtml(
       (q, i) => `
     <article class="q">
       <p class="stem"><b>Q${i + 1}.</b> ${esc(q.stem)}</p>
+      ${q.imageUrl ? `<img class="fig" src="${esc(q.imageUrl)}" alt="Figure for question ${i + 1}"/>` : ""}
       <ol class="opts">
         ${q.options.map((o) => `<li>${esc(o.text)}</li>`).join("")}
       </ol>
@@ -37,6 +38,7 @@ export function buildPaperHtml(
   .sub{color:#555;font-size:13px;margin-top:0}
   .q{page-break-inside:avoid;border-top:1px solid #ddd;padding:14px 0}
   .stem{margin:0 0 8px}
+  .fig{display:block;max-width:100%;max-height:320px;margin:6px 0 10px;border:1px solid #ddd}
   .opts{margin:0 0 6px 18px;padding:0}
   .opts li{margin:2px 0}
   .meta{font-size:11px;color:#777;margin:4px 0 0;text-transform:uppercase;letter-spacing:.04em}

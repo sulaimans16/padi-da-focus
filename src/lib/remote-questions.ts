@@ -17,6 +17,7 @@ type Row = {
   pyq_year: number | null;
   repeat_count: number | null;
   source: string | null;
+  image_url?: string | null;
 };
 
 const toQuestion = (r: Row): Question => ({
@@ -37,6 +38,7 @@ const toQuestion = (r: Row): Question => ({
   ...(r.pyq_year != null ? { pyqYear: r.pyq_year } : {}),
   ...(r.repeat_count != null ? { repeatCount: r.repeat_count } : {}),
   ...(r.source ? { source: r.source } : {}),
+  ...(r.image_url ? { imageUrl: r.image_url } : {}),
 });
 
 export async function fetchRemoteQuestions(subject?: string): Promise<Question[]> {

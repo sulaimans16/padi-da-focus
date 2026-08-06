@@ -15,6 +15,7 @@ type NavLink = {
     | "/"
     | "/bank"
     | "/pyq"
+    | "/papers"
     | "/tracker"
     | "/bank/fill"
     | "/focus"
@@ -30,6 +31,7 @@ const PRIMARY: NavLink[] = [
   { label: "Videos", icon: "play_circle", to: "/videos" },
   { label: "QBank", icon: "quiz", to: "/bank" },
   { label: "PYQ Vault", icon: "history_edu", to: "/pyq" },
+  { label: "Papers", icon: "description", to: "/papers" },
   { label: "Analytics", icon: "monitoring", to: "/tracker" },
 ];
 
@@ -164,7 +166,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       {/* Mobile bottom navigation */}
       <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-6 border-t border-border bg-surface md:hidden">
-        {[...PRIMARY.filter((i) => i.to !== "/tracker"), FOCUS_LINK].map((item) => {
+        {[...PRIMARY.filter((i) => i.to !== "/tracker" && i.to !== "/videos"), FOCUS_LINK].map((item) => {
 
           const active =
             item.to === "/" ? pathname === "/" : pathname === item.to || pathname.startsWith(`${item.to}/`);

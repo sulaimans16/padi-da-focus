@@ -64,15 +64,33 @@ const FREE_FEATURES = [
 ];
 
 function Pricing() {
-  const { isPro, isAdmin, subscription, signedIn } = useAccess();
+  const { isPro, isAdmin, subscription, signedIn, refresh } = useAccess();
+  const { user } = useAuth();
+  const { openCheckout, loadingPrice, error } = usePaddleCheckout();
+
+  // Coming back from a completed checkout: poll briefly so the new plan shows
+  // up as soon as the payment is recorded.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!new URLSearchParams(window.location.search).has("checkout")) return;
+    let tries = 0;
+    const timer = window.setInterval(() => {
+      tries += 1;
+      void refresh();
+      if (tries >= 6) window.clearInterval(timer);
+    }, 2500);
+    return () => window.clearInterval(timer);
+  }, [refresh]);
 
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-8">
-      <h1 className="text-3xl font-extrabold tracking-tight">PadiDa Pro</h1>
+      <PaymentTestModeBanner />
+      <h1 className="mt-4 text-3xl font-extrabold tracking-tight">PadiDa Pro</h1>
       <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
         Everything you study stays free. The AI tools — doubt solving and question generation —
         cost real money to run, so they sit behind a small subscription.
       </p>
+
 
       {isPro ? (
         <div className="card-surface mt-5 p-4">

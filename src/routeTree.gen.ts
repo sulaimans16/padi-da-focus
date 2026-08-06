@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as FocusRouteImport } from './routes/focus'
+import { Route as PapersRouteImport } from './routes/papers'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PyqRouteImport } from './routes/pyq'
 import { Route as VideosRouteImport } from './routes/videos'
@@ -41,6 +42,11 @@ const AuthRoute = AuthRouteImport.update({
 const FocusRoute = FocusRouteImport.update({
   id: '/focus',
   path: '/focus',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PapersRoute = PapersRouteImport.update({
+  id: '/papers',
+  path: '/papers',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PricingRoute = PricingRouteImport.update({
@@ -98,6 +104,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/focus': typeof FocusRoute
+  '/papers': typeof PapersRoute
   '/pricing': typeof PricingRoute
   '/pyq': typeof PyqRoute
   '/videos': typeof VideosRoute
@@ -113,6 +120,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/focus': typeof FocusRoute
+  '/papers': typeof PapersRoute
   '/pricing': typeof PricingRoute
   '/pyq': typeof PyqRoute
   '/videos': typeof VideosRoute
@@ -130,6 +138,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/focus': typeof FocusRoute
+  '/papers': typeof PapersRoute
   '/pricing': typeof PricingRoute
   '/pyq': typeof PyqRoute
   '/videos': typeof VideosRoute
@@ -147,6 +156,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/focus'
+    | '/papers'
     | '/pricing'
     | '/pyq'
     | '/videos'
@@ -162,6 +172,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/focus'
+    | '/papers'
     | '/pricing'
     | '/pyq'
     | '/videos'
@@ -178,6 +189,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/focus'
+    | '/papers'
     | '/pricing'
     | '/pyq'
     | '/videos'
@@ -195,6 +207,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   FocusRoute: typeof FocusRoute
+  PapersRoute: typeof PapersRoute
   PricingRoute: typeof PricingRoute
   PyqRoute: typeof PyqRoute
   VideosRoute: typeof VideosRoute
@@ -233,6 +246,13 @@ declare module '@tanstack/react-router' {
       path: '/focus'
       fullPath: '/focus'
       preLoaderRoute: typeof FocusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/papers': {
+      id: '/papers'
+      path: '/papers'
+      fullPath: '/papers'
+      preLoaderRoute: typeof PapersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pricing': {
@@ -326,6 +346,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   FocusRoute: FocusRoute,
+  PapersRoute: PapersRoute,
   PricingRoute: PricingRoute,
   PyqRoute: PyqRoute,
   VideosRoute: VideosRoute,

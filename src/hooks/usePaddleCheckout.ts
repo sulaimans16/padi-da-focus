@@ -8,8 +8,8 @@ export function usePaddleCheckout() {
   const openCheckout = async (options: {
     priceId: string;
     userId: string;
-    customerEmail?: string;
-    successUrl?: string;
+    customerEmail?: string | undefined;
+    successUrl?: string | undefined;
   }) => {
     setLoadingPrice(options.priceId);
     setError(null);

@@ -13,6 +13,7 @@ export const resolvePaddlePrice = createServerFn({ method: "GET" })
       throw new Error(`Could not load the plan price [${response.status}]: ${body}`);
     }
     const result = (await response.json()) as { data?: Array<{ id: string }> };
-    if (!result.data?.length) throw new Error("Price not found");
-    return result.data[0].id;
+    const first = result.data?.[0];
+    if (!first) throw new Error("Price not found");
+    return first.id;
   });

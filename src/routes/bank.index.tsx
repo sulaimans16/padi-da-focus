@@ -114,6 +114,20 @@ function BankIndex() {
         </div>
       </section>
 
+      <p className="mt-4 text-xs text-muted-foreground">
+        Bank includes questions from the open-source{" "}
+        <a
+          href="https://github.com/medmcqa/medmcqa"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline underline-offset-2"
+        >
+          MedMCQA
+        </a>{" "}
+        dataset (AIIMS &amp; NEET-PG entrance MCQs with explanations, MIT licensed).
+      </p>
+
+
       <div className="mt-6">
         <button
           onClick={() => setShowForm((v) => !v)}

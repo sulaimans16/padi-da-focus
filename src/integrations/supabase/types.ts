@@ -164,6 +164,7 @@ export type Database = {
           explanation: string
           high_yield: string
           id: string
+          image_url: string | null
           is_pyq: boolean
           one_liner: string
           options: Json
@@ -182,6 +183,7 @@ export type Database = {
           explanation: string
           high_yield?: string
           id?: string
+          image_url?: string | null
           is_pyq?: boolean
           one_liner: string
           options: Json
@@ -200,6 +202,7 @@ export type Database = {
           explanation?: string
           high_yield?: string
           id?: string
+          image_url?: string | null
           is_pyq?: boolean
           one_liner?: string
           options?: Json

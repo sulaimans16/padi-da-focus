@@ -5,7 +5,7 @@ import { GeneratePyqs } from "@/components/GeneratePyqs";
 import { ProGate } from "@/components/ProGate";
 import { Pagination, usePagination } from "@/components/Pagination";
 
-import { fetchRemoteQuestions } from "@/lib/remote-questions";
+import { fetchRemotePyqs } from "@/lib/remote-questions";
 import { allQuestions, type Question } from "@/lib/questions";
 
 export const Route = createFileRoute("/pyq")({
@@ -36,7 +36,7 @@ function PyqPage() {
   const load = useCallback(async () => {
     const local = allQuestions().filter((q) => q.isPyq);
     try {
-      const remote = await fetchRemoteQuestions();
+      const remote = await fetchRemotePyqs();
       setPyqs([...remote.filter((q) => q.isPyq), ...local]);
     } catch {
       setPyqs(local);

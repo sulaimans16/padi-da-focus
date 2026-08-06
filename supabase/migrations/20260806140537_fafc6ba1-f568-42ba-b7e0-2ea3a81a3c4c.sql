@@ -1,0 +1,1 @@
+ALTER TABLE public.subscriptions ALTER COLUMN environment SET DEFAULT 'live';

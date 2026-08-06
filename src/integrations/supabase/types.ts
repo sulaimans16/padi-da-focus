@@ -220,9 +220,13 @@ export type Database = {
           amount_inr: number
           created_at: string
           current_period_end: string
+          environment: string
           id: string
           note: string
+          paddle_customer_id: string | null
+          paddle_transaction_id: string | null
           plan: string
+          price_id: string | null
           status: string
           updated_at: string
           user_id: string
@@ -231,9 +235,13 @@ export type Database = {
           amount_inr?: number
           created_at?: string
           current_period_end: string
+          environment?: string
           id?: string
           note?: string
+          paddle_customer_id?: string | null
+          paddle_transaction_id?: string | null
           plan?: string
+          price_id?: string | null
           status?: string
           updated_at?: string
           user_id: string
@@ -242,9 +250,13 @@ export type Database = {
           amount_inr?: number
           created_at?: string
           current_period_end?: string
+          environment?: string
           id?: string
           note?: string
+          paddle_customer_id?: string | null
+          paddle_transaction_id?: string | null
           plan?: string
+          price_id?: string | null
           status?: string
           updated_at?: string
           user_id?: string

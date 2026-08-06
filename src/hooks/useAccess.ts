@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { getPaddleEnvironment } from "@/lib/paddle";
 
 export type Subscription = {
   id: string;
@@ -42,6 +43,7 @@ export function useAccess(): AccessState {
         .select("id, plan, status, amount_inr, current_period_end")
         .eq("user_id", userId)
         .eq("status", "active")
+        .eq("environment", getPaddleEnvironment())
         .gt("current_period_end", new Date().toISOString())
         .order("current_period_end", { ascending: false })
         .limit(1),

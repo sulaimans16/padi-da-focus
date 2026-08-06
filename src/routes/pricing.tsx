@@ -1,5 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { useAccess } from "@/hooks/useAccess";
+import { useAuth } from "@/hooks/useAuth";
+import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
+import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 
 export const Route = createFileRoute("/pricing")({
   head: () => ({
@@ -25,6 +29,7 @@ export const Route = createFileRoute("/pricing")({
 const PLANS = [
   {
     id: "quarterly",
+    priceId: "padida_pro_quarterly",
     name: "3 months",
     price: "₹50",
     per: "≈ ₹17 / month",
@@ -32,6 +37,7 @@ const PLANS = [
   },
   {
     id: "yearly",
+    priceId: "padida_pro_yearly",
     name: "1 year",
     price: "₹100",
     per: "≈ ₹8 / month",
@@ -58,15 +64,33 @@ const FREE_FEATURES = [
 ];
 
 function Pricing() {
-  const { isPro, isAdmin, subscription, signedIn } = useAccess();
+  const { isPro, isAdmin, subscription, signedIn, refresh } = useAccess();
+  const { user } = useAuth();
+  const { openCheckout, loadingPrice, error } = usePaddleCheckout();
+
+  // Coming back from a completed checkout: poll briefly so the new plan shows
+  // up as soon as the payment is recorded.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!new URLSearchParams(window.location.search).has("checkout")) return;
+    let tries = 0;
+    const timer = window.setInterval(() => {
+      tries += 1;
+      void refresh();
+      if (tries >= 6) window.clearInterval(timer);
+    }, 2500);
+    return () => window.clearInterval(timer);
+  }, [refresh]);
 
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-8">
-      <h1 className="text-3xl font-extrabold tracking-tight">PadiDa Pro</h1>
+      <PaymentTestModeBanner />
+      <h1 className="mt-4 text-3xl font-extrabold tracking-tight">PadiDa Pro</h1>
       <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
         Everything you study stays free. The AI tools — doubt solving and question generation —
         cost real money to run, so they sit behind a small subscription.
       </p>
+
 
       {isPro ? (
         <div className="card-surface mt-5 p-4">
@@ -93,13 +117,21 @@ function Pricing() {
             <p className="mt-2 text-4xl font-extrabold tracking-tight">{plan.price}</p>
             <p className="text-xs text-muted-foreground">{plan.per}</p>
             <p className="mt-3 text-sm">{plan.blurb}</p>
-            {signedIn ? (
-              <a
-                href="mailto:sulaiman@padida.app?subject=PadiDa%20Pro%20activation"
+            {signedIn && user ? (
+              <button
+                type="button"
+                disabled={loadingPrice !== null}
+                onClick={() =>
+                  void openCheckout({
+                    priceId: plan.priceId,
+                    userId: user.id,
+                    customerEmail: user.email ?? undefined,
+                  })
+                }
                 className={`btn-base mt-4 h-10 w-full justify-center text-sm ${plan.featured ? "btn-primary" : "btn-ghost"}`}
               >
-                Get {plan.name}
-              </a>
+                {loadingPrice === plan.priceId ? "Opening checkout…" : `Get ${plan.name}`}
+              </button>
             ) : (
               <Link
                 to="/auth"
@@ -112,10 +144,13 @@ function Pricing() {
         ))}
       </div>
 
+      {error ? <p className="mt-3 text-xs font-semibold text-destructive">{error}</p> : null}
+
       <p className="mt-3 text-xs text-muted-foreground">
-        Payments are handled manually for now: pay ₹50 or ₹100 over UPI, message us with the
-        account email, and Pro is switched on the same day. Automated checkout is coming next.
+        Secure card and wallet checkout — Pro switches on automatically the moment your payment
+        goes through. One-time payment, no auto-renewal.
       </p>
+
 
       <div className="mt-8 grid gap-4 md:grid-cols-2">
         <section className="card-surface p-5">

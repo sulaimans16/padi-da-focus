@@ -29,6 +29,7 @@ export const Route = createFileRoute("/pricing")({
 const PLANS = [
   {
     id: "quarterly",
+    priceId: "padida_pro_quarterly",
     name: "3 months",
     price: "₹50",
     per: "≈ ₹17 / month",
@@ -36,6 +37,7 @@ const PLANS = [
   },
   {
     id: "yearly",
+    priceId: "padida_pro_yearly",
     name: "1 year",
     price: "₹100",
     per: "≈ ₹8 / month",

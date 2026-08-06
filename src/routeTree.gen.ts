@@ -24,6 +24,7 @@ import { Route as BankSubjectRouteImport } from './routes/bank.$subject'
 import { Route as BankFillRouteImport } from './routes/bank.fill'
 import { Route as LearnIndexRouteImport } from './routes/learn.index'
 import { Route as LearnSubjectRouteImport } from './routes/learn.$subject'
+import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -99,6 +100,12 @@ const LearnSubjectRoute = LearnSubjectRouteImport.update({
   path: '/learn/$subject',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicPaymentsWebhookRoute =
+  ApiPublicPaymentsWebhookRouteImport.update({
+    id: '/api/public/payments/webhook',
+    path: '/api/public/payments/webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -115,6 +122,7 @@ export interface FileRoutesByFullPath {
   '/learn/$subject': typeof LearnSubjectRoute
   '/bank/': typeof BankIndexRoute
   '/learn/': typeof LearnIndexRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -131,6 +139,7 @@ export interface FileRoutesByTo {
   '/learn/$subject': typeof LearnSubjectRoute
   '/bank': typeof BankIndexRoute
   '/learn': typeof LearnIndexRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -149,6 +158,7 @@ export interface FileRoutesById {
   '/learn/$subject': typeof LearnSubjectRoute
   '/bank/': typeof BankIndexRoute
   '/learn/': typeof LearnIndexRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -167,6 +177,7 @@ export interface FileRouteTypes {
     | '/learn/$subject'
     | '/bank/'
     | '/learn/'
+    | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -183,6 +194,7 @@ export interface FileRouteTypes {
     | '/learn/$subject'
     | '/bank'
     | '/learn'
+    | '/api/public/payments/webhook'
   id:
     | '__root__'
     | '/'
@@ -200,6 +212,7 @@ export interface FileRouteTypes {
     | '/learn/$subject'
     | '/bank/'
     | '/learn/'
+    | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -216,6 +229,7 @@ export interface RootRouteChildren {
   LearnSubjectRoute: typeof LearnSubjectRoute
   BankIndexRoute: typeof BankIndexRoute
   LearnIndexRoute: typeof LearnIndexRoute
+  ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -325,6 +339,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LearnSubjectRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/payments/webhook': {
+      id: '/api/public/payments/webhook'
+      path: '/api/public/payments/webhook'
+      fullPath: '/api/public/payments/webhook'
+      preLoaderRoute: typeof ApiPublicPaymentsWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -355,17 +376,8 @@ const rootRouteChildren: RootRouteChildren = {
   LearnSubjectRoute: LearnSubjectRoute,
   BankIndexRoute: BankIndexRoute,
   LearnIndexRoute: LearnIndexRoute,
+  ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

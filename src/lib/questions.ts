@@ -16,6 +16,7 @@ export type Question = {
   pyqYear?: number;
   repeatCount?: number;
   source?: string;
+  imageUrl?: string;
   createdBy?: string;
 };
 

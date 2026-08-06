@@ -66,7 +66,12 @@ function PapersPage() {
       if (!q.pyqYear) return;
       byYear.set(q.pyqYear, [...(byYear.get(q.pyqYear) ?? []), q]);
     });
-    return Array.from(byYear.entries()).sort((a, b) => b[0] - a[0]);
+    return Array.from(byYear.entries())
+      .map(([year, qs]) => [
+        year,
+        [...qs].sort((a, b) => a.subject.localeCompare(b.subject) || a.topic.localeCompare(b.topic)),
+      ] as [number, Question[]])
+      .sort((a, b) => b[0] - a[0]);
   }, [pool]);
 
   const paperTitle = (year: number) =>

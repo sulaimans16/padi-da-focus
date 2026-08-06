@@ -117,13 +117,21 @@ function Pricing() {
             <p className="mt-2 text-4xl font-extrabold tracking-tight">{plan.price}</p>
             <p className="text-xs text-muted-foreground">{plan.per}</p>
             <p className="mt-3 text-sm">{plan.blurb}</p>
-            {signedIn ? (
-              <a
-                href="mailto:sulaiman@padida.app?subject=PadiDa%20Pro%20activation"
+            {signedIn && user ? (
+              <button
+                type="button"
+                disabled={loadingPrice !== null}
+                onClick={() =>
+                  void openCheckout({
+                    priceId: plan.priceId,
+                    userId: user.id,
+                    customerEmail: user.email ?? undefined,
+                  })
+                }
                 className={`btn-base mt-4 h-10 w-full justify-center text-sm ${plan.featured ? "btn-primary" : "btn-ghost"}`}
               >
-                Get {plan.name}
-              </a>
+                {loadingPrice === plan.priceId ? "Opening checkout…" : `Get ${plan.name}`}
+              </button>
             ) : (
               <Link
                 to="/auth"
@@ -136,10 +144,13 @@ function Pricing() {
         ))}
       </div>
 
+      {error ? <p className="mt-3 text-xs font-semibold text-destructive">{error}</p> : null}
+
       <p className="mt-3 text-xs text-muted-foreground">
-        Payments are handled manually for now: pay ₹50 or ₹100 over UPI, message us with the
-        account email, and Pro is switched on the same day. Automated checkout is coming next.
+        Secure card and wallet checkout — Pro switches on automatically the moment your payment
+        goes through. One-time payment, no auto-renewal.
       </p>
+
 
       <div className="mt-8 grid gap-4 md:grid-cols-2">
         <section className="card-surface p-5">

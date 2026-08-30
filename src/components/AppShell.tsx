@@ -115,14 +115,14 @@ export function AppShell({ children }: { children: ReactNode }) {
           {user ? (
             <Link
               to="/tracker"
-              className="story-link mt-2 inline-block text-xs font-semibold text-primary"
+              className="mt-2 inline-block transition-colors duration-300 ease-out hover:text-accent text-xs font-semibold text-primary"
             >
               View my analytics →
             </Link>
           ) : (
             <Link
               to="/auth"
-              className="story-link mt-2 inline-block text-xs font-semibold text-primary"
+              className="mt-2 inline-block transition-colors duration-300 ease-out hover:text-accent text-xs font-semibold text-primary"
             >
               Sign in to sync →
             </Link>

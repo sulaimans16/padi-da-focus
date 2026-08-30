@@ -11,14 +11,13 @@ function apply(theme: Theme) {
 }
 
 export function useTheme() {
-  const [theme, setTheme] = useState<Theme>("light");
+  const [theme, setTheme] = useState<Theme>("dark");
 
   useEffect(() => {
-    let initial: Theme = "light";
+    let initial: Theme = "dark";
     try {
       const stored = localStorage.getItem(KEY) as Theme | null;
       if (stored === "light" || stored === "dark") initial = stored;
-      else if (window.matchMedia("(prefers-color-scheme: dark)").matches) initial = "dark";
     } catch {
       /* ignore */
     }

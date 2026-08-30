@@ -5,7 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * PadiDa design system — clinical, light-first Material-3 style prep console.
+ * PadiDa design system — cinematic, dark-first prep console.
+ * Deep slate canvas, indigo primary, emerald signal. Glassmorphic surfaces.
  * All colors are semantic tokens. Never hardcode colors in components.
  */
 
@@ -13,10 +14,10 @@
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --font-display: "Plus Jakarta Sans", system-ui, sans-serif;
-  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+  --radius-xl: calc(var(--radius) + 6px);
+  --radius-2xl: calc(var(--radius) + 14px);
+  --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
+  --font-sans: "Inter", system-ui, sans-serif;
   --font-serif: "Source Serif 4", Georgia, serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
   --color-background: var(--background);
@@ -46,69 +47,93 @@
   --color-surface-2: var(--surface-2);
   --color-surface-3: var(--surface-3);
   --color-tint: var(--tint);
+  --color-glass-line: var(--glass-line);
 }
 
+.dark,
 :root {
-  --radius: 0.625rem;
-  /* Clinical light theme */
-  --background: oklch(0.976 0.004 230);
-  --foreground: oklch(0.24 0.028 235);
-  --surface: oklch(1 0 0);
-  --surface-2: oklch(0.955 0.007 230);
-  --surface-3: oklch(0.925 0.011 230);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.24 0.028 235);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.24 0.028 235);
-  --primary: oklch(0.51 0.107 234);
-  --primary-foreground: oklch(1 0 0);
-  --tint: oklch(0.94 0.024 232);
-  --secondary: oklch(0.955 0.007 230);
-  --secondary-foreground: oklch(0.3 0.03 235);
-  --muted: oklch(0.955 0.007 230);
-  --muted-foreground: oklch(0.52 0.023 235);
-  --accent: oklch(0.7 0.14 232);
-  --accent-foreground: oklch(1 0 0);
-  --destructive: oklch(0.55 0.208 27);
-  --destructive-foreground: oklch(1 0 0);
-  --success: oklch(0.55 0.11 165);
-  --success-foreground: oklch(1 0 0);
-  --warning: oklch(0.7 0.13 75);
-  --warning-foreground: oklch(0.24 0.028 235);
-  --border: oklch(0.89 0.011 232);
-  --input: oklch(0.87 0.013 232);
-  --ring: oklch(0.51 0.107 234);
+  --radius: 0.75rem;
+  /* Cinematic deep slate #0A0F1D */
+  --background: oklch(0.155 0.027 265);
+  --foreground: oklch(0.968 0.008 265);
+  --surface: oklch(0.205 0.026 265);
+  --surface-2: oklch(0.248 0.026 265);
+  --surface-3: oklch(0.295 0.026 265);
+  --card: oklch(0.205 0.026 265);
+  --card-foreground: oklch(0.968 0.008 265);
+  --popover: oklch(0.19 0.026 265);
+  --popover-foreground: oklch(0.968 0.008 265);
+  --primary: oklch(0.68 0.17 272);
+  --primary-foreground: oklch(0.15 0.027 265);
+  --tint: oklch(0.3 0.062 272);
+  --secondary: oklch(0.248 0.026 265);
+  --secondary-foreground: oklch(0.94 0.01 265);
+  --muted: oklch(0.248 0.026 265);
+  --muted-foreground: oklch(0.71 0.02 265);
+  --accent: oklch(0.78 0.15 165);
+  --accent-foreground: oklch(0.15 0.027 265);
+  --destructive: oklch(0.67 0.19 22);
+  --destructive-foreground: oklch(0.15 0.027 265);
+  --success: oklch(0.78 0.15 165);
+  --success-foreground: oklch(0.15 0.027 265);
+  --warning: oklch(0.83 0.14 82);
+  --warning-foreground: oklch(0.16 0.027 265);
+  --border: oklch(0.315 0.024 265);
+  --input: oklch(0.34 0.026 265);
+  --ring: oklch(0.68 0.17 272);
+  --glass-line: color-mix(in oklab, white 12%, transparent);
+  --glass-fill: color-mix(in oklab, white 5%, transparent);
+  --shadow-float: 0 24px 60px -24px oklch(0.08 0.03 265 / 0.8);
+  --glow-primary: 0 0 0 1px color-mix(in oklab, var(--primary) 32%, transparent),
+    0 18px 46px -18px color-mix(in oklab, var(--primary) 55%, transparent);
+  --glow-accent: 0 18px 46px -18px color-mix(in oklab, var(--accent) 50%, transparent);
+  --gradient-hero: radial-gradient(
+      120% 90% at 12% -10%,
+      color-mix(in oklab, var(--primary) 30%, transparent),
+      transparent 60%
+    ),
+    radial-gradient(
+      100% 80% at 100% 0%,
+      color-mix(in oklab, var(--accent) 18%, transparent),
+      transparent 55%
+    );
 }
 
-.dark {
-  /* Clinical dark theme — same hues, inverted surfaces */
-  --background: oklch(0.19 0.019 240);
-  --foreground: oklch(0.955 0.008 230);
-  --surface: oklch(0.235 0.021 240);
-  --surface-2: oklch(0.28 0.023 240);
-  --surface-3: oklch(0.33 0.025 240);
-  --card: oklch(0.235 0.021 240);
-  --card-foreground: oklch(0.955 0.008 230);
-  --popover: oklch(0.235 0.021 240);
-  --popover-foreground: oklch(0.955 0.008 230);
-  --primary: oklch(0.7 0.12 234);
-  --primary-foreground: oklch(0.17 0.02 240);
-  --tint: oklch(0.31 0.045 236);
-  --secondary: oklch(0.28 0.023 240);
-  --secondary-foreground: oklch(0.93 0.01 230);
-  --muted: oklch(0.28 0.023 240);
-  --muted-foreground: oklch(0.71 0.018 235);
-  --accent: oklch(0.74 0.13 232);
-  --accent-foreground: oklch(0.17 0.02 240);
-  --destructive: oklch(0.66 0.19 27);
-  --destructive-foreground: oklch(0.17 0.02 240);
-  --success: oklch(0.7 0.12 165);
-  --success-foreground: oklch(0.17 0.02 240);
-  --warning: oklch(0.79 0.13 78);
-  --warning-foreground: oklch(0.19 0.019 240);
-  --border: oklch(0.33 0.022 240);
-  --input: oklch(0.36 0.024 240);
-  --ring: oklch(0.7 0.12 234);
+html:not(.dark) {
+  /* Light counterpart — same language, lifted canvas */
+  --background: oklch(0.982 0.004 265);
+  --foreground: oklch(0.23 0.03 265);
+  --surface: oklch(1 0 0);
+  --surface-2: oklch(0.958 0.006 265);
+  --surface-3: oklch(0.925 0.01 265);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.23 0.03 265);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.23 0.03 265);
+  --primary: oklch(0.52 0.2 272);
+  --primary-foreground: oklch(1 0 0);
+  --tint: oklch(0.94 0.03 272);
+  --secondary: oklch(0.958 0.006 265);
+  --secondary-foreground: oklch(0.3 0.03 265);
+  --muted: oklch(0.958 0.006 265);
+  --muted-foreground: oklch(0.5 0.025 265);
+  --accent: oklch(0.6 0.12 165);
+  --accent-foreground: oklch(1 0 0);
+  --destructive: oklch(0.55 0.21 25);
+  --destructive-foreground: oklch(1 0 0);
+  --success: oklch(0.56 0.12 165);
+  --success-foreground: oklch(1 0 0);
+  --warning: oklch(0.68 0.13 78);
+  --warning-foreground: oklch(0.23 0.03 265);
+  --border: oklch(0.9 0.008 265);
+  --input: oklch(0.87 0.01 265);
+  --ring: oklch(0.52 0.2 272);
+  --glass-line: color-mix(in oklab, oklch(0.23 0.03 265) 10%, transparent);
+  --glass-fill: color-mix(in oklab, white 65%, transparent);
+  --shadow-float: 0 22px 50px -26px oklch(0.23 0.03 265 / 0.28);
+  --glow-primary: 0 0 0 1px color-mix(in oklab, var(--primary) 20%, transparent),
+    0 18px 40px -20px color-mix(in oklab, var(--primary) 40%, transparent);
+  --glow-accent: 0 18px 40px -20px color-mix(in oklab, var(--accent) 35%, transparent);
 }
 
 @layer base {
@@ -117,11 +142,11 @@
   }
 
   html {
-    color-scheme: light;
+    color-scheme: dark;
   }
 
-  html.dark {
-    color-scheme: dark;
+  html:not(.dark) {
+    color-scheme: light;
   }
 
   body {
@@ -129,6 +154,9 @@
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    background-image: var(--gradient-hero);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
   }
 
   h1,
@@ -136,109 +164,181 @@
   h3,
   h4 {
     font-family: var(--font-display);
-    letter-spacing: -0.015em;
+    letter-spacing: -0.02em;
     font-weight: 700;
+  }
+
+  ::selection {
+    background-color: color-mix(in oklab, var(--color-primary) 35%, transparent);
   }
 }
 
+/* ---------- surfaces ---------- */
+
 @utility card-surface {
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
+  background-color: color-mix(in oklab, var(--color-surface) 82%, transparent);
+  border: 1px solid var(--color-glass-line);
+  border-radius: var(--radius-2xl);
+  backdrop-filter: blur(16px) saturate(140%);
+  box-shadow: var(--shadow-float);
 }
 
-/* Card with a tinted header strip, like the clinical dashboard modules */
+@utility glass {
+  background: var(--glass-fill);
+  border: 1px solid var(--color-glass-line);
+  border-radius: var(--radius-2xl);
+  backdrop-filter: blur(18px) saturate(150%);
+}
+
+@utility glass-bar {
+  background: color-mix(in oklab, var(--color-background) 72%, transparent);
+  border-color: var(--color-glass-line);
+  backdrop-filter: blur(20px) saturate(140%);
+}
+
 @utility card-head {
-  background-color: color-mix(in oklab, var(--color-surface-2) 70%, transparent);
-  border-bottom: 1px solid var(--color-border);
-  padding: 0.75rem 1.25rem;
+  background-color: color-mix(in oklab, var(--color-surface-2) 45%, transparent);
+  border-bottom: 1px solid var(--color-glass-line);
+  padding: 0.85rem 1.25rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
 }
 
+@utility hover-lift {
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  &:hover {
+    transform: translateY(-3px) scale(1.01);
+    border-color: color-mix(in oklab, var(--color-primary) 40%, var(--color-glass-line));
+    box-shadow: var(--glow-primary);
+  }
+}
+
+@utility glow-ring {
+  box-shadow: var(--glow-primary);
+}
+
+@utility text-gradient {
+  background-image: linear-gradient(
+    100deg,
+    var(--color-foreground),
+    color-mix(in oklab, var(--color-primary) 78%, white)
+  );
+  background-clip: text;
+  color: transparent;
+}
+
+/* ---------- typography bits ---------- */
+
 @utility label-eyebrow {
   font-size: 0.6875rem;
   font-weight: 700;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-muted-foreground);
+  font-family: var(--font-display);
 }
 
 @utility clinical-text {
   font-family: var(--font-serif);
   font-size: 1.0625rem;
-  line-height: 1.6;
+  line-height: 1.7;
 }
+
+/* ---------- controls ---------- */
 
 @utility btn-base {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  border-radius: var(--radius-md);
-  font-weight: 700;
+  border-radius: 999px;
+  font-weight: 600;
   font-size: 0.9rem;
-  padding: 0.65rem 1.1rem;
-  transition:
-    background-color 0.15s ease,
-    opacity 0.15s ease,
-    transform 0.1s ease;
+  padding: 0.6rem 1.15rem;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  &:hover {
+    transform: translateY(-1px);
+  }
+  &:active {
+    transform: translateY(0) scale(0.97);
+  }
+  &:focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+  }
 }
 
 @utility btn-primary {
-  background-color: var(--color-primary);
+  background-image: linear-gradient(
+    120deg,
+    var(--color-primary),
+    color-mix(in oklab, var(--color-primary) 60%, var(--color-accent))
+  );
   color: var(--color-primary-foreground);
   &:hover {
-    background-color: color-mix(in oklab, var(--color-primary) 88%, black);
+    box-shadow: var(--glow-primary);
+    filter: saturate(120%);
   }
 }
 
 @utility btn-ghost {
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
+  background: var(--glass-fill);
+  border: 1px solid var(--color-glass-line);
   color: var(--color-foreground);
+  backdrop-filter: blur(12px);
   &:hover {
-    background-color: var(--color-surface-2);
+    background-color: color-mix(in oklab, var(--color-surface-2) 70%, transparent);
+    border-color: color-mix(in oklab, var(--color-primary) 35%, var(--color-glass-line));
   }
 }
 
 @utility chip {
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.3rem;
   border-radius: 999px;
-  background-color: var(--color-surface-2);
+  background-color: color-mix(in oklab, var(--color-surface-2) 65%, transparent);
+  border: 1px solid var(--color-glass-line);
   color: var(--color-muted-foreground);
-  padding: 0.2rem 0.6rem;
+  padding: 0.2rem 0.65rem;
   font-size: 0.6875rem;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
+  transition: all 0.25s ease-out;
 }
 
 @utility nav-item {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 0.75rem;
   border-radius: 999px;
   padding: 0.6rem 1rem;
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--color-muted-foreground);
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
   &:hover {
-    background-color: var(--color-surface-2);
+    background-color: color-mix(in oklab, var(--color-surface-2) 70%, transparent);
     color: var(--color-foreground);
+    transform: translateX(2px);
   }
 }
 
 @utility nav-item-active {
-  background-color: var(--color-tint);
-  color: var(--color-primary);
+  background-image: linear-gradient(
+    100deg,
+    color-mix(in oklab, var(--color-primary) 26%, transparent),
+    transparent
+  );
+  border: 1px solid color-mix(in oklab, var(--color-primary) 30%, transparent);
+  color: color-mix(in oklab, var(--color-primary) 88%, var(--color-foreground));
   &:hover {
-    background-color: var(--color-tint);
-    color: var(--color-primary);
+    color: color-mix(in oklab, var(--color-primary) 88%, var(--color-foreground));
+    transform: none;
   }
 }
 
@@ -249,6 +349,36 @@
     "GRAD" 0,
     "opsz" 24;
   line-height: 1;
+}
+
+/* ---------- motion ---------- */
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@utility animate-rise {
+  animation: rise-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes shimmer-sweep {
+  from {
+    transform: translateX(-120%);
+  }
+  to {
+    transform: translateX(220%);
+  }
+}
+
+@utility animate-shimmer {
+  animation: shimmer-sweep 2.4s ease-in-out infinite;
 }
 
 @keyframes shake-hard {
@@ -272,4 +402,13 @@
 
 @utility animate-nag {
   animation: shake-hard 0.5s ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

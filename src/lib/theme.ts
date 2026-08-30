@@ -18,7 +18,6 @@ export function useTheme() {
     try {
       const stored = localStorage.getItem(KEY) as Theme | null;
       if (stored === "light" || stored === "dark") initial = stored;
-      else if (window.matchMedia("(prefers-color-scheme: light)").matches) initial = "light";
     } catch {
       /* ignore */
     }

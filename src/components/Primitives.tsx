@@ -20,14 +20,14 @@ export function Pill({
 }: {
   children: ReactNode;
   variant?: "primary" | "ghost";
-} & React.ButtonHTMLAttributes<HTMLButtonElement>) {
+} & Omit<React.ComponentProps<typeof motion.button>, "children">) {
   return (
     <motion.button
       whileHover={{ y: -1, scale: 1.02 }}
       whileTap={{ scale: 0.96 }}
       transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
       className={cn("btn-base", variant === "primary" ? "btn-primary" : "btn-ghost", className)}
-      {...(rest as React.ComponentProps<typeof motion.button>)}
+      {...rest}
     >
       {children}
     </motion.button>

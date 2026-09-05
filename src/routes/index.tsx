@@ -40,6 +40,18 @@ const MODULES = [
   },
   { label: "Question Bank", icon: "quiz", note: "Subject → topic drills", to: "/bank" as const },
   {
+    label: "Mock Tests",
+    icon: "timer",
+    note: "Timed, exam-clock papers",
+    to: "/mock" as const,
+  },
+  {
+    label: "Daily Challenge",
+    icon: "bolt",
+    note: "10 questions, keep the streak",
+    to: "/daily" as const,
+  },
+  {
     label: "PYQ Vault",
     icon: "history_edu",
     note: "Tagged by year & repeats",

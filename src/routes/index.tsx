@@ -71,8 +71,6 @@ const MODULES = [
     note: "Web-researched Qs",
     to: "/bank/fill" as const,
   },
-  { label: "Mock Tests", icon: "timer", note: "200 Q · 3h30m · NBE" },
-  { label: "Rapid Quiz", icon: "bolt", note: "Rapid-fire, 5–15 Q" },
   { label: "Flashcards", icon: "style", note: "Spaced repetition" },
   { label: "Cheatsheets", icon: "sticky_note_2", note: "High-yield one-pagers" },
 ];

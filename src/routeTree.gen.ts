@@ -12,7 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as DailyRouteImport } from './routes/daily'
 import { Route as FocusRouteImport } from './routes/focus'
+import { Route as MockRouteImport } from './routes/mock'
 import { Route as PapersRouteImport } from './routes/papers'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PyqRouteImport } from './routes/pyq'
@@ -40,9 +42,19 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DailyRoute = DailyRouteImport.update({
+  id: '/daily',
+  path: '/daily',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FocusRoute = FocusRouteImport.update({
   id: '/focus',
   path: '/focus',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MockRoute = MockRouteImport.update({
+  id: '/mock',
+  path: '/mock',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PapersRoute = PapersRouteImport.update({
@@ -110,7 +122,9 @@ const ApiPublicPaymentsWebhookRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/daily': typeof DailyRoute
   '/focus': typeof FocusRoute
+  '/mock': typeof MockRoute
   '/papers': typeof PapersRoute
   '/pricing': typeof PricingRoute
   '/pyq': typeof PyqRoute
@@ -127,7 +141,9 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/daily': typeof DailyRoute
   '/focus': typeof FocusRoute
+  '/mock': typeof MockRoute
   '/papers': typeof PapersRoute
   '/pricing': typeof PricingRoute
   '/pyq': typeof PyqRoute
@@ -146,7 +162,9 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/daily': typeof DailyRoute
   '/focus': typeof FocusRoute
+  '/mock': typeof MockRoute
   '/papers': typeof PapersRoute
   '/pricing': typeof PricingRoute
   '/pyq': typeof PyqRoute
@@ -165,7 +183,9 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/daily'
     | '/focus'
+    | '/mock'
     | '/papers'
     | '/pricing'
     | '/pyq'
@@ -182,7 +202,9 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/daily'
     | '/focus'
+    | '/mock'
     | '/papers'
     | '/pricing'
     | '/pyq'
@@ -200,7 +222,9 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/daily'
     | '/focus'
+    | '/mock'
     | '/papers'
     | '/pricing'
     | '/pyq'
@@ -219,7 +243,9 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  DailyRoute: typeof DailyRoute
   FocusRoute: typeof FocusRoute
+  MockRoute: typeof MockRoute
   PapersRoute: typeof PapersRoute
   PricingRoute: typeof PricingRoute
   PyqRoute: typeof PyqRoute
@@ -255,11 +281,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/daily': {
+      id: '/daily'
+      path: '/daily'
+      fullPath: '/daily'
+      preLoaderRoute: typeof DailyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/focus': {
       id: '/focus'
       path: '/focus'
       fullPath: '/focus'
       preLoaderRoute: typeof FocusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mock': {
+      id: '/mock'
+      path: '/mock'
+      fullPath: '/mock'
+      preLoaderRoute: typeof MockRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/papers': {
@@ -366,7 +406,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  DailyRoute: DailyRoute,
   FocusRoute: FocusRoute,
+  MockRoute: MockRoute,
   PapersRoute: PapersRoute,
   PricingRoute: PricingRoute,
   PyqRoute: PyqRoute,

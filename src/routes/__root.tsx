@@ -7,10 +7,12 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 
 import { LockGuard } from "@/components/LockGuard";
 import { AppShell } from "@/components/AppShell";
+import { Splash } from "@/components/Splash";
+import { supabase } from "@/integrations/supabase/client";
 
 
 import appCss from "../styles.css?url";
@@ -130,11 +132,37 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+const SPLASH_KEY = "padida.splashed";
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+  const [splashDone, setSplashDone] = useState(() => {
+    try {
+      return sessionStorage.getItem(SPLASH_KEY) === "1";
+    } catch {
+      return true;
+    }
+  });
+
+  const finishSplash = useCallback(() => {
+    setSplashDone(true);
+    try {
+      sessionStorage.setItem(SPLASH_KEY, "1");
+    } catch {
+      /* ignore */
+    }
+    // New visitors land on the fluid sign-in page; signed-in users stay put.
+    void supabase.auth.getSession().then(({ data }) => {
+      if (!data.session && window.location.pathname !== "/auth") {
+        void router.navigate({ to: "/auth", replace: true });
+      }
+    });
+  }, [router]);
 
   return (
     <QueryClientProvider client={queryClient}>
+      {!splashDone && <Splash onDone={finishSplash} />}
       <LockGuard />
       <AppShell>
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}

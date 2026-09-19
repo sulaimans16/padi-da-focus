@@ -1,7 +1,14 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
+import { Aurora } from "@/components/Aurora";
+import { Icon } from "@/components/Primitives";
+
+/** Borderless, pill-shaped input — no boxed field outlines. */
+const field =
+  "h-12 w-full rounded-full bg-white/5 px-5 text-sm text-foreground placeholder:text-muted-foreground/70 outline-none ring-1 ring-inset ring-glass-line transition-all duration-300 focus:bg-white/10 focus:ring-primary/50";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({

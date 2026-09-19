@@ -144,7 +144,7 @@ export function GoalCountdown({ className = "" }: { className?: string }) {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="NEET PG attempt, mock #4, revision deadline…"
-              className="mt-1 w-full rounded-lg border border-border bg-surface-2 px-3 py-2 text-sm"
+              className="mt-1.5 h-11 w-full rounded-full bg-white/5 px-4 text-sm outline-none ring-1 ring-inset ring-glass-line transition-all duration-300 focus:bg-white/10 focus:ring-primary/50"
             />
           </div>
           <div>
@@ -156,7 +156,7 @@ export function GoalCountdown({ className = "" }: { className?: string }) {
               type="datetime-local"
               value={when}
               onChange={(e) => setWhen(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-border bg-surface-2 px-3 py-2 text-sm"
+              className="mt-1.5 h-11 w-full rounded-full bg-white/5 px-4 text-sm outline-none ring-1 ring-inset ring-glass-line transition-all duration-300 focus:bg-white/10 focus:ring-primary/50"
             />
           </div>
           <div className="flex flex-wrap gap-2">
@@ -187,7 +187,7 @@ export function GoalCountdown({ className = "" }: { className?: string }) {
       ) : goal ? (
         <div className="grid grid-cols-4 gap-3 p-5">
           {parts.map(([label, value]) => (
-            <div key={label} className="rounded-xl border border-border bg-surface-2 px-2 py-4 text-center">
+            <div key={label} className="rounded-3xl bg-white/5 px-2 py-4 text-center">
               <p className="font-mono text-2xl font-bold tabular-nums text-primary sm:text-3xl">
                 {value === null ? "--" : String(value).padStart(2, "0")}
               </p>

@@ -197,6 +197,13 @@ function AuthPage() {
             >
               {mode === "signin" ? "New here? Create an account" : "Already have an account? Sign in"}
             </button>
+
+            <button
+              onClick={() => void navigate({ to: "/", replace: true })}
+              className="w-full text-center text-xs text-muted-foreground/80 transition-colors duration-300 hover:text-foreground"
+            >
+              Continue as guest →
+            </button>
           </motion.div>
         </div>
       </main>

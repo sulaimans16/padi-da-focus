@@ -104,7 +104,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <Icon name="stethoscope" className="text-[20px]" />
           </span>
           <span className="text-base font-bold tracking-tight">
-            PG<span className="text-primary">Prep</span>
+            PG <span className="text-primary">Prep</span>
           </span>
         </Link>
 
@@ -143,7 +143,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <Icon name="stethoscope" className="text-[18px]" />
           </span>
           <span className="text-sm font-bold">
-            PG<span className="text-primary">Prep</span>
+            PG <span className="text-primary">Prep</span>
           </span>
         </Link>
 

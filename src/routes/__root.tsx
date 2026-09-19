@@ -145,6 +145,17 @@ function RootComponent() {
     }
   });
 
+  // Redirect new visitors to sign-in immediately — behind the splash, so the
+  // dashboard never flashes before the auth page appears.
+  useEffect(() => {
+    if (splashDone) return;
+    void supabase.auth.getSession().then(({ data }) => {
+      if (!data.session && window.location.pathname !== "/auth") {
+        void router.navigate({ to: "/auth", replace: true });
+      }
+    });
+  }, [splashDone, router]);
+
   const finishSplash = useCallback(() => {
     setSplashDone(true);
     try {
@@ -152,13 +163,7 @@ function RootComponent() {
     } catch {
       /* ignore */
     }
-    // New visitors land on the fluid sign-in page; signed-in users stay put.
-    void supabase.auth.getSession().then(({ data }) => {
-      if (!data.session && window.location.pathname !== "/auth") {
-        void router.navigate({ to: "/auth", replace: true });
-      }
-    });
-  }, [router]);
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

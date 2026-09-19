@@ -60,7 +60,7 @@ const PRO_FEATURES = [
 const FREE_FEATURES = [
   "Full Learn modules and concept notes",
   "Every question already in the bank and PYQ vault",
-  "Focus Lock with camera gaze watch",
+  "Focus Lock with tab-switch guard",
   "Analytics, bookmarks and personal countdown",
 ];
 

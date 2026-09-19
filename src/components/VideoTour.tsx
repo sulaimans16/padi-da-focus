@@ -97,7 +97,7 @@ function FocusScreen() {
           </div>
         </motion.div>
         <p className="mt-5 text-xs text-muted-foreground">
-          Leave the tab or look away and the deterrent plays. No snooze, no escape.
+          Leave the tab and the deterrent plays. No snooze, no escape.
         </p>
       </div>
     </div>
@@ -214,7 +214,7 @@ const CHAPTERS: Chapter[] = [
   },
   {
     title: "Focus Lock keeps you honest",
-    caption: "A hard lockout with tab and gaze watching, so the session actually happens.",
+    caption: "A hard lockout with tab-switch guarding, so the session actually happens.",
     seconds: 6,
     screen: FocusScreen,
   },

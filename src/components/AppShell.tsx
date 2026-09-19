@@ -6,6 +6,7 @@ import { useTheme } from "@/lib/theme";
 import { AskAi } from "@/components/AskAi";
 import { UsernamePrompt } from "@/components/UsernamePrompt";
 import { Icon } from "@/components/Primitives";
+import { Aurora } from "@/components/Aurora";
 import { PageTransition } from "@/components/motion/Reveal";
 import { doctorName } from "@/lib/doctor-name";
 import { useAccess } from "@/hooks/useAccess";
@@ -97,8 +98,11 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen">
-      {/* Desktop side navigation */}
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-glass-line px-4 py-5 md:flex glass-bar">
+      <Aurora />
+
+      {/* Desktop side navigation — dissolves into the background, no column rule */}
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col px-4 py-5 md:flex glass-bar">
+
         <Link to="/" className="group flex items-center gap-2.5 px-2">
           <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground transition-all duration-300 ease-out group-hover:scale-105 group-hover:glow-ring">
             <Icon name="stethoscope" className="text-[20px]" />
@@ -137,7 +141,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       </aside>
 
       {/* Top bar */}
-      <header className="fixed inset-x-0 top-0 z-30 flex h-16 items-center gap-3 border-b border-glass-line px-4 glass-bar md:pl-[17rem]">
+      <header className="fixed inset-x-0 top-0 z-30 flex h-16 items-center gap-3 px-4 glass-bar md:pl-[17rem]">
         <Link to="/" className="flex items-center gap-2 md:hidden">
           <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary text-primary-foreground">
             <Icon name="stethoscope" className="text-[18px]" />
@@ -180,7 +184,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       </main>
 
       {/* Mobile bottom navigation */}
-      <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-6 border-t border-glass-line glass-bar md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-6 glass-bar md:hidden">
         {[...PRIMARY.filter((i) => !["/tracker", "/videos", "/papers", "/mock", "/weak-spots"].includes(i.to)), FOCUS_LINK].map(
           (item) => {
             const active =

@@ -50,6 +50,45 @@ export function Splash({ onDone }: { onDone: () => void }) {
         >
           <Aurora intensity="full" />
 
+          {/* Subtle medical layer: ECG trace + drifting crosses */}
+          <svg
+            className="pointer-events-none absolute inset-x-0 top-1/2 z-0 h-40 w-full -translate-y-1/2 opacity-25"
+            viewBox="0 0 1200 160"
+            preserveAspectRatio="none"
+            aria-hidden
+          >
+            <path
+              d="M0 80 H420 l14-26 16 52 14-66 18 76 12-36 h180 l14-26 16 52 14-66 18 76 12-36 h180 l14-26 16 52 14-66 18 76 12-36 H1200"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinejoin="round"
+              strokeLinecap="round"
+              className="text-primary ecg-trace"
+            />
+          </svg>
+          {[
+            { left: "12%", top: "22%", size: 26, delay: "0s" },
+            { left: "82%", top: "18%", size: 18, delay: "1.4s" },
+            { left: "70%", top: "74%", size: 30, delay: "0.7s" },
+            { left: "22%", top: "70%", size: 16, delay: "2.1s" },
+            { left: "50%", top: "12%", size: 14, delay: "2.8s" },
+          ].map((c, i) => (
+            <span
+              key={i}
+              aria-hidden
+              className="med-cross pointer-events-none absolute z-0 text-primary/20"
+              style={{
+                left: c.left,
+                top: c.top,
+                fontSize: c.size,
+                animationDelay: c.delay,
+              }}
+            >
+              +
+            </span>
+          ))}
+
           <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center">
             <motion.h1
               initial={{ opacity: 0, y: 24 }}

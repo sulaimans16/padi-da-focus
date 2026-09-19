@@ -97,7 +97,7 @@ function FocusScreen() {
           </div>
         </motion.div>
         <p className="mt-5 text-xs text-muted-foreground">
-          Leave the tab or look away and the deterrent plays. No snooze, no escape.
+          Leave the tab and the deterrent plays. No snooze, no escape.
         </p>
       </div>
     </div>

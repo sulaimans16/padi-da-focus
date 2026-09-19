@@ -9,6 +9,7 @@ import { fetchRemotePyqs } from "@/lib/remote-questions";
 import { allQuestions, type Question } from "@/lib/questions";
 
 export const Route = createFileRoute("/pyq")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "NEET PG PYQs by Year — PG Prep" },

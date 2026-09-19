@@ -12,6 +12,7 @@ import {
 } from "@/lib/tracker";
 
 export const Route = createFileRoute("/_authenticated/tracker")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "My Tracker — PG Prep NEET PG Progress" },

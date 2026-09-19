@@ -9,6 +9,7 @@ import { useAccess } from "@/hooks/useAccess";
 import { ProGate } from "@/components/ProGate";
 
 export const Route = createFileRoute("/bank/fill")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Fill the Bank — PG Prep NEET PG" },

@@ -11,6 +11,7 @@ import {
 } from "@/lib/videos";
 
 export const Route = createFileRoute("/videos")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Video Modules — Medical Lecture Library | PG Prep" },

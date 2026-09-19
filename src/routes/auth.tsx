@@ -11,6 +11,7 @@ const field =
   "h-12 w-full rounded-full bg-white/5 px-5 text-sm text-foreground placeholder:text-muted-foreground/70 outline-none ring-1 ring-inset ring-glass-line transition-all duration-300 focus:bg-white/10 focus:ring-primary/50";
 
 export const Route = createFileRoute("/auth")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Sign in — PG Prep NEET PG Tracker" },

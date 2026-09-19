@@ -5,6 +5,7 @@ import { allQuestions, type Question } from "@/lib/questions";
 import { buildPaperHtml, downloadHtml, printHtml, slug } from "@/lib/paper-export";
 
 export const Route = createFileRoute("/papers")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Download NEET PG Past Year Papers — PG Prep" },

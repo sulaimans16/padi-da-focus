@@ -11,6 +11,7 @@ import { doctorName } from "@/lib/doctor-name";
 import { formatClock, loadSessionLog, type CompletedSession } from "@/lib/focus-session";
 
 export const Route = createFileRoute("/")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "PG Prep — NEET PG Revision Console" },
@@ -108,14 +109,15 @@ function Index() {
         className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between"
       >
         <div>
-          <p className="label-eyebrow">Preparation console</p>
+          <p className="label-eyebrow">
+            {hello}, {name}
+          </p>
           <h1 className="mt-2 text-4xl leading-[1.05] sm:text-5xl">
-            <span className="text-gradient">
-              {hello}, {name}
-            </span>
+            <span className="text-gradient">NEET PG Revision Console</span>
           </h1>
           <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
-            Lock in, drill the vault, and watch the numbers move. One session at a time.
+            Focus-locked study sprints, a 23,000+ question bank, PYQ vault and accuracy
+            analytics — lock in, drill the vault, and watch the numbers move.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">

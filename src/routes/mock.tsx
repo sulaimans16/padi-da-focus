@@ -8,6 +8,7 @@ import { SUBJECT_HUE, type Question } from "@/lib/questions";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/mock")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Timed Mock Tests — PG Prep" },

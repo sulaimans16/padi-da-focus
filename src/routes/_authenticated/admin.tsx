@@ -5,6 +5,7 @@ import { useAccess } from "@/hooks/useAccess";
 import { grantPlan, listMembers, revokePlan } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/_authenticated/admin")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Admin console — PG Prep" },

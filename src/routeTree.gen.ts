@@ -18,6 +18,7 @@ import { Route as MockRouteImport } from './routes/mock'
 import { Route as PapersRouteImport } from './routes/papers'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PyqRouteImport } from './routes/pyq'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as VideosRouteImport } from './routes/videos'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedTrackerRouteImport } from './routes/_authenticated/tracker'
@@ -71,6 +72,11 @@ const PricingRoute = PricingRouteImport.update({
 const PyqRoute = PyqRouteImport.update({
   id: '/pyq',
   path: '/pyq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const VideosRoute = VideosRouteImport.update({
@@ -134,6 +140,7 @@ export interface FileRoutesByFullPath {
   '/papers': typeof PapersRoute
   '/pricing': typeof PricingRoute
   '/pyq': typeof PyqRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/videos': typeof VideosRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/tracker': typeof AuthenticatedTrackerRoute
@@ -154,6 +161,7 @@ export interface FileRoutesByTo {
   '/papers': typeof PapersRoute
   '/pricing': typeof PricingRoute
   '/pyq': typeof PyqRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/videos': typeof VideosRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/tracker': typeof AuthenticatedTrackerRoute
@@ -176,6 +184,7 @@ export interface FileRoutesById {
   '/papers': typeof PapersRoute
   '/pricing': typeof PricingRoute
   '/pyq': typeof PyqRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/videos': typeof VideosRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/tracker': typeof AuthenticatedTrackerRoute
@@ -198,6 +207,7 @@ export interface FileRouteTypes {
     | '/papers'
     | '/pricing'
     | '/pyq'
+    | '/sitemap.xml'
     | '/videos'
     | '/admin'
     | '/tracker'
@@ -218,6 +228,7 @@ export interface FileRouteTypes {
     | '/papers'
     | '/pricing'
     | '/pyq'
+    | '/sitemap.xml'
     | '/videos'
     | '/admin'
     | '/tracker'
@@ -239,6 +250,7 @@ export interface FileRouteTypes {
     | '/papers'
     | '/pricing'
     | '/pyq'
+    | '/sitemap.xml'
     | '/videos'
     | '/_authenticated/admin'
     | '/_authenticated/tracker'
@@ -261,6 +273,7 @@ export interface RootRouteChildren {
   PapersRoute: typeof PapersRoute
   PricingRoute: typeof PricingRoute
   PyqRoute: typeof PyqRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   VideosRoute: typeof VideosRoute
   BankSubjectRoute: typeof BankSubjectRoute
   BankFillRoute: typeof BankFillRoute
@@ -333,6 +346,13 @@ declare module '@tanstack/react-router' {
       path: '/pyq'
       fullPath: '/pyq'
       preLoaderRoute: typeof PyqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/videos': {
@@ -433,6 +453,7 @@ const rootRouteChildren: RootRouteChildren = {
   PapersRoute: PapersRoute,
   PricingRoute: PricingRoute,
   PyqRoute: PyqRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   VideosRoute: VideosRoute,
   BankSubjectRoute: BankSubjectRoute,
   BankFillRoute: BankFillRoute,

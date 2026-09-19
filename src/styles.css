@@ -5,8 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * PG Prep design system — cinematic, dark-first prep console.
- * Deep slate canvas, indigo primary, emerald signal. Glassmorphic surfaces.
+ * PG Prep design system — fluid ocean, dark-first prep console.
+ * Deep ocean canvas (#0c2340), teal current accents, borderless glass surfaces.
  * All colors are semantic tokens. Never hardcode colors in components.
  */
 
@@ -52,88 +52,88 @@
 
 .dark,
 :root {
-  --radius: 0.75rem;
-  /* Cinematic deep slate #0A0F1D */
-  --background: oklch(0.155 0.027 265);
-  --foreground: oklch(0.968 0.008 265);
-  --surface: oklch(0.205 0.026 265);
-  --surface-2: oklch(0.248 0.026 265);
-  --surface-3: oklch(0.295 0.026 265);
-  --card: oklch(0.205 0.026 265);
-  --card-foreground: oklch(0.968 0.008 265);
-  --popover: oklch(0.19 0.026 265);
-  --popover-foreground: oklch(0.968 0.008 265);
-  --primary: oklch(0.68 0.17 272);
-  --primary-foreground: oklch(0.15 0.027 265);
-  --tint: oklch(0.3 0.062 272);
-  --secondary: oklch(0.248 0.026 265);
-  --secondary-foreground: oklch(0.94 0.01 265);
-  --muted: oklch(0.248 0.026 265);
-  --muted-foreground: oklch(0.71 0.02 265);
-  --accent: oklch(0.78 0.15 165);
-  --accent-foreground: oklch(0.15 0.027 265);
-  --destructive: oklch(0.67 0.19 22);
-  --destructive-foreground: oklch(0.15 0.027 265);
-  --success: oklch(0.78 0.15 165);
-  --success-foreground: oklch(0.15 0.027 265);
-  --warning: oklch(0.83 0.14 82);
-  --warning-foreground: oklch(0.16 0.027 265);
-  --border: oklch(0.315 0.024 265);
-  --input: oklch(0.34 0.026 265);
-  --ring: oklch(0.68 0.17 272);
-  --glass-line: color-mix(in oklab, white 12%, transparent);
+  --radius: 1.25rem;
+  /* Ocean Deep #0c2340 */
+  --background: oklch(0.213 0.056 258);
+  --foreground: oklch(0.972 0.008 220);
+  --surface: oklch(0.268 0.052 253);
+  --surface-2: oklch(0.322 0.05 250);
+  --surface-3: oklch(0.378 0.05 247);
+  --card: oklch(0.268 0.052 253);
+  --card-foreground: oklch(0.972 0.008 220);
+  --popover: oklch(0.248 0.052 255);
+  --popover-foreground: oklch(0.972 0.008 220);
+  /* #5cbdb9 */
+  --primary: oklch(0.754 0.072 187);
+  --primary-foreground: oklch(0.213 0.056 258);
+  --tint: oklch(0.36 0.056 220);
+  --secondary: oklch(0.322 0.05 250);
+  --secondary-foreground: oklch(0.94 0.01 220);
+  --muted: oklch(0.322 0.05 250);
+  --muted-foreground: oklch(0.735 0.026 235);
+  /* #2d8a9e */
+  --accent: oklch(0.606 0.077 215);
+  --accent-foreground: oklch(0.972 0.008 220);
+  --destructive: oklch(0.68 0.18 22);
+  --destructive-foreground: oklch(0.213 0.056 258);
+  --success: oklch(0.754 0.072 187);
+  --success-foreground: oklch(0.213 0.056 258);
+  --warning: oklch(0.83 0.13 82);
+  --warning-foreground: oklch(0.213 0.056 258);
+  --border: oklch(0.36 0.045 248);
+  --input: oklch(0.38 0.046 248);
+  --ring: oklch(0.754 0.072 187);
+  --glass-line: color-mix(in oklab, white 7%, transparent);
   --glass-fill: color-mix(in oklab, white 5%, transparent);
-  --shadow-float: 0 24px 60px -24px oklch(0.08 0.03 265 / 0.8);
-  --glow-primary: 0 0 0 1px color-mix(in oklab, var(--primary) 32%, transparent),
-    0 18px 46px -18px color-mix(in oklab, var(--primary) 55%, transparent);
-  --glow-accent: 0 18px 46px -18px color-mix(in oklab, var(--accent) 50%, transparent);
+  --shadow-float: 0 32px 80px -36px oklch(0.1 0.05 258 / 0.85);
+  --glow-primary: 0 24px 60px -22px color-mix(in oklab, var(--primary) 45%, transparent);
+  --glow-accent: 0 24px 60px -22px color-mix(in oklab, var(--accent) 45%, transparent);
   --gradient-hero: radial-gradient(
-      120% 90% at 12% -10%,
-      color-mix(in oklab, var(--primary) 30%, transparent),
-      transparent 60%
+      120% 90% at 8% -12%,
+      color-mix(in oklab, var(--accent) 34%, transparent),
+      transparent 62%
     ),
     radial-gradient(
-      100% 80% at 100% 0%,
-      color-mix(in oklab, var(--accent) 18%, transparent),
-      transparent 55%
+      100% 80% at 100% 8%,
+      color-mix(in oklab, var(--primary) 16%, transparent),
+      transparent 58%
     );
 }
 
 html:not(.dark) {
-  /* Light counterpart — same language, lifted canvas */
-  --background: oklch(0.982 0.004 265);
-  --foreground: oklch(0.23 0.03 265);
+  /* Light counterpart — same ocean language, lifted canvas */
+  --background: oklch(0.982 0.006 220);
+  --foreground: oklch(0.28 0.05 255);
   --surface: oklch(1 0 0);
-  --surface-2: oklch(0.958 0.006 265);
-  --surface-3: oklch(0.925 0.01 265);
+  --surface-2: oklch(0.96 0.01 220);
+  --surface-3: oklch(0.928 0.015 220);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.23 0.03 265);
+  --card-foreground: oklch(0.28 0.05 255);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.23 0.03 265);
-  --primary: oklch(0.52 0.2 272);
+  --popover-foreground: oklch(0.28 0.05 255);
+  --primary: oklch(0.52 0.08 210);
   --primary-foreground: oklch(1 0 0);
-  --tint: oklch(0.94 0.03 272);
-  --secondary: oklch(0.958 0.006 265);
-  --secondary-foreground: oklch(0.3 0.03 265);
-  --muted: oklch(0.958 0.006 265);
-  --muted-foreground: oklch(0.5 0.025 265);
-  --accent: oklch(0.6 0.12 165);
+  --tint: oklch(0.93 0.03 200);
+  --secondary: oklch(0.96 0.01 220);
+  --secondary-foreground: oklch(0.34 0.05 250);
+  --muted: oklch(0.96 0.01 220);
+  --muted-foreground: oklch(0.52 0.03 240);
+  --accent: oklch(0.6 0.08 195);
   --accent-foreground: oklch(1 0 0);
   --destructive: oklch(0.55 0.21 25);
   --destructive-foreground: oklch(1 0 0);
-  --success: oklch(0.56 0.12 165);
+  --success: oklch(0.56 0.09 190);
   --success-foreground: oklch(1 0 0);
   --warning: oklch(0.68 0.13 78);
-  --warning-foreground: oklch(0.23 0.03 265);
-  --border: oklch(0.9 0.008 265);
-  --input: oklch(0.87 0.01 265);
-  --ring: oklch(0.52 0.2 272);
-  --glass-line: color-mix(in oklab, oklch(0.23 0.03 265) 10%, transparent);
+  --warning-foreground: oklch(0.28 0.05 255);
+  --border: oklch(0.91 0.01 220);
+  --input: oklch(0.88 0.012 220);
+  --ring: oklch(0.52 0.08 210);
+  --glass-line: color-mix(in oklab, oklch(0.28 0.05 255) 8%, transparent);
   --glass-fill: color-mix(in oklab, white 65%, transparent);
-  --shadow-float: 0 22px 50px -26px oklch(0.23 0.03 265 / 0.28);
-  --glow-primary: 0 0 0 1px color-mix(in oklab, var(--primary) 20%, transparent),
-    0 18px 40px -20px color-mix(in oklab, var(--primary) 40%, transparent);
-  --glow-accent: 0 18px 40px -20px color-mix(in oklab, var(--accent) 35%, transparent);
+  --shadow-float: 0 28px 60px -32px oklch(0.28 0.05 255 / 0.25);
+  --glow-primary: 0 22px 50px -24px color-mix(in oklab, var(--primary) 35%, transparent);
+  --glow-accent: 0 22px 50px -24px color-mix(in oklab, var(--accent) 32%, transparent);
 }
 
 @layer base {

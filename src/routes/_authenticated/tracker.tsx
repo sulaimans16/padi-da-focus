@@ -120,8 +120,8 @@ function Tracker() {
         <section className="card-surface overflow-hidden lg:col-span-7">
           <div className="card-head">
             <span className="label-eyebrow">Subject performance · weakest first</span>
-            <Link to="/bank" className="text-xs font-bold text-primary">
-              Practice
+            <Link to="/weak-spots" className="text-xs font-bold text-primary">
+              Weak spots →
             </Link>
           </div>
           {attempts.isLoading && (

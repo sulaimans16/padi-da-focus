@@ -9,9 +9,6 @@ import { fetchRemoteQuestions } from "@/lib/remote-questions";
 import { allQuestions, subjectColor, type Question } from "@/lib/questions";
 
 export const Route = createFileRoute("/bank/$subject")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    topic: typeof search['topic'] === "string" ? (search['topic'] as string) : undefined,
-  }),
   head: ({ params }) => ({
     meta: [
       { title: `${params.subject} Questions — PadiDa NEET PG` },

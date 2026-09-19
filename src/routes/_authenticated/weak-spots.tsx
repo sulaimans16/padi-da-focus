@@ -251,7 +251,6 @@ function WeakSpots() {
                       <Link
                         to="/bank/$subject"
                         params={{ subject: t.subject }}
-                        search={{ topic: t.topic }}
                         className="btn-base btn-ghost shrink-0 text-xs"
                       >
                         <Icon name="play_arrow" className="text-[16px]" />

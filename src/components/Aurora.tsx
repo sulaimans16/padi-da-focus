@@ -5,7 +5,7 @@
 export function Aurora({ intensity = "ambient" }: { intensity?: "ambient" | "full" }) {
   const full = intensity === "full";
   return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+    <div aria-hidden className="aurora pointer-events-none fixed inset-0 -z-10 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-background via-accent/25 to-background" />
       <div
         className={`animate-drift-a absolute -left-[15%] -top-[20%] h-[70vh] w-[70vw] rounded-full bg-accent/30 blur-[140px] ${

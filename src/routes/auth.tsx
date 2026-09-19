@@ -41,7 +41,7 @@ function AuthPage() {
 
   useEffect(() => {
     void supabase.auth.getSession().then(({ data }) => {
-      if (data.session) void navigate({ to: "/tracker", replace: true });
+      if (data.session) void navigate({ to: "/", replace: true });
     });
   }, [navigate]);
 
@@ -85,7 +85,7 @@ function AuthPage() {
         });
         if (err) throw err;
       }
-      await navigate({ to: "/tracker", replace: true });
+      await navigate({ to: "/", replace: true });
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something went wrong.");
     } finally {
@@ -103,7 +103,7 @@ function AuthPage() {
       return;
     }
     if (result.redirected) return;
-    await navigate({ to: "/tracker", replace: true });
+    await navigate({ to: "/", replace: true });
   };
 
   return (

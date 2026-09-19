@@ -24,7 +24,7 @@ export const Route = createFileRoute("/_authenticated/weak-spots")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: WeakSpots;
+  component: WeakSpots,
 });
 
 type SourceKey = "all" | "question_bank" | "pyq";

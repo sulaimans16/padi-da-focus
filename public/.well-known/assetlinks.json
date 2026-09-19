@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.learners_studio.pg_pre.twa",
+      "sha256_cert_fingerprints": [
+        "1B:06:0A:C9:ED:ED:4C:B5:7F:47:1B:E0:29:7B:3A:F7:2A:5F:9B:E6:F9:D1:8B:3C:55:32:60:6E:28:C3:8D:71"
+      ]
+    }
+  }
+]

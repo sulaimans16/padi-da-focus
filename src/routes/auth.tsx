@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { Aurora } from "@/components/Aurora";
+import { BrandMark } from "@/components/BrandMark";
 import { Icon } from "@/components/Primitives";
 
 /** Borderless, pill-shaped input — no boxed field outlines. */
@@ -125,9 +126,12 @@ function AuthPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           >
-            <h1 className="mt-6 text-5xl font-bold tracking-tight">
-              PG <span className="text-primary">Prep</span>
-            </h1>
+            <div className="mt-6 flex items-center gap-3">
+              <BrandMark className="h-14 w-14" />
+              <h1 className="text-5xl font-bold tracking-tight">
+                PG <span className="text-primary">Prep</span>
+              </h1>
+            </div>
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-muted-foreground">
               Sign in so your attempts, accuracy and focus streak follow you everywhere.
             </p>

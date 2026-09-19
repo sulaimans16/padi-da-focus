@@ -8,6 +8,7 @@ import { UsernamePrompt } from "@/components/UsernamePrompt";
 import { Icon } from "@/components/Primitives";
 import { Aurora } from "@/components/Aurora";
 import { PageTransition } from "@/components/motion/Reveal";
+import { BrandMark } from "@/components/BrandMark";
 import { doctorName } from "@/lib/doctor-name";
 import { useAccess } from "@/hooks/useAccess";
 
@@ -104,9 +105,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col px-4 py-5 md:flex glass-bar">
 
         <Link to="/" className="group flex items-center gap-2.5 px-2">
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground transition-all duration-300 ease-out group-hover:scale-105 group-hover:glow-ring">
-            <Icon name="stethoscope" className="text-[20px]" />
-          </span>
+          <BrandMark className="h-9 w-9 transition-transform duration-300 ease-out group-hover:scale-105" />
           <span className="text-base font-bold tracking-tight">
             PG <span className="text-primary">Prep</span>
           </span>
@@ -143,9 +142,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       {/* Top bar */}
       <header className="fixed inset-x-0 top-0 z-30 flex h-16 items-center gap-3 px-4 glass-bar md:pl-[17rem]">
         <Link to="/" className="flex items-center gap-2 md:hidden">
-          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-            <Icon name="stethoscope" className="text-[18px]" />
-          </span>
+          <BrandMark className="h-8 w-8" />
           <span className="text-sm font-bold">
             PG <span className="text-primary">Prep</span>
           </span>

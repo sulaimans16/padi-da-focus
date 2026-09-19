@@ -7,12 +7,12 @@ import { grantPlan, listMembers, revokePlan } from "@/lib/admin.functions";
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
     meta: [
-      { title: "Admin console — PadiDa" },
+      { title: "Admin console — PG Prep" },
       {
         name: "description",
-        content: "PadiDa admin console: activate Pro plans, review members and manage AI access.",
+        content: "PG Prep admin console: activate Pro plans, review members and manage AI access.",
       },
-      { property: "og:title", content: "Admin console — PadiDa" },
+      { property: "og:title", content: "Admin console — PG Prep" },
       { property: "og:description", content: "Activate Pro plans and manage members." },
     ],
   }),

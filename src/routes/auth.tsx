@@ -6,13 +6,13 @@ import { lovable } from "@/integrations/lovable/index";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Sign in — PadiDa NEET PG Tracker" },
+      { title: "Sign in — PG Prep NEET PG Tracker" },
       {
         name: "description",
         content:
-          "Sign in to PadiDa to sync your NEET PG question attempts, accuracy trackers and focus sessions across devices.",
+          "Sign in to PG Prep to sync your NEET PG question attempts, accuracy trackers and focus sessions across devices.",
       },
-      { property: "og:title", content: "Sign in — PadiDa" },
+      { property: "og:title", content: "Sign in — PG Prep" },
       {
         property: "og:description",
         content: "Your NEET PG progress, accuracy and focus streak — saved to your account.",
@@ -105,7 +105,7 @@ function AuthPage() {
         ← Dashboard
       </Link>
       <h1 className="mt-3 text-3xl font-bold tracking-tight">
-        Padi<span className="text-primary">Da</span>
+        PG<span className="text-primary">Prep</span>
       </h1>
       <p className="text-sm text-muted-foreground">
         Sign in so your attempts, accuracy and focus streak follow you everywhere.

@@ -16,13 +16,13 @@ import type { Question } from "@/lib/questions";
 export const Route = createFileRoute("/daily")({
   head: () => ({
     meta: [
-      { title: "Daily Challenge — PadiDa" },
+      { title: "Daily Challenge — PG Prep" },
       {
         name: "description",
         content:
           "Ten fresh NEET PG questions every day with instant explanations, a streak counter and a week-long history of your daily scores.",
       },
-      { property: "og:title", content: "Daily Challenge — PadiDa" },
+      { property: "og:title", content: "Daily Challenge — PG Prep" },
       {
         property: "og:description",
         content: "Ten questions a day, instant explanations, streaks that keep you honest.",

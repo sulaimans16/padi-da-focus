@@ -12,13 +12,13 @@ import {
 export const Route = createFileRoute("/bank/")({
   head: () => ({
     meta: [
-      { title: "Question Bank — PadiDa NEET PG" },
+      { title: "Question Bank — PG Prep NEET PG" },
       {
         name: "description",
         content:
           "Subject-wise NEET PG question bank with NBE-style single-best-answer questions, distractor breakdowns and high-yield fact boxes.",
       },
-      { property: "og:title", content: "Question Bank — PadiDa NEET PG" },
+      { property: "og:title", content: "Question Bank — PG Prep NEET PG" },
       {
         property: "og:description",
         content: "Drill NEET PG questions subject by subject, with 2am-mode explanations.",

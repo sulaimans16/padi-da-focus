@@ -11,10 +11,10 @@ export const Route = createFileRoute("/learn/$subject")({
   head: ({ loaderData }) => {
     if (!loaderData) {
       return {
-        meta: [{ title: "Module not found — PadiDa" }, { name: "robots", content: "noindex" }],
+        meta: [{ title: "Module not found — PG Prep" }, { name: "robots", content: "noindex" }],
       };
     }
-    const title = `${loaderData.subject} Concepts — PadiDa`;
+    const title = `${loaderData.subject} Concepts — PG Prep`;
     return {
       meta: [
         { title },

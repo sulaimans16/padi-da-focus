@@ -36,7 +36,7 @@ export function ProGate({
         {feature} is a Pro feature
       </p>
       <p className="text-xs text-muted-foreground">
-        PadiDa Pro unlocks every AI tool — ₹50 for 3 months or ₹100 for a year.
+        PG Prep Pro unlocks every AI tool — ₹50 for 3 months or ₹100 for a year.
       </p>
       <div className="flex flex-wrap gap-2">
         <Link to="/pricing" className="btn-base btn-primary h-9 px-3 text-xs">

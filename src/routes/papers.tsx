@@ -7,13 +7,13 @@ import { buildPaperHtml, downloadHtml, printHtml, slug } from "@/lib/paper-expor
 export const Route = createFileRoute("/papers")({
   head: () => ({
     meta: [
-      { title: "Download NEET PG Past Year Papers — PadiDa" },
+      { title: "Download NEET PG Past Year Papers — PG Prep" },
       {
         name: "description",
         content:
           "Free year-wise and subject-wise NEET PG past year question papers you can download or print, with an optional answer key and explanations.",
       },
-      { property: "og:title", content: "Download NEET PG Past Year Papers — PadiDa" },
+      { property: "og:title", content: "Download NEET PG Past Year Papers — PG Prep" },
       {
         property: "og:description",
         content: "Free downloadable year-wise NEET PG question papers with answer keys.",

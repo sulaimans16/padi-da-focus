@@ -9,13 +9,13 @@ import { Reveal } from "@/components/motion/Reveal";
 export const Route = createFileRoute("/_authenticated/weak-spots")({
   head: () => ({
     meta: [
-      { title: "Weak Spots — PadiDa Accuracy Analyzer" },
+      { title: "Weak Spots — PG Prep Accuracy Analyzer" },
       {
         name: "description",
         content:
           "See your lowest-accuracy NEET PG subjects and topics from Question Bank and PYQ attempts, and jump straight into targeted practice.",
       },
-      { property: "og:title", content: "Weak Spots — PadiDa" },
+      { property: "og:title", content: "Weak Spots — PG Prep" },
       {
         property: "og:description",
         content: "Your weakest subjects and topics ranked by accuracy, with one-tap practice links.",

@@ -20,13 +20,13 @@ import {
 export const Route = createFileRoute("/focus")({
   head: () => ({
     meta: [
-      { title: "Focus Lock — PadiDa NEET PG Sprint" },
+      { title: "Focus Lock — PG Prep NEET PG Sprint" },
       {
         name: "description",
         content:
-          "Lock yourself into a timed NEET PG revision session. Try to escape and the PadiDa nag video plays at full volume.",
+          "Lock yourself into a timed NEET PG revision session. Try to escape and the PG Prep focus video plays at full volume.",
       },
-      { property: "og:title", content: "Focus Lock — PadiDa" },
+      { property: "og:title", content: "Focus Lock — PG Prep" },
       {
         property: "og:description",
         content: "Hard-lockout study timer for the NEET PG final sprint. No excuses.",
@@ -350,7 +350,7 @@ function FocusPage() {
             <span>
               <span className="block text-sm font-semibold">Eye watch (camera) 👀</span>
               <span className="block text-xs text-muted-foreground">
-                Look away or leave the desk and padi da plays. Runs fully on this device — no video
+                Look away or leave the desk and PG Prep plays. Runs fully on this device — no video
                 is uploaded or stored.
               </span>
             </span>
@@ -386,7 +386,7 @@ function FocusPage() {
           Lock in — 30 days la neeye than paakanum 🔒
         </button>
         <p className="text-center text-xs text-muted-foreground">
-          Escape attempt = padi da video, full volume. You've been warned.
+          Escape attempt = PG Prep video, full volume. You've been warned.
         </p>
       </div>
 

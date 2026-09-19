@@ -13,13 +13,13 @@ import { formatClock, loadSessionLog, type CompletedSession } from "@/lib/focus-
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "PadiDa — NEET PG Last-Mile Revision Console" },
+      { title: "PG Prep — NEET PG Revision Console" },
       {
         name: "description",
         content:
-          "PadiDa is a NEET PG sprint app: hard-lockout focus timer, 23,000+ question bank, PYQ vault, subject modules, video lectures and analytics.",
+          "PG Prep is a NEET PG sprint app by Learners Studio: hard-lockout focus timer, 23,000+ question bank, PYQ vault, subject modules, video lectures and analytics.",
       },
-      { property: "og:title", content: "PadiDa — NEET PG Revision Console" },
+      { property: "og:title", content: "PG Prep — NEET PG Revision Console" },
       {
         property: "og:description",
         content: "Focus-locked NEET PG revision. Questions, PYQs, concepts, analytics.",

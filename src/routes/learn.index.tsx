@@ -4,13 +4,13 @@ import { figureUrl, LEARN_MODULES } from "@/lib/learn";
 export const Route = createFileRoute("/learn/")({
   head: () => ({
     meta: [
-      { title: "Subject Modules — Concept Lessons | PadiDa" },
+      { title: "Subject Modules — Concept Lessons | PG Prep" },
       {
         name: "description",
         content:
           "Illustrated NEET PG concept modules: anatomy, physiology, biochemistry, pharmacology, pathology and medicine, each with real reference figures and high-yield takeaways.",
       },
-      { property: "og:title", content: "Subject Modules — PadiDa" },
+      { property: "og:title", content: "Subject Modules — PG Prep" },
       {
         property: "og:description",
         content: "Concept lessons with real medical reference figures for NEET PG 2026.",
@@ -44,7 +44,7 @@ function LearnIndex() {
         <span className="min-w-0">
           <span className="block text-sm font-bold">Prefer watching? Open the video modules</span>
           <span className="block text-xs text-muted-foreground">
-            Curated lecture videos for every subject — included with PadiDa Pro.
+            Curated lecture videos for every subject — included with PG Prep Pro.
           </span>
         </span>
         <span aria-hidden className="material-symbols-outlined ml-auto text-muted-foreground">

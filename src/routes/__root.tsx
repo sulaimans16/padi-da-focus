@@ -82,7 +82,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "theme-color", content: "#0A0F1D" },
-      { title: "PadiDa — NEET PG 2026 Sprint" },
+      { title: "PG Prep — NEET PG Sprint" },
       {
         name: "description",
         content: "Focus-locked NEET PG 2026 revision app. 30 days. 200 questions. No excuses.",

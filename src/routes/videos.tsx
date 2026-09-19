@@ -13,13 +13,13 @@ import {
 export const Route = createFileRoute("/videos")({
   head: () => ({
     meta: [
-      { title: "Video Modules — Medical Lecture Library | PadiDa" },
+      { title: "Video Modules — Medical Lecture Library | PG Prep" },
       {
         name: "description",
         content:
-          "Curated NEET PG video lectures for anatomy, physiology, biochemistry, pharmacology, pathology and medicine — organised subject by subject inside PadiDa Pro.",
+          "Curated NEET PG video lectures for anatomy, physiology, biochemistry, pharmacology, pathology and medicine — organised subject by subject inside PG Prep Pro.",
       },
-      { property: "og:title", content: "Video Modules — PadiDa" },
+      { property: "og:title", content: "Video Modules — PG Prep" },
       {
         property: "og:description",
         content: "Subject-wise medical lecture videos, curated for NEET PG revision.",
@@ -142,7 +142,7 @@ function VideoModules() {
         <section className="card-surface mt-4 flex flex-col gap-2 p-4">
           <p className="flex items-center gap-2 text-sm font-bold">
             <Icon name="workspace_premium" className="text-[18px] text-primary" />
-            Video modules are part of PadiDa Pro
+            Video modules are part of PG Prep Pro
           </p>
           <p className="text-xs text-muted-foreground">
             Browse the full curriculum below. Playback unlocks with Pro — ₹50 for 3 months or ₹100 for a

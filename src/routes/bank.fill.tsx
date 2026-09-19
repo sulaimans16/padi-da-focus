@@ -11,13 +11,13 @@ import { ProGate } from "@/components/ProGate";
 export const Route = createFileRoute("/bank/fill")({
   head: () => ({
     meta: [
-      { title: "Fill the Bank — PadiDa NEET PG" },
+      { title: "Fill the Bank — PG Prep NEET PG" },
       {
         name: "description",
         content:
           "Auto-fill every NEET PG subject with web-researched, NBE-style questions until each subject hits your target count.",
       },
-      { property: "og:title", content: "Fill the Bank — PadiDa" },
+      { property: "og:title", content: "Fill the Bank — PG Prep" },
       {
         property: "og:description",
         content: "Grow every subject to 50 or 100 questions in one run, grounded in web research.",
@@ -105,7 +105,7 @@ function FillBank() {
         </Link>
         <h1 className="mt-2 text-3xl font-bold tracking-tight">Fill every topic</h1>
         <p className="mb-4 text-sm text-muted-foreground">
-          Bulk-building the bank runs on paid compute, so it lives in PadiDa Pro.
+          Bulk-building the bank runs on paid compute, so it lives in PG Prep Pro.
         </p>
         <ProGate feature="Bulk bank filling">{null}</ProGate>
       </main>

@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * PadiDa design system — cinematic, dark-first prep console.
+ * PG Prep design system — cinematic, dark-first prep console.
  * Deep slate canvas, indigo primary, emerald signal. Glassmorphic surfaces.
  * All colors are semantic tokens. Never hardcode colors in components.
  */

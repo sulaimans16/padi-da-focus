@@ -20,6 +20,7 @@ import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PyqRouteImport } from './routes/pyq'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as VideosRouteImport } from './routes/videos'
+import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedTrackerRouteImport } from './routes/_authenticated/tracker'
 import { Route as AuthenticatedWeakSpotsRouteImport } from './routes/_authenticated/weak-spots'
@@ -84,6 +85,11 @@ const VideosRoute = VideosRouteImport.update({
   path: '/videos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WelcomeRoute = WelcomeRouteImport.update({
+  id: '/welcome',
+  path: '/welcome',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -142,6 +148,7 @@ export interface FileRoutesByFullPath {
   '/pyq': typeof PyqRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/videos': typeof VideosRoute
+  '/welcome': typeof WelcomeRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/tracker': typeof AuthenticatedTrackerRoute
   '/weak-spots': typeof AuthenticatedWeakSpotsRoute
@@ -163,6 +170,7 @@ export interface FileRoutesByTo {
   '/pyq': typeof PyqRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/videos': typeof VideosRoute
+  '/welcome': typeof WelcomeRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/tracker': typeof AuthenticatedTrackerRoute
   '/weak-spots': typeof AuthenticatedWeakSpotsRoute
@@ -186,6 +194,7 @@ export interface FileRoutesById {
   '/pyq': typeof PyqRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/videos': typeof VideosRoute
+  '/welcome': typeof WelcomeRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/tracker': typeof AuthenticatedTrackerRoute
   '/_authenticated/weak-spots': typeof AuthenticatedWeakSpotsRoute
@@ -209,6 +218,7 @@ export interface FileRouteTypes {
     | '/pyq'
     | '/sitemap.xml'
     | '/videos'
+    | '/welcome'
     | '/admin'
     | '/tracker'
     | '/weak-spots'
@@ -230,6 +240,7 @@ export interface FileRouteTypes {
     | '/pyq'
     | '/sitemap.xml'
     | '/videos'
+    | '/welcome'
     | '/admin'
     | '/tracker'
     | '/weak-spots'
@@ -252,6 +263,7 @@ export interface FileRouteTypes {
     | '/pyq'
     | '/sitemap.xml'
     | '/videos'
+    | '/welcome'
     | '/_authenticated/admin'
     | '/_authenticated/tracker'
     | '/_authenticated/weak-spots'
@@ -275,6 +287,7 @@ export interface RootRouteChildren {
   PyqRoute: typeof PyqRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   VideosRoute: typeof VideosRoute
+  WelcomeRoute: typeof WelcomeRoute
   BankSubjectRoute: typeof BankSubjectRoute
   BankFillRoute: typeof BankFillRoute
   LearnSubjectRoute: typeof LearnSubjectRoute
@@ -360,6 +373,13 @@ declare module '@tanstack/react-router' {
       path: '/videos'
       fullPath: '/videos'
       preLoaderRoute: typeof VideosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/welcome': {
+      id: '/welcome'
+      path: '/welcome'
+      fullPath: '/welcome'
+      preLoaderRoute: typeof WelcomeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin': {
@@ -455,6 +475,7 @@ const rootRouteChildren: RootRouteChildren = {
   PyqRoute: PyqRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   VideosRoute: VideosRoute,
+  WelcomeRoute: WelcomeRoute,
   BankSubjectRoute: BankSubjectRoute,
   BankFillRoute: BankFillRoute,
   LearnSubjectRoute: LearnSubjectRoute,

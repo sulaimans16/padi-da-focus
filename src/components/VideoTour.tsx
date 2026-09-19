@@ -12,7 +12,7 @@ type Chapter = {
   title: string;
   caption: string;
   seconds: number;
-  screen: () => JSX.Element;
+  screen: () => React.ReactElement;
 };
 
 function Bar({ value, tone = "primary" }: { value: number; tone?: "primary" | "accent" }) {

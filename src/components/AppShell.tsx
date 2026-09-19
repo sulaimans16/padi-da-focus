@@ -49,7 +49,7 @@ const FILL_LINK: NavLink = { label: "Fill Bank", icon: "cloud_download", to: "/b
 const PRICING_LINK: NavLink = { label: "Go Pro", icon: "workspace_premium", to: "/pricing" };
 const ADMIN_LINK: NavLink = { label: "Admin", icon: "admin_panel_settings", to: "/admin" };
 
-const FULL_BLEED = ["/focus", "/auth"];
+const FULL_BLEED = ["/focus", "/auth", "/welcome"];
 
 function NavList({ items, pathname }: { items: NavLink[]; pathname: string }) {
   return (

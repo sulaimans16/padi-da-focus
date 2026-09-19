@@ -146,13 +146,15 @@ function RootComponent() {
     }
   });
 
-  // Redirect new visitors to sign-in immediately — behind the splash, so the
-  // dashboard never flashes before the auth page appears.
+  // Send new visitors to the landing page immediately — behind the splash, so the
+  // dashboard never flashes before the welcome page appears.
   useEffect(() => {
     if (splashDone) return;
+    const path = window.location.pathname;
+    if (path !== "/") return; // deep links stay where they are
     void supabase.auth.getSession().then(({ data }) => {
-      if (!data.session && window.location.pathname !== "/auth") {
-        void router.navigate({ to: "/auth", replace: true });
+      if (!data.session) {
+        void router.navigate({ to: "/welcome", replace: true });
       }
     });
   }, [splashDone, router]);

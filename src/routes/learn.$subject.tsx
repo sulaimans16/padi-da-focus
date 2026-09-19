@@ -3,6 +3,7 @@ import { useState } from "react";
 import { figureSource, figureUrl, getModule, LEARN_MODULES, type Vignette } from "@/lib/learn";
 
 export const Route = createFileRoute("/learn/$subject")({
+  staticData: { sitemap: true },
   loader: ({ params }) => {
     const mod = getModule(params.subject);
     if (!mod) throw notFound();

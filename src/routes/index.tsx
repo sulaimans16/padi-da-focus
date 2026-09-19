@@ -11,6 +11,7 @@ import { doctorName } from "@/lib/doctor-name";
 import { formatClock, loadSessionLog, type CompletedSession } from "@/lib/focus-session";
 
 export const Route = createFileRoute("/")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "PG Prep — NEET PG Revision Console" },

@@ -18,6 +18,7 @@ import {
 } from "@/lib/focus-session";
 
 export const Route = createFileRoute("/focus")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Focus Lock — PG Prep NEET PG Sprint" },

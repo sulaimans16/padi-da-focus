@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { figureUrl, LEARN_MODULES } from "@/lib/learn";
 
 export const Route = createFileRoute("/learn/")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Subject Modules — Concept Lessons | PG Prep" },

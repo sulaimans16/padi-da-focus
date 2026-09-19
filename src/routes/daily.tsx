@@ -14,6 +14,7 @@ import {
 import type { Question } from "@/lib/questions";
 
 export const Route = createFileRoute("/daily")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Daily Challenge — PG Prep" },

@@ -10,6 +10,7 @@ import {
 } from "@/lib/questions";
 
 export const Route = createFileRoute("/bank/")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Question Bank — PG Prep NEET PG" },

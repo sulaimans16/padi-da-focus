@@ -9,6 +9,7 @@ import { fetchRemoteQuestions } from "@/lib/remote-questions";
 import { allQuestions, subjectColor, type Question } from "@/lib/questions";
 
 export const Route = createFileRoute("/bank/$subject")({
+  staticData: { sitemap: true },
   head: ({ params }) => ({
     meta: [
       { title: `${params.subject} Questions — PG Prep NEET PG` },

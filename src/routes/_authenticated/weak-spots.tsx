@@ -7,6 +7,7 @@ import { GlassCard, Icon, Pill, Badge } from "@/components/Primitives";
 import { Reveal } from "@/components/motion/Reveal";
 
 export const Route = createFileRoute("/_authenticated/weak-spots")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Weak Spots — PG Prep Accuracy Analyzer" },

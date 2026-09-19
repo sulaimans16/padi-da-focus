@@ -6,6 +6,7 @@ import { useTheme } from "@/lib/theme";
 import { AskAi } from "@/components/AskAi";
 import { UsernamePrompt } from "@/components/UsernamePrompt";
 import { Icon } from "@/components/Primitives";
+import { Aurora } from "@/components/Aurora";
 import { PageTransition } from "@/components/motion/Reveal";
 import { doctorName } from "@/lib/doctor-name";
 import { useAccess } from "@/hooks/useAccess";
@@ -97,8 +98,11 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen">
-      {/* Desktop side navigation */}
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-glass-line px-4 py-5 md:flex glass-bar">
+      <Aurora />
+
+      {/* Desktop side navigation — dissolves into the background, no column rule */}
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col px-4 py-5 md:flex glass-bar">
+
         <Link to="/" className="group flex items-center gap-2.5 px-2">
           <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground transition-all duration-300 ease-out group-hover:scale-105 group-hover:glow-ring">
             <Icon name="stethoscope" className="text-[20px]" />

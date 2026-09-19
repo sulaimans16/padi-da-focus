@@ -1,0 +1,32 @@
+{
+  "name": "PadiDa — NEET PG Prep",
+  "short_name": "PadiDa",
+  "description": "Focus-locked NEET PG revision: question bank, PYQs, mock tests, daily challenges, and video learning.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0A0F1D",
+  "theme_color": "#0A0F1D",
+  "categories": ["education", "medical"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

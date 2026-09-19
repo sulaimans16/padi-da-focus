@@ -481,3 +481,22 @@ html:not(.dark) .bg-white\/\[0\.02\] {
 html:not(.dark) .focus\:bg-white\/10:focus {
   background-color: color-mix(in oklab, var(--color-foreground) 8%, transparent);
 }
+
+/* ---------- splash medical motion ---------- */
+@keyframes ecg-draw {
+  0% { stroke-dashoffset: 2400; }
+  100% { stroke-dashoffset: 0; }
+}
+.ecg-trace {
+  stroke-dasharray: 2400;
+  animation: ecg-draw 5s linear infinite;
+}
+@keyframes med-cross-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.14; }
+  50% { transform: translateY(-18px) rotate(12deg); opacity: 0.3; }
+}
+.med-cross {
+  animation: med-cross-float 6s ease-in-out infinite;
+  font-weight: 300;
+  line-height: 1;
+}

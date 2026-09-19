@@ -421,3 +421,34 @@ html:not(.dark) {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ---------- fluid aurora motion ---------- */
+
+@keyframes drift-a {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(6vw, -5vh, 0) scale(1.18); }
+  100% { transform: translate3d(-3vw, 4vh, 0) scale(0.92); }
+}
+
+@keyframes drift-b {
+  0% { transform: translate3d(0, 0, 0) scale(1.05); }
+  50% { transform: translate3d(-7vw, 6vh, 0) scale(0.9); }
+  100% { transform: translate3d(4vw, -4vh, 0) scale(1.2); }
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+@utility animate-drift-a {
+  animation: drift-a 26s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
+}
+
+@utility animate-drift-b {
+  animation: drift-b 34s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
+}
+
+@utility animate-breathe {
+  animation: breathe 12s ease-in-out infinite;
+}

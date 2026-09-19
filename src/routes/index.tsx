@@ -99,22 +99,22 @@ function Index() {
   const name = doctorName(displayName, user?.email);
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+    <div className="mx-auto w-full max-w-6xl px-5 py-10 sm:px-8 lg:px-10">
       {/* Hero */}
       <motion.div
-        initial={{ opacity: 0, y: 14 }}
+        initial={{ opacity: 0, y: 18 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between"
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between"
       >
         <div>
           <p className="label-eyebrow">Preparation console</p>
-          <h1 className="mt-1 text-4xl leading-[1.05] sm:text-5xl">
+          <h1 className="mt-2 text-4xl leading-[1.05] sm:text-5xl">
             <span className="text-gradient">
               {hello}, {name}
             </span>
           </h1>
-          <p className="mt-2.5 max-w-md text-sm text-muted-foreground">
+          <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
             Lock in, drill the vault, and watch the numbers move. One session at a time.
           </p>
         </div>
@@ -139,66 +139,33 @@ function Index() {
         </div>
       </motion.div>
 
-      {/* Bento grid */}
-      <div className="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-12">
-        <GoalCountdown />
-
-        {/* Focus lock */}
-        <Reveal delay={0.05} className="lg:col-span-5">
-          <GlassCard interactive className="h-full">
-            <div className="card-head">
-              <span className="label-eyebrow">Focus lock · today</span>
-              <Icon name="lock_clock" className="text-[20px] text-primary" />
-            </div>
-            <div className="flex flex-col items-center gap-5 p-6 sm:flex-row">
-              <ProgressRing
-                progress={Math.min(1, todaySec / dailyTargetSec)}
-                size={104}
-                strokeWidth={9}
-              >
-                <span className="font-mono text-base font-bold tabular-nums">
-                  {formatClock(todaySec)}
-                </span>
-                <span className="label-eyebrow">today</span>
-              </ProgressRing>
-              <div className="flex-1 text-center sm:text-left">
-                <p className="text-sm text-muted-foreground">
-                  {todaySessions.length} session{todaySessions.length === 1 ? "" : "s"} done · target
-                  4h. Try to escape mid-session and the deterrent plays.
-                </p>
-                <Link to="/focus" className="btn-base btn-primary mt-4 w-full text-sm">
-                  <Icon name="lock" className="text-[18px]" />
-                  Start lock-in
-                </Link>
-              </div>
-            </div>
-          </GlassCard>
-        </Reveal>
-
-        {/* Modules */}
-        <Reveal delay={0.1} className="lg:col-span-12">
-          <GlassCard>
-            <div className="card-head">
-              <span className="label-eyebrow">Study modules</span>
+      {/* Asymmetric 60/40 rhythm */}
+      <div className="mt-12 grid grid-cols-1 gap-12 lg:grid-cols-10 lg:gap-10">
+        {/* Wide side — learning pathways */}
+        <div className="flex flex-col gap-12 lg:col-span-6">
+          <section>
+            <div className="mb-6 flex items-center gap-6">
+              <h2 className="shrink-0 text-xl font-semibold">Learning pathways</h2>
+              <span className="fade-rule flex-1" />
               <Link
                 to="/bank"
-                className="text-xs font-semibold text-primary transition-colors duration-300 ease-out hover:text-accent"
+                className="shrink-0 text-xs font-semibold text-primary transition-colors duration-300 ease-out hover:text-accent"
               >
                 Open QBank →
               </Link>
             </div>
-            <Stagger className="grid grid-cols-2 gap-3 p-5 sm:grid-cols-3 lg:grid-cols-4">
+
+            <Stagger className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {MODULES.map((m) => {
                 const body = (
                   <>
-                    <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-tint text-primary transition-transform duration-300 ease-out group-hover:scale-110">
+                    <span className="flex h-12 w-12 items-center justify-center rounded-3xl bg-tint text-primary transition-transform duration-500 ease-out group-hover:scale-110">
                       <Icon name={m.icon} className="text-[22px]" />
                     </span>
-                    <p className="mt-3.5 text-sm font-semibold leading-tight">{m.label}</p>
-                    <p className="mt-0.5 text-xs leading-snug text-muted-foreground">{m.note}</p>
-                    <p className="label-eyebrow mt-2.5 text-primary">
-                      {"to" in m ? "Open" : "Coming soon"}
-                    </p>
+                    <div className="mt-5">
+                      <p className="text-base font-semibold leading-tight">{m.label}</p>
+                      <p className="mt-1 text-xs leading-snug text-muted-foreground">{m.note}</p>
+                    </div>
                   </>
                 );
                 return (
@@ -206,54 +173,110 @@ function Index() {
                     {"to" in m && m.to ? (
                       <Link
                         to={m.to}
-                        className="group flex h-full flex-col rounded-2xl border border-glass-line bg-surface/50 p-4 transition-all duration-300 ease-out hover:-translate-y-1 hover:border-primary/40 hover:bg-surface-2/60 hover:glow-ring"
+                        className="group flex h-full flex-col rounded-[2rem] bg-white/5 p-6 ring-1 ring-inset ring-glass-line transition-all duration-500 ease-out hover:bg-white/10 hover:ring-primary/25 hover:glow-ring"
                       >
                         {body}
                       </Link>
                     ) : (
-                      <div className="group flex h-full flex-col rounded-2xl border border-dashed border-glass-line bg-surface-2/25 p-4 opacity-60">
+                      <div className="group flex h-full flex-col rounded-[2rem] bg-white/[0.02] p-6 opacity-50">
                         {body}
+                        <p className="label-eyebrow mt-3">Coming soon</p>
                       </div>
                     )}
                   </StaggerItem>
                 );
               })}
             </Stagger>
-          </GlassCard>
-        </Reveal>
+          </section>
 
-        {log.length > 0 && (
-          <Reveal delay={0.05} className="lg:col-span-12">
-            <GlassCard>
-              <div className="card-head">
-                <span className="label-eyebrow">Recent focus sessions</span>
-                <Icon name="history" className="text-[20px] text-muted-foreground" />
-              </div>
-              <table className="w-full text-left">
-                <tbody>
+          {log.length > 0 && (
+            <Reveal delay={0.05}>
+              <section>
+                <div className="mb-4 flex items-center gap-6">
+                  <h2 className="shrink-0 text-xl font-semibold">Recent focus sessions</h2>
+                  <span className="fade-rule flex-1" />
+                </div>
+                <ul className="flex flex-col gap-2">
                   {log.slice(0, 6).map((s) => (
-                    <tr
+                    <li
                       key={s.startedAt}
-                      className="border-b border-glass-line transition-colors duration-300 ease-out last:border-0 hover:bg-surface-2/40"
+                      className="flex items-center gap-4 rounded-full px-5 py-3 transition-colors duration-500 ease-out hover:bg-white/5"
                     >
-                      <td className="px-5 py-3.5 text-sm font-medium">
+                      <span className="min-w-0 flex-1 truncate text-sm font-medium">
                         {s.subject ?? "General revision"}
-                      </td>
-                      <td className="px-5 py-3.5 text-right font-mono text-xs tabular-nums text-muted-foreground">
+                      </span>
+                      <span className="font-mono text-xs tabular-nums text-muted-foreground">
                         {formatClock(s.actualDurationSec)}
-                      </td>
-                      <td className="px-5 py-3.5 text-right">
-                        <Badge tone={s.completed ? "success" : "destructive"}>
-                          {s.completed ? "Completed" : "Bailed"}
-                        </Badge>
-                      </td>
-                    </tr>
+                      </span>
+                      <Badge tone={s.completed ? "success" : "destructive"}>
+                        {s.completed ? "Completed" : "Bailed"}
+                      </Badge>
+                    </li>
                   ))}
-                </tbody>
-              </table>
-            </GlassCard>
+                </ul>
+              </section>
+            </Reveal>
+          )}
+        </div>
+
+        {/* Narrow side — goal + focus rail */}
+        <div className="flex flex-col gap-6 lg:col-span-4">
+          <Reveal>
+            <GoalCountdown />
           </Reveal>
-        )}
+
+          <Reveal delay={0.06}>
+            <div className="card-surface p-8">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold">Focus lock</h3>
+                <span className="chip text-primary">Today</span>
+              </div>
+
+              <div className="flex flex-col items-center py-7">
+                <ProgressRing
+                  progress={Math.min(1, todaySec / dailyTargetSec)}
+                  size={150}
+                  strokeWidth={8}
+                >
+                  <span className="font-mono text-2xl font-bold tabular-nums">
+                    {formatClock(todaySec)}
+                  </span>
+                  <span className="label-eyebrow">today</span>
+                </ProgressRing>
+              </div>
+
+              <p className="text-center text-sm leading-relaxed text-muted-foreground">
+                {todaySessions.length} session{todaySessions.length === 1 ? "" : "s"} done · target
+                4h. Try to escape mid-session and the deterrent plays.
+              </p>
+              <Link to="/focus" className="btn-base btn-primary mt-6 h-13 w-full text-sm">
+                <Icon name="lock" className="text-[18px]" />
+                Start lock-in
+              </Link>
+            </div>
+          </Reveal>
+
+          <Reveal delay={0.12}>
+            <Link
+              to="/weak-spots"
+              className="group flex items-center gap-4 rounded-[2rem] bg-white/5 px-6 py-5 ring-1 ring-inset ring-glass-line transition-all duration-500 ease-out hover:bg-white/10 hover:ring-primary/25"
+            >
+              <span className="flex h-11 w-11 items-center justify-center rounded-full bg-tint text-primary">
+                <Icon name="crisis_alert" className="text-[20px]" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-sm font-semibold">Weak spots</span>
+                <span className="block text-xs text-muted-foreground">
+                  Topics dragging your accuracy
+                </span>
+              </span>
+              <Icon
+                name="chevron_right"
+                className="text-[20px] text-muted-foreground transition-transform duration-500 group-hover:translate-x-1"
+              />
+            </Link>
+          </Reveal>
+        </div>
       </div>
     </div>
   );

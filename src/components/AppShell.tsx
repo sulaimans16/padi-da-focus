@@ -141,7 +141,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       </aside>
 
       {/* Top bar */}
-      <header className="fixed inset-x-0 top-0 z-30 flex h-16 items-center gap-3 border-b border-glass-line px-4 glass-bar md:pl-[17rem]">
+      <header className="fixed inset-x-0 top-0 z-30 flex h-16 items-center gap-3 px-4 glass-bar md:pl-[17rem]">
         <Link to="/" className="flex items-center gap-2 md:hidden">
           <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary text-primary-foreground">
             <Icon name="stethoscope" className="text-[18px]" />
@@ -184,7 +184,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       </main>
 
       {/* Mobile bottom navigation */}
-      <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-6 border-t border-glass-line glass-bar md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-6 glass-bar md:hidden">
         {[...PRIMARY.filter((i) => !["/tracker", "/videos", "/papers", "/mock", "/weak-spots"].includes(i.to)), FOCUS_LINK].map(
           (item) => {
             const active =

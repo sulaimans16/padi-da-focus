@@ -40,6 +40,7 @@ const PRIMARY: NavLink[] = [
   { label: "PYQ Vault", icon: "history_edu", to: "/pyq" },
   { label: "Papers", icon: "description", to: "/papers" },
   { label: "Analytics", icon: "monitoring", to: "/tracker" },
+  { label: "Weak Spots", icon: "crisis_alert", to: "/weak-spots" },
 ];
 
 const FOCUS_LINK: NavLink = { label: "Focus Lock", icon: "lock_clock", to: "/focus" };
@@ -180,7 +181,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       {/* Mobile bottom navigation */}
       <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-6 border-t border-glass-line glass-bar md:hidden">
-        {[...PRIMARY.filter((i) => !["/tracker", "/videos", "/papers", "/mock"].includes(i.to)), FOCUS_LINK].map(
+        {[...PRIMARY.filter((i) => !["/tracker", "/videos", "/papers", "/mock", "/weak-spots"].includes(i.to)), FOCUS_LINK].map(
           (item) => {
             const active =
               item.to === "/"

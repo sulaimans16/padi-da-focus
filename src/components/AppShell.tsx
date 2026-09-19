@@ -21,6 +21,7 @@ type NavLink = {
     | "/daily"
     | "/papers"
     | "/tracker"
+    | "/weak-spots"
     | "/bank/fill"
     | "/focus"
     | "/learn"

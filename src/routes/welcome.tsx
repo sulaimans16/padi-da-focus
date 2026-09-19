@@ -153,7 +153,7 @@ function Preview() {
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.9, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
-        className="absolute -bottom-10 -left-6 w-56 rounded-[1.75rem] bg-background/80 p-4 ring-1 ring-inset ring-glass-line backdrop-blur-xl sm:-left-10"
+        className="absolute -bottom-14 -left-4 w-56 lg:-left-16 rounded-[1.75rem] bg-background/80 p-4 ring-1 ring-inset ring-glass-line backdrop-blur-xl sm:-left-10"
       >
         <div className="flex items-center justify-between text-[10px] text-muted-foreground">
           <span>12 / 50</span>

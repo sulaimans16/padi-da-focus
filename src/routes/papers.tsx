@@ -97,6 +97,27 @@ function PapersPage() {
         </p>
       </div>
 
+      <aside className="mt-5 flex flex-col gap-4 border-y border-glass-line py-5 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="label-eyebrow">More past papers</p>
+          <h2 className="mt-1 text-xl">Browse Collegedunia’s NEET PG collection</h2>
+          <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
+            Open their year-wise question-paper library in a new tab. Availability and content are
+            managed by Collegedunia.
+          </p>
+        </div>
+        <a
+          href="https://collegedunia.com/exams/neet-pg/question-paper"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn-base btn-ghost shrink-0 self-start sm:self-auto"
+          aria-label="Browse NEET PG question papers on Collegedunia (opens in a new tab)"
+        >
+          Browse Collegedunia
+          <Icon name="open_in_new" className="text-[18px]" />
+        </a>
+      </aside>
+
       <section className="card-surface mt-5 overflow-hidden">
         <div className="card-head">
           <span className="label-eyebrow">Paper options</span>

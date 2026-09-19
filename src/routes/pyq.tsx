@@ -11,13 +11,13 @@ import { allQuestions, type Question } from "@/lib/questions";
 export const Route = createFileRoute("/pyq")({
   head: () => ({
     meta: [
-      { title: "NEET PG PYQs by Year — PadiDa" },
+      { title: "NEET PG PYQs by Year — PG Prep" },
       {
         name: "description",
         content:
           "Previous year NEET PG questions filtered by exam year and subject, with repeat-frequency badges marking frequently repeated high-yield questions.",
       },
-      { property: "og:title", content: "NEET PG PYQs by Year — PadiDa" },
+      { property: "og:title", content: "NEET PG PYQs by Year — PG Prep" },
       {
         property: "og:description",
         content: "Year-wise and subject-wise PYQ drilling with repeat-frequency tags.",

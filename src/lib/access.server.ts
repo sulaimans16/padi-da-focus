@@ -24,7 +24,7 @@ export async function assertPro(
     .limit(1);
 
   if (!subs || subs.length === 0) {
-    throw new Error("AI tools are part of PadiDa Pro. Upgrade from the Pricing page to unlock them.");
+    throw new Error("AI tools are part of PG Prep Pro. Upgrade from the Pricing page to unlock them.");
   }
   return { isAdmin: false };
 }

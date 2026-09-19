@@ -10,13 +10,13 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/mock")({
   head: () => ({
     meta: [
-      { title: "Timed Mock Tests — PadiDa" },
+      { title: "Timed Mock Tests — PG Prep" },
       {
         name: "description",
         content:
           "Sit full-length timed NEET PG mock tests with exam-style timing, a question palette, flagging and a detailed answer review at the end.",
       },
-      { property: "og:title", content: "Timed Mock Tests — PadiDa" },
+      { property: "og:title", content: "Timed Mock Tests — PG Prep" },
       {
         property: "og:description",
         content: "Exam-clock mock tests with palette navigation and full answer review.",

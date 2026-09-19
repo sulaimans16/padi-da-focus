@@ -72,7 +72,7 @@ export function AskAi() {
         >
           <header className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 border-b border-border px-4 py-3">
             <div className="min-w-0">
-              <p className="truncate text-sm font-bold">Ask PadiDa AI</p>
+              <p className="truncate text-sm font-bold">Ask PG Prep AI</p>
               <p className="label-eyebrow">Stuck? Get a 2am-friendly answer</p>
             </div>
             {turns.length ? (

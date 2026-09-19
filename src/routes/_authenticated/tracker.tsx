@@ -14,13 +14,13 @@ import {
 export const Route = createFileRoute("/_authenticated/tracker")({
   head: () => ({
     meta: [
-      { title: "My Tracker — PadiDa NEET PG Progress" },
+      { title: "My Tracker — PG Prep NEET PG Progress" },
       {
         name: "description",
         content:
           "Your personal NEET PG tracker: accuracy per subject, weakest topics, questions attempted today and total focus-lock minutes.",
       },
-      { property: "og:title", content: "My Tracker — PadiDa" },
+      { property: "og:title", content: "My Tracker — PG Prep" },
       {
         property: "og:description",
         content: "Subject-wise accuracy, weak areas and focus streak for your NEET PG prep.",

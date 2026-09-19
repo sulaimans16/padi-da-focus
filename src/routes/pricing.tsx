@@ -8,13 +8,13 @@ import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 export const Route = createFileRoute("/pricing")({
   head: () => ({
     meta: [
-      { title: "PadiDa Pro — ₹50 for 3 months, ₹100 a year" },
+      { title: "PG Prep Pro — ₹50 for 3 months, ₹100 a year" },
       {
         name: "description",
         content:
-          "Unlock PadiDa Pro AI tools: the doubt solver, AI question generation and the PYQ vault builder. ₹50 for 3 months or ₹100 for a full year.",
+          "Unlock PG Prep Pro AI tools: the doubt solver, AI question generation and the PYQ vault builder. ₹50 for 3 months or ₹100 for a full year.",
       },
-      { property: "og:title", content: "PadiDa Pro pricing" },
+      { property: "og:title", content: "PG Prep Pro pricing" },
       {
         property: "og:description",
         content: "AI doubt solver, AI question generation and PYQ vault builder from ₹50.",
@@ -85,7 +85,7 @@ function Pricing() {
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-8">
       <PaymentTestModeBanner />
-      <h1 className="mt-4 text-3xl font-extrabold tracking-tight">PadiDa Pro</h1>
+      <h1 className="mt-4 text-3xl font-extrabold tracking-tight">PG Prep Pro</h1>
       <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
         Everything you study stays free. The AI tools — doubt solving and question generation —
         cost real money to run, so they sit behind a small subscription.
@@ -95,7 +95,7 @@ function Pricing() {
       {isPro ? (
         <div className="card-surface mt-5 p-4">
           <p className="text-sm font-bold text-success">
-            {isAdmin ? "Admin access — all Pro tools unlocked." : "You're on PadiDa Pro."}
+            {isAdmin ? "Admin access — all Pro tools unlocked." : "You're on PG Prep Pro."}
           </p>
           {subscription ? (
             <p className="mt-1 text-xs text-muted-foreground">

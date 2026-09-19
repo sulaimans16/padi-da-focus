@@ -47,7 +47,7 @@ export function buildPaperHtml(
 </style></head>
 <body>
   <h1>${esc(title)}</h1>
-  <p class="sub">PadiDa · ${questions.length} questions${withAnswers ? " · with answer key" : ""} · generated ${new Date().toLocaleDateString()}</p>
+  <p class="sub">PG Prep · ${questions.length} questions${withAnswers ? " · with answer key" : ""} · generated ${new Date().toLocaleDateString()}</p>
   ${body}
 </body></html>`;
 }

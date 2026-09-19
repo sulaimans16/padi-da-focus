@@ -28,7 +28,7 @@ export function createOpenRouterProvider(
     headers: {
       Authorization: `Bearer ${apiKey}`,
       "HTTP-Referer": "https://padi-da-focus.lovable.app",
-      "X-Title": "PadiDa",
+      "X-Title": "PG Prep",
     },
   });
 }

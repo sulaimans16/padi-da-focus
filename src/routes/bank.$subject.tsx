@@ -11,12 +11,12 @@ import { allQuestions, subjectColor, type Question } from "@/lib/questions";
 export const Route = createFileRoute("/bank/$subject")({
   head: ({ params }) => ({
     meta: [
-      { title: `${params.subject} Questions — PadiDa NEET PG` },
+      { title: `${params.subject} Questions — PG Prep NEET PG` },
       {
         name: "description",
         content: `Practice NBE-style ${params.subject} questions for NEET PG with detailed explanations and high-yield facts.`,
       },
-      { property: "og:title", content: `${params.subject} Questions — PadiDa` },
+      { property: "og:title", content: `${params.subject} Questions — PG Prep` },
       {
         property: "og:description",
         content: `Topic-wise ${params.subject} drilling for the NEET PG sprint.`,

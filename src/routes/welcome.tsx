@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Aurora } from "@/components/Aurora";
 import { Icon } from "@/components/Primitives";
 import { VideoTour } from "@/components/VideoTour";
+import { BrandMark } from "@/components/BrandMark";
 
 export const Route = createFileRoute("/welcome")({
   staticData: { sitemap: true },
@@ -194,7 +195,7 @@ function WelcomePage() {
       <header className="sticky top-0 z-40 backdrop-blur-xl">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
           <div className="flex items-center gap-2">
-            <Icon name="stethoscope" className="text-[24px] text-primary" />
+            <BrandMark className="h-10 w-10" />
             <div className="leading-none">
               <p className="text-lg font-semibold tracking-tight">
                 PG <span className="text-primary">Prep</span>

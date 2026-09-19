@@ -134,6 +134,41 @@ export function subjectStats(rows: AttemptRow[]): SubjectStat[] {
     .sort((a, b) => a.accuracy - b.accuracy);
 }
 
+export type TopicStat = {
+  subject: string;
+  topic: string;
+  attempts: number;
+  correct: number;
+  accuracy: number;
+  lastAttemptAt: string;
+};
+
+/** Accuracy per subject+topic pair, weakest first. */
+export function topicStats(rows: AttemptRow[]): TopicStat[] {
+  const map = new Map<string, TopicStat>();
+  rows.forEach((r) => {
+    const topic = r.topic?.trim() || "General";
+    const key = `${r.subject}///${topic}`;
+    const cur =
+      map.get(key) ??
+      ({
+        subject: r.subject,
+        topic,
+        attempts: 0,
+        correct: 0,
+        accuracy: 0,
+        lastAttemptAt: r.created_at,
+      } as TopicStat);
+    cur.attempts += 1;
+    if (r.correct) cur.correct += 1;
+    if (new Date(r.created_at) > new Date(cur.lastAttemptAt)) cur.lastAttemptAt = r.created_at;
+    map.set(key, cur);
+  });
+  return Array.from(map.values())
+    .map((s) => ({ ...s, accuracy: s.attempts ? s.correct / s.attempts : 0 }))
+    .sort((a, b) => a.accuracy - b.accuracy || b.attempts - a.attempts);
+}
+
 export function streakDays(rows: { created_at: string }[]): number {
   const days = new Set(rows.map((r) => new Date(r.created_at).toDateString()));
   let streak = 0;

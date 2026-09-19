@@ -21,6 +21,7 @@ import { Route as PyqRouteImport } from './routes/pyq'
 import { Route as VideosRouteImport } from './routes/videos'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedTrackerRouteImport } from './routes/_authenticated/tracker'
+import { Route as AuthenticatedWeakSpotsRouteImport } from './routes/_authenticated/weak-spots'
 import { Route as BankIndexRouteImport } from './routes/bank.index'
 import { Route as BankSubjectRouteImport } from './routes/bank.$subject'
 import { Route as BankFillRouteImport } from './routes/bank.fill'
@@ -87,6 +88,11 @@ const AuthenticatedTrackerRoute = AuthenticatedTrackerRouteImport.update({
   path: '/tracker',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedWeakSpotsRoute = AuthenticatedWeakSpotsRouteImport.update({
+  id: '/weak-spots',
+  path: '/weak-spots',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const BankIndexRoute = BankIndexRouteImport.update({
   id: '/bank/',
   path: '/bank/',
@@ -131,6 +137,7 @@ export interface FileRoutesByFullPath {
   '/videos': typeof VideosRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/tracker': typeof AuthenticatedTrackerRoute
+  '/weak-spots': typeof AuthenticatedWeakSpotsRoute
   '/bank/$subject': typeof BankSubjectRoute
   '/bank/fill': typeof BankFillRoute
   '/learn/$subject': typeof LearnSubjectRoute
@@ -150,6 +157,7 @@ export interface FileRoutesByTo {
   '/videos': typeof VideosRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/tracker': typeof AuthenticatedTrackerRoute
+  '/weak-spots': typeof AuthenticatedWeakSpotsRoute
   '/bank/$subject': typeof BankSubjectRoute
   '/bank/fill': typeof BankFillRoute
   '/learn/$subject': typeof LearnSubjectRoute
@@ -171,6 +179,7 @@ export interface FileRoutesById {
   '/videos': typeof VideosRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/tracker': typeof AuthenticatedTrackerRoute
+  '/_authenticated/weak-spots': typeof AuthenticatedWeakSpotsRoute
   '/bank/$subject': typeof BankSubjectRoute
   '/bank/fill': typeof BankFillRoute
   '/learn/$subject': typeof LearnSubjectRoute
@@ -192,6 +201,7 @@ export interface FileRouteTypes {
     | '/videos'
     | '/admin'
     | '/tracker'
+    | '/weak-spots'
     | '/bank/$subject'
     | '/bank/fill'
     | '/learn/$subject'
@@ -211,6 +221,7 @@ export interface FileRouteTypes {
     | '/videos'
     | '/admin'
     | '/tracker'
+    | '/weak-spots'
     | '/bank/$subject'
     | '/bank/fill'
     | '/learn/$subject'
@@ -231,6 +242,7 @@ export interface FileRouteTypes {
     | '/videos'
     | '/_authenticated/admin'
     | '/_authenticated/tracker'
+    | '/_authenticated/weak-spots'
     | '/bank/$subject'
     | '/bank/fill'
     | '/learn/$subject'
@@ -344,6 +356,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTrackerRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/weak-spots': {
+      id: '/_authenticated/weak-spots'
+      path: '/weak-spots'
+      fullPath: '/weak-spots'
+      preLoaderRoute: typeof AuthenticatedWeakSpotsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/bank/': {
       id: '/bank/'
       path: '/bank'
@@ -392,11 +411,13 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedTrackerRoute: typeof AuthenticatedTrackerRoute
+  AuthenticatedWeakSpotsRoute: typeof AuthenticatedWeakSpotsRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedTrackerRoute: AuthenticatedTrackerRoute,
+  AuthenticatedWeakSpotsRoute: AuthenticatedWeakSpotsRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

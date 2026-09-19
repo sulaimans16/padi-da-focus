@@ -1,6 +1,10 @@
-# Welcome to your Lovable project
+# PG Prep by Learners Studio
 
-This project was built with [Lovable](https://lovable.dev).
+A NEET PG last-mile revision console built with [Lovable](https://lovable.dev).
+
+- Hard-lockout focus timer
+- 23,000+ question bank & PYQ vault
+- Subject modules, video lectures, mock tests and weak-spot analytics
 
 ## Build with Lovable
 

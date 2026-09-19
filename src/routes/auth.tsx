@@ -105,7 +105,7 @@ function AuthPage() {
         ← Dashboard
       </Link>
       <h1 className="mt-3 text-3xl font-bold tracking-tight">
-        PG<span className="text-primary">Prep</span>
+        PG <span className="text-primary">Prep</span>
       </h1>
       <p className="text-sm text-muted-foreground">
         Sign in so your attempts, accuracy and focus streak follow you everywhere.

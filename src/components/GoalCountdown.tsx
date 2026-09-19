@@ -40,7 +40,7 @@ function useTicker() {
   return now;
 }
 
-export function GoalCountdown() {
+export function GoalCountdown({ className = "" }: { className?: string }) {
   const { user, loading } = useAuth();
   const now = useTicker();
   const [goal, setGoal] = useState<Goal | null>(null);
@@ -114,7 +114,7 @@ export function GoalCountdown() {
   ];
 
   return (
-    <section className="card-surface overflow-hidden lg:col-span-7">
+    <section className={`card-surface overflow-hidden ${className}`}>
       <div className="card-head grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
         <span className="label-eyebrow truncate">
           {goal

@@ -27,7 +27,7 @@ export function createOpenRouterProvider(
     supportsStructuredOutputs: options?.structuredOutputs ?? false,
     headers: {
       Authorization: `Bearer ${apiKey}`,
-      "HTTP-Referer": "https://padi-da-focus.lovable.app",
+      "HTTP-Referer": "https://pg-pre.learners-studio.com",
       "X-Title": "PG Prep",
     },
   });

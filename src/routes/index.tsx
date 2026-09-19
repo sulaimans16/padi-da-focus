@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { GoalCountdown } from "@/components/GoalCountdown";
 import { ProgressRing } from "@/components/ProgressRing";
-import { Badge, GlassCard, Icon } from "@/components/Primitives";
+import { Badge, Icon } from "@/components/Primitives";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion/Reveal";
 import { useAuth } from "@/hooks/useAuth";
 import { doctorName } from "@/lib/doctor-name";

@@ -117,7 +117,7 @@ html:not(.dark) {
   --secondary: oklch(0.96 0.01 220);
   --secondary-foreground: oklch(0.34 0.05 250);
   --muted: oklch(0.96 0.01 220);
-  --muted-foreground: oklch(0.52 0.03 240);
+  --muted-foreground: oklch(0.43 0.04 245);
   --accent: oklch(0.6 0.08 195);
   --accent-foreground: oklch(1 0 0);
   --destructive: oklch(0.55 0.21 25);
@@ -126,11 +126,21 @@ html:not(.dark) {
   --success-foreground: oklch(1 0 0);
   --warning: oklch(0.68 0.13 78);
   --warning-foreground: oklch(0.28 0.05 255);
-  --border: oklch(0.91 0.01 220);
-  --input: oklch(0.88 0.012 220);
+  --border: oklch(0.86 0.015 225);
+  --input: oklch(0.8 0.02 230);
   --ring: oklch(0.52 0.08 210);
-  --glass-line: color-mix(in oklab, oklch(0.28 0.05 255) 8%, transparent);
-  --glass-fill: color-mix(in oklab, white 65%, transparent);
+  --glass-line: color-mix(in oklab, oklch(0.28 0.05 255) 16%, transparent);
+  --glass-fill: color-mix(in oklab, white 72%, transparent);
+  --gradient-hero: radial-gradient(
+      120% 90% at 8% -12%,
+      color-mix(in oklab, var(--accent) 10%, transparent),
+      transparent 62%
+    ),
+    radial-gradient(
+      100% 80% at 100% 8%,
+      color-mix(in oklab, var(--primary) 7%, transparent),
+      transparent 58%
+    );
   --shadow-float: 0 28px 60px -32px oklch(0.28 0.05 255 / 0.25);
   --glow-primary: 0 22px 50px -24px color-mix(in oklab, var(--primary) 35%, transparent);
   --glow-accent: 0 22px 50px -24px color-mix(in oklab, var(--accent) 32%, transparent);
@@ -451,4 +461,23 @@ html:not(.dark) {
 
 @utility animate-breathe {
   animation: breathe 12s ease-in-out infinite;
+}
+
+/* ---------- light-mode contrast fixes ---------- */
+/* Dark-first "white glow" surfaces become subtle ink tints on the light canvas. */
+html:not(.dark) .aurora {
+  opacity: 0.45;
+}
+html:not(.dark) .bg-white\/5 {
+  background-color: color-mix(in oklab, var(--color-foreground) 4%, transparent);
+}
+html:not(.dark) .bg-white\/10,
+html:not(.dark) .hover\:bg-white\/10:hover {
+  background-color: color-mix(in oklab, var(--color-foreground) 8%, transparent);
+}
+html:not(.dark) .bg-white\/\[0\.02\] {
+  background-color: color-mix(in oklab, var(--color-foreground) 2%, transparent);
+}
+html:not(.dark) .focus\:bg-white\/10:focus {
+  background-color: color-mix(in oklab, var(--color-foreground) 8%, transparent);
 }

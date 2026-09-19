@@ -2,7 +2,6 @@ import { createFileRoute, useBlocker, useNavigate } from "@tanstack/react-router
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ProgressRing } from "@/components/ProgressRing";
 import { NagOverlay } from "@/components/NagOverlay";
-import { CameraWatch } from "@/components/CameraWatch";
 import { playSuccess } from "@/lib/sfx";
 import { recordFocusSession } from "@/lib/tracker";
 
@@ -48,8 +47,6 @@ function FocusPage() {
   const [minutes, setMinutes] = useState(25);
   const [custom, setCustom] = useState("");
   const [subject, setSubject] = useState<string>("");
-  const [cameraWatch, setCameraWatch] = useState(false);
-  const [sensitivity, setSensitivity] = useState(2);
   const [exitOpen, setExitOpen] = useState(false);
   const [exitText, setExitText] = useState("");
   const [celebrate, setCelebrate] = useState(false);
@@ -191,8 +188,6 @@ function FocusPage() {
       durationSec: dur * 60,
       subject: subject || null,
       escapeAttempts: 0,
-      cameraWatch,
-      sensitivity,
     };
     saveActiveSession(next);
     setSession(next);
@@ -219,13 +214,8 @@ function FocusPage() {
           </span>
         </ProgressRing>
 
-        {session.cameraWatch && (
-          <div className="w-full max-w-sm">
-            <CameraWatch sensitivity={session.sensitivity ?? 2} onLookAway={triggerNag} />
-          </div>
-        )}
-
         <div className="grid w-full max-w-sm grid-cols-3 gap-2 text-center">
+
 
           {[
             ["Escapes", session.escapeAttempts],

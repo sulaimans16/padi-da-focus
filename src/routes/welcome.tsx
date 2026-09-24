@@ -370,6 +370,12 @@ function WelcomePage() {
           <p className="text-xs text-muted-foreground">
             PG Prep by Learners Studio · Built for NEET PG aspirants
           </p>
+          <Link
+            to="/privacy"
+            className="mt-2 inline-block text-xs font-semibold text-muted-foreground transition-colors hover:text-primary"
+          >
+            Privacy Policy
+          </Link>
         </footer>
       </main>
 

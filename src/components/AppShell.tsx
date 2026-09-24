@@ -136,6 +136,12 @@ export function AppShell({ children }: { children: ReactNode }) {
               Sign in to sync →
             </Link>
           )}
+          <Link
+            to="/privacy"
+            className="mt-1.5 inline-block text-[11px] text-muted-foreground transition-colors duration-300 ease-out hover:text-primary"
+          >
+            Privacy Policy
+          </Link>
         </div>
       </aside>
 

@@ -17,6 +17,7 @@ import { Route as FocusRouteImport } from './routes/focus'
 import { Route as MockRouteImport } from './routes/mock'
 import { Route as PapersRouteImport } from './routes/papers'
 import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PyqRouteImport } from './routes/pyq'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as VideosRouteImport } from './routes/videos'
@@ -68,6 +69,11 @@ const PapersRoute = PapersRouteImport.update({
 const PricingRoute = PricingRouteImport.update({
   id: '/pricing',
   path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PyqRoute = PyqRouteImport.update({
@@ -145,6 +151,7 @@ export interface FileRoutesByFullPath {
   '/mock': typeof MockRoute
   '/papers': typeof PapersRoute
   '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
   '/pyq': typeof PyqRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/videos': typeof VideosRoute
@@ -167,6 +174,7 @@ export interface FileRoutesByTo {
   '/mock': typeof MockRoute
   '/papers': typeof PapersRoute
   '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
   '/pyq': typeof PyqRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/videos': typeof VideosRoute
@@ -191,6 +199,7 @@ export interface FileRoutesById {
   '/mock': typeof MockRoute
   '/papers': typeof PapersRoute
   '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
   '/pyq': typeof PyqRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/videos': typeof VideosRoute
@@ -215,6 +224,7 @@ export interface FileRouteTypes {
     | '/mock'
     | '/papers'
     | '/pricing'
+    | '/privacy'
     | '/pyq'
     | '/sitemap.xml'
     | '/videos'
@@ -237,6 +247,7 @@ export interface FileRouteTypes {
     | '/mock'
     | '/papers'
     | '/pricing'
+    | '/privacy'
     | '/pyq'
     | '/sitemap.xml'
     | '/videos'
@@ -260,6 +271,7 @@ export interface FileRouteTypes {
     | '/mock'
     | '/papers'
     | '/pricing'
+    | '/privacy'
     | '/pyq'
     | '/sitemap.xml'
     | '/videos'
@@ -284,6 +296,7 @@ export interface RootRouteChildren {
   MockRoute: typeof MockRoute
   PapersRoute: typeof PapersRoute
   PricingRoute: typeof PricingRoute
+  PrivacyRoute: typeof PrivacyRoute
   PyqRoute: typeof PyqRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   VideosRoute: typeof VideosRoute
@@ -352,6 +365,13 @@ declare module '@tanstack/react-router' {
       path: '/pricing'
       fullPath: '/pricing'
       preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pyq': {
@@ -472,6 +492,7 @@ const rootRouteChildren: RootRouteChildren = {
   MockRoute: MockRoute,
   PapersRoute: PapersRoute,
   PricingRoute: PricingRoute,
+  PrivacyRoute: PrivacyRoute,
   PyqRoute: PyqRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   VideosRoute: VideosRoute,

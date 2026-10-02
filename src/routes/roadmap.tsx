@@ -9,6 +9,7 @@ import { ProGate } from "@/components/ProGate";
 
 export const Route = createFileRoute("/roadmap")({
   component: RoadmapPage,
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "AI Study Roadmap — PG Prep" },
@@ -132,7 +133,7 @@ function RoadmapPage() {
           roadmap.sh, but for NEET PG.
         </p>
         <div className="mt-6">
-          <ProGate feature="AI Study Roadmaps" />
+          <ProGate feature="AI Study Roadmaps">{null}</ProGate>
         </div>
       </div>
     );

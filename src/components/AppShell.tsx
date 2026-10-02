@@ -18,6 +18,7 @@ type NavLink = {
   to:
     | "/"
     | "/bank"
+    | "/roadmap"
     | "/pyq"
     | "/mock"
     | "/daily"
@@ -35,6 +36,7 @@ type NavLink = {
 const PRIMARY: NavLink[] = [
   { label: "Dashboard", icon: "dashboard", to: "/" },
   { label: "Learn", icon: "menu_book", to: "/learn" },
+  { label: "Roadmap", icon: "route", to: "/roadmap" },
   { label: "Videos", icon: "play_circle", to: "/videos" },
   { label: "QBank", icon: "quiz", to: "/bank" },
   { label: "Mock Tests", icon: "timer", to: "/mock" },

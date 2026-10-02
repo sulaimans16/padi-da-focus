@@ -123,10 +123,17 @@ function RoadmapPage() {
   if (!isPro) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-10">
-        <ProGate
-          title="AI Study Roadmaps are a Pro feature"
-          body="Tell us what you need to study and we'll draw a structured, phase-by-phase roadmap — like roadmap.sh, but for NEET PG."
-        />
+        <p className="label-eyebrow">Plan smarter</p>
+        <h1 className="mt-1 font-display text-3xl font-bold tracking-tight md:text-4xl">
+          AI Study <span className="text-primary">Roadmap</span>
+        </h1>
+        <p className="mt-2 max-w-xl text-sm text-muted-foreground">
+          Type what you need to study and get a structured, phase-by-phase roadmap — like
+          roadmap.sh, but for NEET PG.
+        </p>
+        <div className="mt-6">
+          <ProGate feature="AI Study Roadmaps" />
+        </div>
       </div>
     );
   }

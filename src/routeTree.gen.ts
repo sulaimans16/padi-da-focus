@@ -19,6 +19,7 @@ import { Route as PapersRouteImport } from './routes/papers'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PyqRouteImport } from './routes/pyq'
+import { Route as RoadmapRouteImport } from './routes/roadmap'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as VideosRouteImport } from './routes/videos'
 import { Route as WelcomeRouteImport } from './routes/welcome'
@@ -79,6 +80,11 @@ const PrivacyRoute = PrivacyRouteImport.update({
 const PyqRoute = PyqRouteImport.update({
   id: '/pyq',
   path: '/pyq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RoadmapRoute = RoadmapRouteImport.update({
+  id: '/roadmap',
+  path: '/roadmap',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -153,6 +159,7 @@ export interface FileRoutesByFullPath {
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/pyq': typeof PyqRoute
+  '/roadmap': typeof RoadmapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/videos': typeof VideosRoute
   '/welcome': typeof WelcomeRoute
@@ -176,6 +183,7 @@ export interface FileRoutesByTo {
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/pyq': typeof PyqRoute
+  '/roadmap': typeof RoadmapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/videos': typeof VideosRoute
   '/welcome': typeof WelcomeRoute
@@ -201,6 +209,7 @@ export interface FileRoutesById {
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/pyq': typeof PyqRoute
+  '/roadmap': typeof RoadmapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/videos': typeof VideosRoute
   '/welcome': typeof WelcomeRoute
@@ -226,6 +235,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/privacy'
     | '/pyq'
+    | '/roadmap'
     | '/sitemap.xml'
     | '/videos'
     | '/welcome'
@@ -249,6 +259,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/privacy'
     | '/pyq'
+    | '/roadmap'
     | '/sitemap.xml'
     | '/videos'
     | '/welcome'
@@ -273,6 +284,7 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/privacy'
     | '/pyq'
+    | '/roadmap'
     | '/sitemap.xml'
     | '/videos'
     | '/welcome'
@@ -298,6 +310,7 @@ export interface RootRouteChildren {
   PricingRoute: typeof PricingRoute
   PrivacyRoute: typeof PrivacyRoute
   PyqRoute: typeof PyqRoute
+  RoadmapRoute: typeof RoadmapRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   VideosRoute: typeof VideosRoute
   WelcomeRoute: typeof WelcomeRoute
@@ -379,6 +392,13 @@ declare module '@tanstack/react-router' {
       path: '/pyq'
       fullPath: '/pyq'
       preLoaderRoute: typeof PyqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/roadmap': {
+      id: '/roadmap'
+      path: '/roadmap'
+      fullPath: '/roadmap'
+      preLoaderRoute: typeof RoadmapRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -494,6 +514,7 @@ const rootRouteChildren: RootRouteChildren = {
   PricingRoute: PricingRoute,
   PrivacyRoute: PrivacyRoute,
   PyqRoute: PyqRoute,
+  RoadmapRoute: RoadmapRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   VideosRoute: VideosRoute,
   WelcomeRoute: WelcomeRoute,

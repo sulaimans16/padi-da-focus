@@ -40,7 +40,7 @@ export const askStudyAi = createServerFn({ method: "POST" })
         system: ASK_SYSTEM,
         prompt,
         ...(useOpenRouter
-          ? { maxOutputTokens: 700 }
+          ? { maxOutputTokens: 4000 }
           : { providerOptions: { lovable: { reasoningEffort: "none" } } }),
       });
       const answer = result.text;

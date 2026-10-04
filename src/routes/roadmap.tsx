@@ -29,6 +29,24 @@ export const Route = createFileRoute("/roadmap")({
   }),
 });
 
+type ToolRoute = "/bank" | "/papers" | "/mock" | "/focus" | "/weak-spots";
+
+const TOOLS: Array<{ match: RegExp; label: string; to: ToolRoute }> = [
+  { match: /qbank/i, label: "QBank", to: "/bank" },
+  { match: /pyq|vault|past[- ]year/i, label: "PYQ Vault", to: "/papers" },
+  { match: /mock/i, label: "Mock Tests", to: "/mock" },
+  { match: /focus/i, label: "Focus Lock", to: "/focus" },
+  { match: /weak/i, label: "Weak Spots", to: "/weak-spots" },
+];
+
+function toolFor(resource: string) {
+  return TOOLS.find((t) => t.match.test(resource));
+}
+
+function externalHref(resource: string) {
+  return `https://www.google.com/search?q=${encodeURIComponent(`${resource} NEET PG`)}`;
+}
+
 const SUGGESTIONS = [
   "Pharmacology for NEET PG in 6 weeks",
   "Full Medicine revision before INICET",

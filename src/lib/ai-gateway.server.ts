@@ -15,7 +15,7 @@ export function createLovableAiGatewayProvider(
   });
 }
 
-export const OPENROUTER_MODEL = "openai/gpt-4o";
+export const OPENROUTER_MODEL = "apodex/apodex-1.1-mini:free";
 
 export function createOpenRouterProvider(
   apiKey: string,

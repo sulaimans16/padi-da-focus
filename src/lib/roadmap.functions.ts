@@ -68,7 +68,7 @@ export const generateRoadmap = createServerFn({ method: "POST" })
 
     const useOpenRouter = Boolean(openRouterKey);
     const gateway = useOpenRouter
-      ? createOpenRouterProvider(openRouterKey!, { structuredOutputs: true })
+      ? createOpenRouterProvider(openRouterKey!, { structuredOutputs: false })
       : createLovableAiGatewayProvider(lovableKey!, { structuredOutputs: true });
 
     let parsed: Roadmap | null = null;

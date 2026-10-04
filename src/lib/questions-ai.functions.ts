@@ -119,7 +119,7 @@ export const generateQuestionBatch = createServerFn({ method: "POST" })
 
     const useOpenRouter = Boolean(openRouterKey);
     const gateway = useOpenRouter
-      ? createOpenRouterProvider(openRouterKey!, { structuredOutputs: true })
+      ? createOpenRouterProvider(openRouterKey!, { structuredOutputs: false })
       : createLovableAiGatewayProvider(lovableKey!, { structuredOutputs: true });
     const modelId = useOpenRouter ? OPENROUTER_MODEL : "openai/gpt-5.6-sol";
 

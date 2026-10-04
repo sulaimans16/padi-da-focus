@@ -79,7 +79,7 @@ export const generateRoadmap = createServerFn({ method: "POST" })
         prompt,
         output: Output.object({ schema: RoadmapSchema }),
         ...(useOpenRouter
-          ? { maxOutputTokens: 3000 }
+          ? { maxOutputTokens: 10000 }
           : { providerOptions: { lovable: { reasoningEffort: "none" } } }),
       });
       parsed = output;

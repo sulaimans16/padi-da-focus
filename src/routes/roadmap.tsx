@@ -97,8 +97,27 @@ function RoadmapPage() {
   const [done, setDone] = useState<Set<string>>(new Set());
 
   useEffect(() => {
+    try {
+      const last = localStorage.getItem("padida.roadmap.__last");
+      if (!last) return;
+      const saved = loadSaved(last);
+      if (saved) {
+        setCurrent(saved);
+        setGoal(saved.goal);
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  useEffect(() => {
     if (!current) return;
     setDone(new Set(current.done));
+    try {
+      localStorage.setItem("padida.roadmap.__last", current.goal);
+    } catch {
+      // ignore
+    }
   }, [current]);
 
   const totalSteps = useMemo(

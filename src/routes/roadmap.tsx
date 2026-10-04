@@ -47,6 +47,22 @@ function externalHref(resource: string) {
   return `https://www.google.com/search?q=${encodeURIComponent(`${resource} NEET PG`)}`;
 }
 
+function phaseTools(phase: Roadmap["phases"][number]) {
+  const tools: ToolRoute[] = [];
+  const externals: string[] = [];
+  for (const s of phase.steps) {
+    if (!s.resource) continue;
+    const tool = toolFor(s.resource);
+    if (tool) {
+      if (!tools.includes(tool.to)) tools.push(tool.to);
+    } else if (!externals.includes(s.resource)) {
+      externals.push(s.resource);
+    }
+  }
+  if (!tools.length) tools.push("/bank");
+  return { tools, externals: externals.slice(0, 2) };
+}
+
 const SUGGESTIONS = [
   "Pharmacology for NEET PG in 6 weeks",
   "Full Medicine revision before INICET",
@@ -320,6 +336,39 @@ function RoadmapPage() {
                         );
                       })}
                     </ul>
+                    {(() => {
+                      const { tools, externals } = phaseTools(phase);
+                      return (
+                        <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-primary/10 pt-3">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                            Links
+                          </span>
+                          {tools.map((to) => {
+                            const tool = TOOLS.find((t) => t.to === to)!;
+                            return (
+                              <Link
+                                key={to}
+                                to={to}
+                                className="rounded-full bg-tint px-3 py-1 text-xs font-semibold text-primary transition-colors hover:bg-primary/20"
+                              >
+                                {tool.label} →
+                              </Link>
+                            );
+                          })}
+                          {externals.map((r) => (
+                            <a
+                              key={r}
+                              href={externalHref(r)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="rounded-full bg-tint px-3 py-1 text-xs font-semibold text-primary transition-colors hover:bg-primary/20"
+                            >
+                              {r} ↗
+                            </a>
+                          ))}
+                        </div>
+                      );
+                    })()}
                   </div>
                 </motion.li>
               );

@@ -112,14 +112,15 @@ export const generateQuestionBatch = createServerFn({ method: "POST" })
       data.avoid.length
         ? `Already covered (do NOT repeat these concepts): ${data.avoid.slice(0, 60).join(" | ")}`
         : "",
-      "Return only the JSON object described by the schema.",
+      "Return ONLY a JSON object of this exact shape:",
+      '{"questions": [{"topic": string, "stem": string, "options": [{"id": "a"|"b"|"c"|"d", "text": string}], "correctOptionId": string, "oneLiner": string, "explanation": string, "distractors": [{"optionId": string, "why": string}], "highYield": string, "difficulty": "easy"|"med"|"hard", "isPyq": boolean, "pyqYear": number|null, "repeatCount": number|null}]}',
     ]
       .filter(Boolean)
       .join("\n");
 
     const useOpenRouter = Boolean(openRouterKey);
     const gateway = useOpenRouter
-      ? createOpenRouterProvider(openRouterKey!, { structuredOutputs: true })
+      ? createOpenRouterProvider(openRouterKey!, { structuredOutputs: false })
       : createLovableAiGatewayProvider(lovableKey!, { structuredOutputs: true });
     const modelId = useOpenRouter ? OPENROUTER_MODEL : "openai/gpt-5.6-sol";
 

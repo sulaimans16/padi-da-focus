@@ -63,12 +63,14 @@ export const generateRoadmap = createServerFn({ method: "POST" })
     const prompt = [
       `Study goal: ${data.goal}`,
       `Time available: about ${weeks} weeks.`,
-      "Design the roadmap now. Return only the JSON object described by the schema.",
+      "Design the roadmap now. Return ONLY a JSON object of this exact shape:",
+      '{"title": string, "intro": string, "phases": [{"title": string, "summary": string, "steps": [{"title": string, "detail": string, "resource": string}]}]}',
+      "Use 3-10 phases, each with 2-8 steps.",
     ].join("\n");
 
     const useOpenRouter = Boolean(openRouterKey);
     const gateway = useOpenRouter
-      ? createOpenRouterProvider(openRouterKey!, { structuredOutputs: true })
+      ? createOpenRouterProvider(openRouterKey!, { structuredOutputs: false })
       : createLovableAiGatewayProvider(lovableKey!, { structuredOutputs: true });
 
     let parsed: Roadmap | null = null;

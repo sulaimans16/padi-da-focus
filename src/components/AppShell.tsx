@@ -104,23 +104,23 @@ export function AppShell({ children }: { children: ReactNode }) {
       <Aurora />
 
       {/* Desktop side navigation — dissolves into the background, no column rule */}
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col px-4 py-5 md:flex glass-bar">
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 min-h-0 flex-col overflow-hidden px-4 py-5 md:flex glass-bar">
 
-        <Link to="/" className="group flex items-center gap-2.5 px-2">
+        <Link to="/" className="group flex shrink-0 items-center gap-2.5 px-2">
           <BrandMark className="h-9 w-9 transition-transform duration-300 ease-out group-hover:scale-105" />
           <span className="text-base font-bold tracking-tight">
             PG <span className="text-primary">Prep</span>
           </span>
         </Link>
 
-        <nav className="mt-7 flex flex-col gap-1">
+        <nav aria-label="Main navigation" className="mt-7 flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto overscroll-contain pb-3">
           <p className="label-eyebrow px-4 pb-1">Prepare</p>
           <NavList items={PRIMARY} pathname={pathname} />
           <p className="label-eyebrow px-4 pb-1 pt-4">Discipline</p>
           <NavList items={SECONDARY} pathname={pathname} />
         </nav>
 
-        <div className="mt-auto glass p-3.5">
+        <div className="glass mt-3 shrink-0 p-3.5">
           <p className="label-eyebrow">Signed in as</p>
           <p className="mt-1 truncate text-sm font-semibold">{name}</p>
           {user ? (

@@ -26,6 +26,8 @@ export const Route = createFileRoute("/auth")({
         property: "og:description",
         content: "Your NEET PG progress, accuracy and focus streak — saved to your account.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: AuthPage,
@@ -109,10 +111,10 @@ function AuthPage() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
+    <div className="relative min-h-dvh overflow-x-clip">
       <Aurora intensity="full" />
 
-      <main className="relative z-10 flex min-h-screen flex-col justify-center px-6 py-16">
+      <main className="relative z-10 flex min-h-dvh flex-col px-6 pb-10 pt-10 sm:pt-16">
         <div className="mx-auto w-full max-w-sm">
           <Link
             to="/"

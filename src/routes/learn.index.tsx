@@ -44,7 +44,7 @@ function ModuleTile({ m, learned }: { m: LearnModule; learned: number }) {
       params={{ subject: m.slug }}
       className="card-pop card-pop-hover group flex h-full flex-col overflow-hidden"
     >
-      <ModuleCover mod={m} className="h-32 w-full" />
+      <ModuleCover mod={m} className="h-24 w-full sm:h-32" />
       <div className="flex flex-1 flex-col border-t-2 border-glass-line p-4">
         <div className="flex items-center gap-2">
           <Icon name={m.icon} filled className="text-[20px] text-primary" />

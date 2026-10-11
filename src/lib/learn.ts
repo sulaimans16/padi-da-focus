@@ -15,6 +15,8 @@ import { orthopaedics } from "./learn-modules/orthopaedics";
 import { dermatology } from "./learn-modules/dermatology";
 import { psychiatry } from "./learn-modules/psychiatry";
 import { anaesthesia } from "./learn-modules/anaesthesia";
+import { forensicMedicine } from "./learn-modules/forensic-medicine";
+import { radiology } from "./learn-modules/radiology";
 
 /**
  * Concept modules for the Learn section.
@@ -128,6 +130,8 @@ export const LEARN_MODULES: LearnModule[] = [
   dermatology,
   psychiatry,
   anaesthesia,
+  forensicMedicine,
+  radiology,
 ];
 
 export function getModule(slug: string) {

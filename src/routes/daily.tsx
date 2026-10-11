@@ -2,9 +2,12 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { QuizRunner, type QuizSummary } from "@/components/QuizRunner";
 import { GlassCard, Icon, Pill } from "@/components/Primitives";
-import { Reveal } from "@/components/motion/Reveal";
+import { Reveal, SPRING } from "@/components/motion/Reveal";
+import { motion } from "motion/react";
+import { StreakFlame } from "@/components/game/Widgets";
+import { useGameState } from "@/hooks/useGameState";
+import { XP, claimXp } from "@/lib/gamification";
 import {
-  dailyStreak,
   fetchDailyChallenge,
   loadDailyResults,
   saveDailyResult,
@@ -47,7 +50,8 @@ function DailyPage() {
   }, []);
 
   const today = results.find((r) => r.day === day);
-  const streak = dailyStreak(results);
+  const { state } = useGameState();
+  const streak = state?.streak ?? 0;
 
   const start = async () => {
     setLoading(true);
@@ -64,6 +68,7 @@ function DailyPage() {
     const result = { day, correct: s.correct, total: s.total };
     saveDailyResult(result);
     setResults((prev) => [result, ...prev.filter((r) => r.day !== day)]);
+    if (s.answered >= 5) void claimXp("daily_complete", day, XP.daily);
   };
 
   return (
@@ -77,27 +82,29 @@ function DailyPage() {
         </p>
       </Reveal>
 
+      {!started ? (
       <Reveal delay={0.05}>
-        <div className="mt-6 grid gap-4 sm:grid-cols-3">
-          <GlassCard className="p-5">
+        <div className="mt-6 grid grid-cols-3 gap-3 sm:gap-4">
+          <div className="card-pop p-4 sm:p-5">
             <p className="label-eyebrow">Current streak</p>
-            <p className="mt-1 font-display text-3xl font-bold">
-              {streak}
-              <span className="ml-1 text-sm text-muted-foreground">days</span>
-            </p>
-          </GlassCard>
-          <GlassCard className="p-5">
+            <div className="mt-1 flex items-center gap-2">
+              <StreakFlame streak={streak} lit={Boolean(state?.streakExtendedToday)} size="md" />
+              <span className="text-sm text-muted-foreground">days</span>
+            </div>
+          </div>
+          <div className="card-pop p-4 sm:p-5">
             <p className="label-eyebrow">Today</p>
             <p className="mt-1 font-display text-3xl font-bold">
               {today ? `${today.correct}/${today.total}` : "—"}
             </p>
-          </GlassCard>
-          <GlassCard className="p-5">
+          </div>
+          <div className="card-pop p-4 sm:p-5">
             <p className="label-eyebrow">Days played</p>
             <p className="mt-1 font-display text-3xl font-bold">{results.length}</p>
-          </GlassCard>
+          </div>
         </div>
       </Reveal>
+      ) : null}
 
       {started && questions?.length ? (
         <div className="mt-6">
@@ -110,7 +117,16 @@ function DailyPage() {
         </div>
       ) : (
         <Reveal delay={0.08}>
-          <GlassCard className="mt-6 p-6">
+          <div className="card-pop mt-6 flex flex-col items-center gap-5 p-8 text-center sm:flex-row sm:text-left">
+            <motion.span
+              initial={{ scale: 0.6, rotate: -15 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={SPRING}
+              className="flex h-20 w-20 shrink-0 items-center justify-center rounded-3xl bg-xp/20 text-xp animate-bob"
+            >
+              <Icon name="bolt" filled className="text-[48px]" />
+            </motion.span>
+            <div className="flex-1">
             {today ? (
               <p className="text-sm text-muted-foreground">
                 You already finished today's challenge with {today.correct}/{today.total}. You can
@@ -118,19 +134,21 @@ function DailyPage() {
               </p>
             ) : (
               <p className="text-sm text-muted-foreground">
-                Ten questions, mixed subjects, no timer. Explanations appear as you go.
+                Ten questions, mixed subjects, no timer. Explanations appear as you go, and
+                finishing earns a <strong className="text-xp">+{XP.daily} XP</strong> bonus.
               </p>
             )}
+            </div>
             <Pill
               variant="primary"
-              className="mt-4"
+              className="h-13 w-full px-8 text-base sm:w-auto"
               disabled={loading}
               onClick={() => void start()}
             >
               <Icon name={loading ? "hourglass_top" : "bolt"} className="text-[18px]" />
               {loading ? "Loading…" : today ? "Replay today" : "Start today's challenge"}
             </Pill>
-          </GlassCard>
+          </div>
         </Reveal>
       )}
 

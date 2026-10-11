@@ -1,3 +1,7 @@
+/* Icon font lives in a low-priority layer so Tailwind size utilities (text-[28px]) win over
+   Google's built-in 24px. Loaded here instead of a <link> for exactly that reason. */
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap")
+layer(icons);
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";

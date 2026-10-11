@@ -144,8 +144,9 @@ export type LeagueState =
 // ---------- event bus (instant feedback across components) ----------
 
 export type GameEvent =
-  | { type: "xp"; amount: number; combo: number; correct: boolean }
+  | { type: "xp"; amount: number; combo: number; correct: boolean; silent?: boolean }
   | { type: "sync" }
+  | { type: "confetti" }
   | { type: "celebrate"; kind: "level" | "streak" | "badge" | "goal" | "lesson"; title: string; subtitle?: string; icon?: string };
 
 type Listener = (e: GameEvent) => void;
@@ -254,7 +255,7 @@ export function localGameState(g: LocalGame = loadLocalGame()): GameState {
  * Call when a learner answers. Predicts the XP the server will grant, emits instant
  * feedback and updates the local mirror. Returns the predicted reward.
  */
-export function registerAnswer(correct: boolean) {
+export function registerAnswer(correct: boolean, opts: { silent?: boolean } = {}) {
   const g = loadLocalGame();
   const now = Date.now();
   const combo = correct ? (now - g.lastAt < 15 * 60_000 ? g.combo + 1 : 1) : 0;
@@ -265,8 +266,17 @@ export function registerAnswer(correct: boolean) {
     bestCombo: Math.max(g.bestCombo, combo),
     lastAt: now,
   });
-  emitGameEvent({ type: "xp", amount, combo, correct });
+  emitGameEvent({ type: "xp", amount, combo, correct, silent: Boolean(opts.silent) });
   return { amount, combo };
+}
+
+/** A completed focus lock earns 1 XP per minute (max 60); the server grants it on insert. */
+export function registerFocus(minutes: number) {
+  const amount = Math.max(0, Math.min(60, Math.round(minutes)));
+  if (!amount) return 0;
+  saveLocalGame(addLocalXp(loadLocalGame(), amount));
+  emitGameEvent({ type: "xp", amount, combo: 0, correct: true });
+  return amount;
 }
 
 /** Ask listeners (the game-state hook) to refetch from the server. */

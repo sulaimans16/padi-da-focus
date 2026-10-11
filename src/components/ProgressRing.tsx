@@ -4,6 +4,9 @@ type Props = {
   strokeWidth?: number;
   children?: React.ReactNode;
   tone?: "primary" | "accent" | "destructive";
+  /** Any CSS color; overrides `tone`. */
+  color?: string;
+  trackColor?: string;
 };
 
 export function ProgressRing({
@@ -12,16 +15,19 @@ export function ProgressRing({
   strokeWidth = 14,
   children,
   tone = "primary",
+  color,
+  trackColor = "var(--color-surface-2)",
 }: Props) {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const clamped = Math.min(1, Math.max(0, progress));
   const strokeColor =
-    tone === "destructive"
+    color ??
+    (tone === "destructive"
       ? "var(--color-destructive)"
       : tone === "accent"
         ? "var(--color-accent)"
-        : "var(--color-primary)";
+        : "var(--color-primary)");
 
   return (
     <div className="relative inline-flex items-center justify-center" style={{ width: size, height: size }}>
@@ -31,7 +37,7 @@ export function ProgressRing({
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke="var(--color-surface-2)"
+          stroke={trackColor}
           strokeWidth={strokeWidth}
         />
         <circle
@@ -44,7 +50,7 @@ export function ProgressRing({
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={circumference * (1 - clamped)}
-          style={{ transition: "stroke-dashoffset 0.4s linear" }}
+          style={{ transition: "stroke-dashoffset 0.6s cubic-bezier(0.22, 1, 0.36, 1)" }}
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center">{children}</div>

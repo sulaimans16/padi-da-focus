@@ -15,6 +15,13 @@
       "when": 1791692336801,
       "tag": "0001_coupons",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791704020274,
+      "tag": "0002_flashcards",
+      "breakpoints": true
     }
   ]
 }

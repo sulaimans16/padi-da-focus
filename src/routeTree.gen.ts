@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as DailyRouteImport } from './routes/daily'
+import { Route as FlashcardsRouteImport } from './routes/flashcards'
 import { Route as FocusRouteImport } from './routes/focus'
 import { Route as MockRouteImport } from './routes/mock'
 import { Route as PapersRouteImport } from './routes/papers'
@@ -53,6 +54,11 @@ const AuthRoute = AuthRouteImport.update({
 const DailyRoute = DailyRouteImport.update({
   id: '/daily',
   path: '/daily',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FlashcardsRoute = FlashcardsRouteImport.update({
+  id: '/flashcards',
+  path: '/flashcards',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FocusRoute = FocusRouteImport.update({
@@ -171,6 +177,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/daily': typeof DailyRoute
+  '/flashcards': typeof FlashcardsRoute
   '/focus': typeof FocusRoute
   '/mock': typeof MockRoute
   '/papers': typeof PapersRoute
@@ -198,6 +205,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/daily': typeof DailyRoute
+  '/flashcards': typeof FlashcardsRoute
   '/focus': typeof FocusRoute
   '/mock': typeof MockRoute
   '/papers': typeof PapersRoute
@@ -227,6 +235,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/daily': typeof DailyRoute
+  '/flashcards': typeof FlashcardsRoute
   '/focus': typeof FocusRoute
   '/mock': typeof MockRoute
   '/papers': typeof PapersRoute
@@ -256,6 +265,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/daily'
+    | '/flashcards'
     | '/focus'
     | '/mock'
     | '/papers'
@@ -283,6 +293,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/daily'
+    | '/flashcards'
     | '/focus'
     | '/mock'
     | '/papers'
@@ -311,6 +322,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/daily'
+    | '/flashcards'
     | '/focus'
     | '/mock'
     | '/papers'
@@ -340,6 +352,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   DailyRoute: typeof DailyRoute
+  FlashcardsRoute: typeof FlashcardsRoute
   FocusRoute: typeof FocusRoute
   MockRoute: typeof MockRoute
   PapersRoute: typeof PapersRoute
@@ -386,6 +399,13 @@ declare module '@tanstack/react-router' {
       path: '/daily'
       fullPath: '/daily'
       preLoaderRoute: typeof DailyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/flashcards': {
+      id: '/flashcards'
+      path: '/flashcards'
+      fullPath: '/flashcards'
+      preLoaderRoute: typeof FlashcardsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/focus': {
@@ -571,6 +591,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   DailyRoute: DailyRoute,
+  FlashcardsRoute: FlashcardsRoute,
   FocusRoute: FocusRoute,
   MockRoute: MockRoute,
   PapersRoute: PapersRoute,

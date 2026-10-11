@@ -13,7 +13,9 @@ import {
   StreakFlame,
   TierEmblem,
 } from "@/components/game/Widgets";
+import { MascotSays } from "@/components/mascot/Mascot";
 import { useAuth } from "@/hooks/useAuth";
+import { dashboardLine } from "@/lib/mascot";
 import { useGameState } from "@/hooks/useGameState";
 import { doctorName } from "@/lib/doctor-name";
 import { LEAGUE_TIERS, fetchLeague } from "@/lib/gamification";
@@ -225,6 +227,10 @@ function Index() {
           cta: "Practice",
         };
 
+  const [hour, setHour] = useState(12);
+  useEffect(() => setHour(new Date().getHours()), []);
+  const buddy = dashboardLine(state, name, hour);
+
   const leagueData = league.data;
   const me = leagueData?.status === "joined" ? leagueData.members.find((m) => m.is_me) : undefined;
   const tier = leagueData?.tier ?? state?.leagueTier ?? 0;
@@ -251,10 +257,9 @@ function Index() {
                   : "Let's start a streak"}
             </span>
           </h1>
-          <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
-            Small daily wins beat cramming. Hit your XP goal, clear your quests, and climb the
-            weekly league. NEET PG prep that feels like a game.
-          </p>
+          <MascotSays mood={buddy.mood} size={84} className="mt-4 max-w-xl">
+            {buddy.text}
+          </MascotSays>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Badge tone="primary" tooltip="Questions available across all subjects">

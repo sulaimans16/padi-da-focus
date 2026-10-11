@@ -1,11 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useMemo, useState } from "react";
-import { motion } from "motion/react";
 import { generateRoadmap, type Roadmap } from "@/lib/roadmap.functions";
 import { useAccess } from "@/hooks/useAccess";
 import { Icon } from "@/components/Primitives";
 import { ProGate } from "@/components/ProGate";
+import { Mascot, MascotSays } from "@/components/mascot/Mascot";
+import { ProgressBar } from "@/components/game/Widgets";
+import { RoadmapTrail, type TrailLink } from "@/components/roadmap/RoadmapTrail";
 
 export const Route = createFileRoute("/roadmap")({
   component: RoadmapPage,
@@ -63,6 +65,31 @@ function phaseTools(phase: Roadmap["phases"][number]) {
   return { tools, externals: externals.slice(0, 2) };
 }
 
+function phaseLinkNodes(phase: Roadmap["phases"][number]): TrailLink[] {
+  const { tools, externals } = phaseTools(phase);
+  const cls = "btn-base btn-ghost px-3 py-1 text-xs text-primary";
+  return [
+    ...tools.map((to) => ({
+      key: to,
+      label: TOOLS.find((t) => t.to === to)!.label,
+      node: (
+        <Link to={to} className={cls}>
+          {TOOLS.find((t) => t.to === to)!.label} →
+        </Link>
+      ),
+    })),
+    ...externals.map((r) => ({
+      key: r,
+      label: r,
+      node: (
+        <a href={externalHref(r)} target="_blank" rel="noopener noreferrer" className={cls}>
+          {r} ↗
+        </a>
+      ),
+    })),
+  ];
+}
+
 const SUGGESTIONS = [
   "Pharmacology for NEET PG in 6 weeks",
   "Full Medicine revision before INICET",
@@ -70,10 +97,52 @@ const SUGGESTIONS = [
   "Final 30-day sprint before the exam",
 ];
 
+const SAMPLE: Roadmap = {
+  title: "Pharmacology in 6 weeks",
+  intro: "A sample route. Unlock Pro to draw your own.",
+  phases: [
+    {
+      title: "General pharmacology",
+      summary: "Pharmacokinetics and receptors first.",
+      steps: [
+        { title: "PK basics", detail: "Absorption, distribution, half-life." },
+        { title: "Receptor theory", detail: "Agonists, antagonists, dose-response." },
+      ],
+    },
+    {
+      title: "ANS drugs",
+      summary: "Cholinergic and adrenergic systems.",
+      steps: [
+        { title: "Cholinergics", detail: "Direct and indirect agents." },
+        { title: "Adrenergics", detail: "Alpha and beta selectivity." },
+      ],
+    },
+    {
+      title: "CVS & renal",
+      summary: "Antihypertensives, diuretics.",
+      steps: [
+        { title: "Diuretics", detail: "Site of action and adverse effects." },
+        { title: "Antihypertensives", detail: "First-line choices by scenario." },
+      ],
+    },
+    {
+      title: "PYQ sprint",
+      summary: "Timed past-year practice.",
+      steps: [
+        { title: "PYQ Vault", detail: "Last five years, timed." },
+        { title: "Mock test", detail: "One full paper." },
+      ],
+    },
+  ],
+};
+
 type SavedMap = { goal: string; roadmap: Roadmap; done: string[] };
 
 function storageKey(goal: string) {
-  return `padida.roadmap.${goal.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 60)}`;
+  return `padida.roadmap.${goal
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .slice(0, 60)}`;
 }
 
 function loadSaved(goal: string): SavedMap | null {
@@ -181,12 +250,21 @@ function RoadmapPage() {
         <h1 className="mt-1 font-display text-3xl font-bold tracking-tight md:text-4xl">
           AI Study <span className="text-primary">Roadmap</span>
         </h1>
-        <p className="mt-2 max-w-xl text-sm text-muted-foreground">
-          Type what you need to study and get a structured, phase-by-phase roadmap — like
-          roadmap.sh, but for NEET PG.
-        </p>
+        <MascotSays mood="happy" size={80} className="mt-4">
+          Tell me your goal and I'll draw you a route, phase by phase. Then we walk it together.
+        </MascotSays>
         <div className="mt-6">
           <ProGate feature="AI Study Roadmaps">{null}</ProGate>
+        </div>
+        <div
+          className="pointer-events-none mt-8 select-none opacity-60 [mask-image:linear-gradient(to_bottom,black_55%,transparent)]"
+          aria-hidden
+        >
+          <RoadmapTrail
+            roadmap={SAMPLE}
+            done={new Set(["0:0", "0:1", "1:0"])}
+            interactive={false}
+          />
         </div>
       </div>
     );
@@ -198,28 +276,33 @@ function RoadmapPage() {
       <h1 className="mt-1 font-display text-3xl font-bold tracking-tight md:text-4xl">
         AI Study <span className="text-primary">Roadmap</span>
       </h1>
-      <p className="mt-2 max-w-xl text-sm text-muted-foreground">
-        Type what you need to study — a subject, a weak area, a countdown sprint — and get a
-        structured, step-by-step roadmap you can tick off as you go.
-      </p>
+      <MascotSays mood={busy ? "think" : current ? "happy" : "idle"} size={80} className="mt-4">
+        {busy
+          ? "Hmm, let me plot the best route for you…"
+          : current
+            ? pct === 100
+              ? "We made it! Pick a new goal whenever you're ready."
+              : `${totalSteps - done.size} steps to go. I'll walk with you.`
+            : "What do you want to conquer? A subject, a weak area, a final sprint. I'll map the route."}
+      </MascotSays>
 
       <form
         onSubmit={(e) => {
           e.preventDefault();
           void run(goal);
         }}
-        className="glass mt-6 flex flex-col gap-3 p-4 sm:flex-row sm:items-center"
+        className="card-pop mt-6 flex flex-col gap-3 p-4 sm:flex-row sm:items-center"
       >
         <input
           value={goal}
           onChange={(e) => setGoal(e.target.value)}
           placeholder="e.g. Pharmacology for NEET PG"
-          className="min-w-0 flex-1 rounded-full border border-border bg-surface-2 px-4 py-2.5 text-sm"
+          className="min-w-0 flex-1 rounded-full border-2 border-glass-line bg-surface-2 px-4 py-3 text-sm outline-none transition-colors focus:border-primary"
         />
         <select
           value={weeks}
           onChange={(e) => setWeeks(Number(e.target.value))}
-          className="rounded-full border border-border bg-surface-2 px-3 py-2.5 text-sm"
+          className="rounded-full border-2 border-glass-line bg-surface-2 px-3 py-3 text-sm"
           aria-label="Time available"
         >
           {[2, 4, 6, 8, 12, 16, 24].map((w) => (
@@ -231,9 +314,10 @@ function RoadmapPage() {
         <button
           type="submit"
           disabled={busy || goal.trim().length < 3}
-          className="btn-base btn-primary whitespace-nowrap px-5 py-2.5 text-sm disabled:opacity-50"
+          className="btn-base btn-primary h-12 whitespace-nowrap px-6 text-sm"
         >
-          {busy ? "Drawing…" : "Build my roadmap"}
+          <Icon name={busy ? "hourglass_top" : "route"} filled className="text-[18px]" />
+          {busy ? "Drawing…" : "Draw my route"}
         </button>
       </form>
 
@@ -244,7 +328,7 @@ function RoadmapPage() {
               key={s}
               type="button"
               onClick={() => void run(s)}
-              className="rounded-full border border-border bg-surface-2 px-3.5 py-1.5 text-xs font-semibold transition-colors hover:bg-tint"
+              className="btn-base btn-ghost px-3.5 py-1.5 text-xs"
             >
               {s}
             </button>
@@ -253,15 +337,26 @@ function RoadmapPage() {
       ) : null}
 
       {busy ? (
-        <div className="mt-10 flex items-center gap-3 text-sm text-muted-foreground">
-          <span className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-          Sketching your roadmap — this takes a few seconds…
+        <div className="mt-10 flex flex-col items-center gap-2 text-sm text-muted-foreground">
+          <svg viewBox="0 0 200 120" className="h-32 w-56" aria-hidden>
+            <path
+              d="M20 110 C 20 70, 100 80, 100 60 C 100 40, 180 50, 180 10"
+              fill="none"
+              stroke="var(--color-primary)"
+              strokeWidth={5}
+              strokeLinecap="round"
+              strokeDasharray="4 12"
+              className="roadmap-draw"
+            />
+          </svg>
+          <Mascot mood="walk" size={72} />
+          Sketching your route. This takes a few seconds…
         </div>
       ) : null}
       {error ? <p className="mt-4 text-sm font-semibold text-destructive">{error}</p> : null}
 
       {current ? (
-        <section className="mt-10" aria-label="Generated roadmap">
+        <section className="mt-10" aria-label="Your study route">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div className="min-w-0">
               <h2 className="font-display text-xl font-bold tracking-tight">
@@ -277,129 +372,16 @@ function RoadmapPage() {
             </div>
           </div>
 
-          <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-surface-2">
-            <motion.div
-              className="h-full rounded-full bg-primary"
-              animate={{ width: `${pct}%` }}
-              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          <ProgressBar value={pct / 100} color="var(--color-xp)" className="mt-3 h-4" />
+
+          <div className="mt-10">
+            <RoadmapTrail
+              roadmap={current.roadmap}
+              done={done}
+              onToggle={toggleStep}
+              phaseLinks={phaseLinkNodes}
             />
           </div>
-
-          <ol className="relative mt-8 space-y-8 border-l-2 border-primary/25 pl-6">
-            {current.roadmap.phases.map((phase, pi) => {
-              const phaseDone = phase.steps.every((_, si) => done.has(`${pi}:${si}`));
-              return (
-                <motion.li
-                  key={pi}
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: pi * 0.06, ease: [0.22, 1, 0.36, 1] }}
-                  className="relative"
-                >
-                  <span
-                    className={`absolute -left-[33px] flex h-5 w-5 items-center justify-center rounded-full border-2 ${
-                      phaseDone
-                        ? "border-primary bg-primary text-primary-foreground"
-                        : "border-primary/50 bg-surface"
-                    }`}
-                  >
-                    {phaseDone ? <Icon name="check" className="text-[12px]" /> : null}
-                  </span>
-
-                  <div className="glass p-4">
-                    <p className="label-eyebrow">Phase {pi + 1}</p>
-                    <h3 className="mt-0.5 font-display text-base font-bold">{phase.title}</h3>
-                    <p className="mt-1 text-xs text-muted-foreground">{phase.summary}</p>
-
-                    <ul className="mt-3 space-y-2">
-                      {phase.steps.map((step, si) => {
-                        const id = `${pi}:${si}`;
-                        const isDone = done.has(id);
-                        return (
-                          <li key={si}>
-                            <button
-                              type="button"
-                              onClick={() => toggleStep(id)}
-                              className={`flex w-full items-start gap-3 rounded-xl border px-3 py-2.5 text-left transition-all duration-300 ${
-                                isDone
-                                  ? "border-primary/40 bg-tint"
-                                  : "border-border bg-surface-2 hover:border-primary/40"
-                              }`}
-                            >
-                              <span
-                                className={`mt-0.5 flex h-4.5 w-4.5 shrink-0 items-center justify-center rounded-md border-2 ${
-                                  isDone
-                                    ? "border-primary bg-primary text-primary-foreground"
-                                    : "border-muted-foreground/40"
-                                }`}
-                              >
-                                {isDone ? <Icon name="check" className="text-[11px]" /> : null}
-                              </span>
-                              <span className="min-w-0 flex-1">
-                                <span
-                                  className={`block text-sm font-semibold ${isDone ? "line-through opacity-60" : ""}`}
-                                >
-                                  {step.title}
-                                </span>
-                                <span className="mt-0.5 block text-xs text-muted-foreground">
-                                  {step.detail}
-                                </span>
-                                {step.resource ? (
-                                  <span className="mt-1 inline-block rounded-full bg-tint px-2 py-0.5 text-[10px] font-bold text-primary">
-                                    {step.resource}
-                                  </span>
-                                ) : null}
-                              </span>
-                            </button>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                    {(() => {
-                      const { tools, externals } = phaseTools(phase);
-                      return (
-                        <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-primary/10 pt-3">
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                            Links
-                          </span>
-                          {tools.map((to) => {
-                            const tool = TOOLS.find((t) => t.to === to)!;
-                            return (
-                              <Link
-                                key={to}
-                                to={to}
-                                className="rounded-full bg-tint px-3 py-1 text-xs font-semibold text-primary transition-colors hover:bg-primary/20"
-                              >
-                                {tool.label} →
-                              </Link>
-                            );
-                          })}
-                          {externals.map((r) => (
-                            <a
-                              key={r}
-                              href={externalHref(r)}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="rounded-full bg-tint px-3 py-1 text-xs font-semibold text-primary transition-colors hover:bg-primary/20"
-                            >
-                              {r} ↗
-                            </a>
-                          ))}
-                        </div>
-                      );
-                    })()}
-                  </div>
-                </motion.li>
-              );
-            })}
-          </ol>
-
-          <p className="mt-6 text-xs text-muted-foreground">
-            Progress is saved on this device. Ready to practise?{" "}
-            <Link to="/bank" className="font-semibold text-primary hover:underline">
-              Open the QBank →
-            </Link>
-          </p>
         </section>
       ) : null}
     </div>

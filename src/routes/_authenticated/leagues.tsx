@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Icon } from "@/components/Primitives";
 import { Reveal, SPRING } from "@/components/motion/Reveal";
 import { LeagueTable, TierEmblem } from "@/components/game/Widgets";
+import { Mascot } from "@/components/mascot/Mascot";
 import { useAuth } from "@/hooks/useAuth";
 import {
   LEAGUE_TIERS,
@@ -128,7 +129,7 @@ function Leagues() {
             </p>
           ) : data?.status === "opted_out" ? (
             <div className="py-8 text-center">
-              <p className="text-4xl">🧘</p>
+              <Mascot mood="sleep" size={100} className="mx-auto" />
               <p className="mt-2 font-semibold">You've opted out of leagues</p>
               <p className="mt-1 text-sm text-muted-foreground">
                 Your XP, streak and badges still count.

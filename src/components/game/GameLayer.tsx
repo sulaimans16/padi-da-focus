@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Icon } from "@/components/Primitives";
 import { SPRING } from "@/components/motion/Reveal";
 import { ConfettiBurst } from "@/components/game/Confetti";
+import { Mascot } from "@/components/mascot/Mascot";
 import { GAME_QUERY_KEY, addPendingXp, clearPendingXp, useGameState } from "@/hooks/useGameState";
 import {
   STREAK_MILESTONES,
@@ -215,24 +216,26 @@ export function GameLayer() {
               onClick={(e) => e.stopPropagation()}
               className="card-pop w-full max-w-sm p-8 text-center"
             >
-              <motion.span
-                initial={{ rotate: -20, scale: 0.5 }}
-                animate={{ rotate: 0, scale: 1 }}
-                transition={{ ...SPRING, delay: 0.1 }}
-                className="mx-auto flex h-24 w-24 items-center justify-center rounded-full animate-bob"
-                style={{
-                  backgroundColor: `color-mix(in oklab, ${CELEBRATION_COLOR[current.kind]} 22%, transparent)`,
-                  color: CELEBRATION_COLOR[current.kind],
-                  boxShadow: `0 0 0 6px color-mix(in oklab, ${CELEBRATION_COLOR[current.kind]} 25%, transparent)`,
-                }}
-              >
-                <Icon
-                  name={current.icon ?? CELEBRATION_ICON[current.kind]}
-                  filled
-                  className={cn("text-[56px]", current.kind === "streak" && "animate-flame")}
-                />
-              </motion.span>
-              <h2 className="mt-6 text-3xl">{current.title}</h2>
+              <div className="relative mx-auto w-fit">
+                <Mascot mood={current.kind === "streak" ? "fire" : "cheer"} size={132} />
+                <motion.span
+                  initial={{ scale: 0, rotate: -30 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ ...SPRING, delay: 0.25 }}
+                  className="absolute -right-3 bottom-2 flex h-12 w-12 items-center justify-center rounded-full ring-4 ring-surface"
+                  style={{
+                    backgroundColor: CELEBRATION_COLOR[current.kind],
+                    color: "var(--color-background)",
+                  }}
+                >
+                  <Icon
+                    name={current.icon ?? CELEBRATION_ICON[current.kind]}
+                    filled
+                    className="text-[26px]"
+                  />
+                </motion.span>
+              </div>
+              <h2 className="mt-4 text-3xl">{current.title}</h2>
               {current.subtitle ? (
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                   {current.subtitle}

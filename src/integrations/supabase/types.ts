@@ -74,6 +74,59 @@ export type Database = {
         }
         Relationships: []
       }
+      coupon_redemptions: {
+        Row: {
+          code: string
+          redeemed_at: string
+          user_id: string
+        }
+        Insert: {
+          code: string
+          redeemed_at?: string
+          user_id: string
+        }
+        Update: {
+          code?: string
+          redeemed_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coupon_redemptions_code_fkey"
+            columns: ["code"]
+            isOneToOne: false
+            referencedRelation: "coupons"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
+      coupons: {
+        Row: {
+          active: boolean
+          code: string
+          created_at: string
+          description: string
+          expires_at: string
+          max_redemptions: number | null
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          created_at?: string
+          description?: string
+          expires_at: string
+          max_redemptions?: number | null
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          created_at?: string
+          description?: string
+          expires_at?: string
+          max_redemptions?: number | null
+        }
+        Relationships: []
+      }
       focus_sessions: {
         Row: {
           completed: boolean
@@ -449,6 +502,7 @@ export type Database = {
     }
     Functions: {
       claim_xp: { Args: { _ref: string; _source: string }; Returns: number }
+      coupon_access_until: { Args: { _user_id: string }; Returns: string }
       game_award_badge: {
         Args: { _badge: string; _uid: string }
         Returns: undefined
@@ -523,6 +577,8 @@ export type Database = {
         Returns: boolean
       }
       is_pro: { Args: { _user_id: string }; Returns: boolean }
+      my_coupon_access: { Args: never; Returns: string }
+      redeem_coupon: { Args: { _code: string }; Returns: Json }
       update_game_settings: {
         Args: {
           _daily_goal?: number

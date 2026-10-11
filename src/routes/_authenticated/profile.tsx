@@ -304,7 +304,7 @@ function Profile() {
       </Reveal>
 
       <Reveal delay={0.14}>
-        <section className="card-pop mt-5 flex items-center gap-4 p-5">
+        <section className="card-pop mt-5 flex items-center gap-4 p-5 md:pr-28">
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-tint text-primary">
             <Icon name="logout" className="text-[20px]" />
           </span>

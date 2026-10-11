@@ -7,6 +7,8 @@ import { medicine } from "./learn-modules/medicine";
 import { surgery } from "./learn-modules/surgery";
 import { obgyn } from "./learn-modules/obgyn";
 import { pediatrics } from "./learn-modules/pediatrics";
+import { psm } from "./learn-modules/psm";
+import { microbiology } from "./learn-modules/microbiology";
 
 /**
  * Concept modules for the Learn section.
@@ -112,6 +114,8 @@ export const LEARN_MODULES: LearnModule[] = [
   surgery,
   obgyn,
   pediatrics,
+  psm,
+  microbiology,
 ];
 
 export function getModule(slug: string) {

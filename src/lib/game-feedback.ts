@@ -10,7 +10,7 @@ const ENCOURAGE = [
   "Tricky one. You'll see it again soon.",
 ];
 
-const pick = <T,>(items: readonly T[]) => items[Math.floor(Math.random() * items.length)]!;
+const pick = <T>(items: readonly T[]) => items[Math.floor(Math.random() * items.length)]!;
 
 /** Answer feedback in one call: predicted XP, combo, sound and a message. */
 export function answerFeedback(correct: boolean, opts: { silent?: boolean } = {}) {

@@ -203,7 +203,9 @@ export function QuizRunner({
                 <button
                   type="button"
                   onClick={() =>
-                    setFlagged((f) => (f.includes(q.id) ? f.filter((x) => x !== q.id) : [...f, q.id]))
+                    setFlagged((f) =>
+                      f.includes(q.id) ? f.filter((x) => x !== q.id) : [...f, q.id],
+                    )
                   }
                   className={cn(
                     "ml-auto flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-surface-2",
@@ -268,7 +270,9 @@ export function QuizRunner({
                   className="mt-5 rounded-2xl border-2 border-glass-line bg-surface-2/50 p-4"
                 >
                   <p className="text-sm font-semibold">{q.oneLiner}</p>
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{q.explanation}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                    {q.explanation}
+                  </p>
                   {q.highYield ? (
                     <p className="mt-3 flex gap-2 rounded-xl bg-xp/10 px-3 py-2 text-xs font-semibold text-foreground">
                       <Icon name="star" filled className="text-[16px] text-xp" />
@@ -389,10 +393,15 @@ export function QuizRunner({
                 transition={SPRING}
                 className={cn(
                   "flex h-12 w-12 shrink-0 items-center justify-center rounded-full",
-                  feedback.correct ? "bg-success text-success-foreground" : "bg-destructive text-destructive-foreground",
+                  feedback.correct
+                    ? "bg-success text-success-foreground"
+                    : "bg-destructive text-destructive-foreground",
                 )}
               >
-                <Icon name={feedback.correct ? "check" : "close"} className="text-[28px] font-bold" />
+                <Icon
+                  name={feedback.correct ? "check" : "close"}
+                  className="text-[28px] font-bold"
+                />
               </motion.span>
               <div className="min-w-0 flex-1">
                 <p
@@ -463,9 +472,19 @@ function ResultReview({
 
   const tiles = [
     { label: "XP earned", value: <CountUp value={xp} />, icon: "bolt", color: "var(--color-xp)" },
-    { label: "Best combo", value: `${bestCombo}×`, icon: "local_fire_department", color: "var(--color-streak)" },
+    {
+      label: "Best combo",
+      value: `${bestCombo}×`,
+      icon: "local_fire_department",
+      color: "var(--color-streak)",
+    },
     { label: "Time", value: fmt(summary.seconds), icon: "timer", color: "var(--color-primary)" },
-    { label: "Skipped", value: skipped.length, icon: "skip_next", color: "var(--color-muted-foreground)" },
+    {
+      label: "Skipped",
+      value: skipped.length,
+      icon: "skip_next",
+      color: "var(--color-muted-foreground)",
+    },
   ];
 
   return (
@@ -477,10 +496,18 @@ function ResultReview({
           transition={SPRING}
           className="mb-6 text-center text-3xl sm:text-left"
         >
-          {great ? "Lesson complete! 🎉" : pct >= 40 ? "Good session 💪" : "Every miss is a lesson 📚"}
+          {great
+            ? "Lesson complete! 🎉"
+            : pct >= 40
+              ? "Good session 💪"
+              : "Every miss is a lesson 📚"}
         </motion.h2>
         <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-center">
-          <motion.div initial={{ scale: 0.7, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={SPRING}>
+          <motion.div
+            initial={{ scale: 0.7, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={SPRING}
+          >
             <ProgressRing
               progress={pct / 100}
               size={150}
@@ -517,8 +544,11 @@ function ResultReview({
         {wrong.length ? (
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-destructive/10 px-4 py-3">
             <p className="text-sm">
-              <strong>{wrong.length} mistake{wrong.length > 1 ? "s" : ""}</strong> went into your review queue.
-              Fixing each one earns <span className="font-bold text-xp">+15 XP</span>.
+              <strong>
+                {wrong.length} mistake{wrong.length > 1 ? "s" : ""}
+              </strong>{" "}
+              went into your review queue. Fixing each one earns{" "}
+              <span className="font-bold text-xp">+15 XP</span>.
             </p>
             {user ? (
               <Link to="/review" className="btn-base btn-danger text-sm">

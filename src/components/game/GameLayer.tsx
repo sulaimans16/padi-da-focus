@@ -51,7 +51,12 @@ export function GameLayer() {
   const [queue, setQueue] = useState<Celebration[]>([]);
   const [confetti, setConfetti] = useState(0);
   const syncTimer = useRef<number | null>(null);
-  const prev = useRef<{ level: number; extended: boolean; badges: Set<string>; source: string } | null>(null);
+  const prev = useRef<{
+    level: number;
+    extended: boolean;
+    badges: Set<string>;
+    source: string;
+  } | null>(null);
   const tzSynced = useRef(false);
 
   // Event bus → toasts, pending XP, debounced refetch, celebrations.
@@ -229,7 +234,9 @@ export function GameLayer() {
               </motion.span>
               <h2 className="mt-6 text-3xl">{current.title}</h2>
               {current.subtitle ? (
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{current.subtitle}</p>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  {current.subtitle}
+                </p>
               ) : null}
               <button
                 type="button"

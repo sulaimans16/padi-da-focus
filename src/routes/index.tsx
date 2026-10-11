@@ -45,14 +45,62 @@ export const Route = createFileRoute("/")({
 });
 
 const MODULES = [
-  { label: "Subject Modules", icon: "menu_book", note: "Concepts with real figures", to: "/learn" as const, hue: 205 },
-  { label: "Question Bank", icon: "quiz", note: "Subject → topic drills", to: "/bank" as const, hue: 160 },
-  { label: "Mock Tests", icon: "timer", note: "Timed, exam-clock papers", to: "/mock" as const, hue: 25 },
-  { label: "PYQ Vault", icon: "history_edu", note: "Tagged by year & repeats", to: "/pyq" as const, hue: 85 },
-  { label: "Video Modules", icon: "play_circle", note: "Curated lectures", to: "/videos" as const, hue: 0 },
-  { label: "Papers", icon: "description", note: "Downloadable PYQ papers", to: "/papers" as const, hue: 270 },
-  { label: "Analytics", icon: "monitoring", note: "Accuracy & weak areas", to: "/tracker" as const, hue: 235 },
-  { label: "Fill the bank", icon: "cloud_download", note: "Web-researched Qs", to: "/bank/fill" as const, hue: 300 },
+  {
+    label: "Subject Modules",
+    icon: "menu_book",
+    note: "Concepts with real figures",
+    to: "/learn" as const,
+    hue: 205,
+  },
+  {
+    label: "Question Bank",
+    icon: "quiz",
+    note: "Subject → topic drills",
+    to: "/bank" as const,
+    hue: 160,
+  },
+  {
+    label: "Mock Tests",
+    icon: "timer",
+    note: "Timed, exam-clock papers",
+    to: "/mock" as const,
+    hue: 25,
+  },
+  {
+    label: "PYQ Vault",
+    icon: "history_edu",
+    note: "Tagged by year & repeats",
+    to: "/pyq" as const,
+    hue: 85,
+  },
+  {
+    label: "Video Modules",
+    icon: "play_circle",
+    note: "Curated lectures",
+    to: "/videos" as const,
+    hue: 0,
+  },
+  {
+    label: "Papers",
+    icon: "description",
+    note: "Downloadable PYQ papers",
+    to: "/papers" as const,
+    hue: 270,
+  },
+  {
+    label: "Analytics",
+    icon: "monitoring",
+    note: "Accuracy & weak areas",
+    to: "/tracker" as const,
+    hue: 235,
+  },
+  {
+    label: "Fill the bank",
+    icon: "cloud_download",
+    note: "Web-researched Qs",
+    to: "/bank/fill" as const,
+    hue: 300,
+  },
 ];
 
 const COMING_SOON = [
@@ -85,7 +133,12 @@ function WeekStrip({ history, goal }: { history: { day: string; xp: number }[]; 
         const today = i === 6;
         return (
           <div key={i} className="flex flex-col items-center gap-1">
-            <span className={cn("text-[10px] font-bold", today ? "text-foreground" : "text-muted-foreground")}>
+            <span
+              className={cn(
+                "text-[10px] font-bold",
+                today ? "text-foreground" : "text-muted-foreground",
+              )}
+            >
               {d.toLocaleDateString(undefined, { weekday: "narrow" })}
             </span>
             <span
@@ -99,7 +152,11 @@ function WeekStrip({ history, goal }: { history: { day: string; xp: number }[]; 
                 today && !met && "border-dashed",
               )}
             >
-              <Icon name={met ? "local_fire_department" : "circle"} filled={met} className="text-[16px]" />
+              <Icon
+                name={met ? "local_fire_department" : "circle"}
+                filled={met}
+                className="text-[16px]"
+              />
             </span>
           </div>
         );
@@ -187,7 +244,11 @@ function Index() {
           </p>
           <h1 className="mt-2 text-4xl leading-[1.05] sm:text-5xl">
             <span className="text-gradient">
-              {lit ? "Goal smashed. Keep it rolling." : streak > 0 ? "Keep your streak alive" : "Let's start a streak"}
+              {lit
+                ? "Goal smashed. Keep it rolling."
+                : streak > 0
+                  ? "Keep your streak alive"
+                  : "Let's start a streak"}
             </span>
           </h1>
           <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
@@ -217,14 +278,17 @@ function Index() {
             style={{
               background:
                 "linear-gradient(135deg, color-mix(in oklab, var(--color-primary) 92%, white), color-mix(in oklab, var(--color-accent) 85%, black))",
-              boxShadow: "0 6px 0 color-mix(in oklab, var(--color-accent) 50%, black), var(--glow-primary)",
+              boxShadow:
+                "0 6px 0 color-mix(in oklab, var(--color-accent) 50%, black), var(--glow-primary)",
             }}
           >
             <span className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-white/15 blur-2xl" />
             <span className="pointer-events-none absolute -bottom-16 right-20 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
             <div className="relative flex items-start justify-between gap-4">
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.14em] opacity-80">{next.eyebrow}</p>
+                <p className="text-[11px] font-bold uppercase tracking-[0.14em] opacity-80">
+                  {next.eyebrow}
+                </p>
                 <h2 className="mt-2 text-3xl sm:text-4xl">{next.title}</h2>
                 <p className="mt-2 text-sm font-medium opacity-85">{next.note}</p>
               </div>
@@ -294,12 +358,17 @@ function Index() {
         </Reveal>
 
         <Reveal delay={0.05} className="lg:col-span-5">
-          <Link to={user ? "/leagues" : "/auth"} className="card-pop card-pop-hover flex h-full flex-col p-6">
+          <Link
+            to={user ? "/leagues" : "/auth"}
+            className="card-pop card-pop-hover flex h-full flex-col p-6"
+          >
             <div className="flex items-center gap-4">
               <TierEmblem tier={tier} />
               <div className="min-w-0 flex-1">
                 <p className="label-eyebrow">Weekly league</p>
-                <p className="font-display text-xl font-bold">{LEAGUE_TIERS[tier]?.name ?? "Bronze"} League</p>
+                <p className="font-display text-xl font-bold">
+                  {LEAGUE_TIERS[tier]?.name ?? "Bronze"} League
+                </p>
               </div>
               <Icon name="chevron_right" className="text-[22px] text-muted-foreground" />
             </div>
@@ -330,7 +399,9 @@ function Index() {
                   ) : null}
                 </div>
               ) : leagueData?.status === "opted_out" ? (
-                <p className="text-sm text-muted-foreground">You've opted out of leagues. Rejoin any time from your profile.</p>
+                <p className="text-sm text-muted-foreground">
+                  You've opted out of leagues. Rejoin any time from your profile.
+                </p>
               ) : (
                 <p className="text-sm text-muted-foreground">
                   Earn your first XP this week to be placed in a league.
@@ -353,7 +424,10 @@ function Index() {
             <Stagger className="grid grid-cols-2 gap-4">
               {MODULES.map((m) => (
                 <StaggerItem key={m.label} className="h-full">
-                  <Link to={m.to} className="card-pop card-pop-hover group flex h-full flex-col p-5">
+                  <Link
+                    to={m.to}
+                    className="card-pop card-pop-hover group flex h-full flex-col p-5"
+                  >
                     <span
                       className="flex h-12 w-12 items-center justify-center rounded-2xl transition-transform duration-500 ease-out group-hover:-rotate-6 group-hover:scale-110"
                       style={{
@@ -446,7 +520,10 @@ function Index() {
           </Reveal>
 
           <Reveal delay={0.12}>
-            <Link to="/weak-spots" className="card-pop card-pop-hover group flex items-center gap-4 px-6 py-5">
+            <Link
+              to="/weak-spots"
+              className="card-pop card-pop-hover group flex items-center gap-4 px-6 py-5"
+            >
               <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-destructive/15 text-destructive">
                 <Icon name="crisis_alert" filled className="text-[22px]" />
               </span>

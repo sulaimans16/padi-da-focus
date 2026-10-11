@@ -49,7 +49,9 @@ function Review() {
     setLoading(true);
     setError(null);
     try {
-      const picked = shuffle(due).slice(0, 10).map((r) => r.question_id);
+      const picked = shuffle(due)
+        .slice(0, 10)
+        .map((r) => r.question_id);
       const qs = await fetchQuestionsByIds(picked);
       if (!qs.length) setError("Couldn't load those questions. Try again in a moment.");
       else setSession(qs);
@@ -120,7 +122,11 @@ function Review() {
             className="btn-base btn-danger h-13 w-full px-8 text-base sm:w-auto"
           >
             <Icon name={loading ? "hourglass_top" : "play_arrow"} filled className="text-[20px]" />
-            {loading ? "Loading…" : due.length ? `Fix ${Math.min(10, due.length)} now` : "All caught up"}
+            {loading
+              ? "Loading…"
+              : due.length
+                ? `Fix ${Math.min(10, due.length)} now`
+                : "All caught up"}
           </button>
         </div>
         {error ? <p className="mt-3 text-sm text-destructive">{error}</p> : null}

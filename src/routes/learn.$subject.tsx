@@ -69,7 +69,11 @@ function VignetteBlock({ v }: { v: Vignette }) {
           <p className="mt-1 text-sm leading-snug text-muted-foreground">{v.reasoning}</p>
         </div>
       ) : (
-        <button type="button" onClick={() => setShow(true)} className="btn-base btn-ghost mt-3 text-xs">
+        <button
+          type="button"
+          onClick={() => setShow(true)}
+          className="btn-base btn-ghost mt-3 text-xs"
+        >
           Reveal answer
         </button>
       )}
@@ -109,10 +113,7 @@ function ConceptBody({ c }: { c: Concept }) {
       <ul className="mt-2 space-y-2">
         {c.points.map((p) => (
           <li key={p} className="flex gap-2 text-sm leading-snug">
-            <span
-              aria-hidden
-              className="material-symbols-outlined mt-0.5 text-[16px] text-primary"
-            >
+            <span aria-hidden className="material-symbols-outlined mt-0.5 text-[16px] text-primary">
               check_circle
             </span>
             <span>{p}</span>
@@ -181,7 +182,6 @@ function ConceptBody({ c }: { c: Concept }) {
         <p className="label-eyebrow text-primary">High-yield</p>
         <p className="mt-1 text-sm font-semibold">{c.highYield}</p>
       </div>
-
     </div>
   );
 }
@@ -269,7 +269,8 @@ function LearnSubject() {
   const mod = getModule(subject)!;
   const { done, markLearned } = useLearned();
   const ref = (id: string) => `${mod.slug}/${id}`;
-  const firstOpen = mod.concepts.find((c) => !done.has(ref(c.id)))?.id ?? mod.concepts[0]?.id ?? null;
+  const firstOpen =
+    mod.concepts.find((c) => !done.has(ref(c.id)))?.id ?? mod.concepts[0]?.id ?? null;
   const [open, setOpen] = useState<string | null>(null);
   const selectedId = open ?? firstOpen;
   const contentRef = useRef<HTMLDivElement>(null);
@@ -284,7 +285,8 @@ function LearnSubject() {
   const select = (id: string) => {
     setOpen(id);
     window.setTimeout(() => {
-      if (window.innerWidth < 1024) contentRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      if (window.innerWidth < 1024)
+        contentRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 50);
   };
 
@@ -308,7 +310,8 @@ function LearnSubject() {
       });
     } else {
       emitGameEvent({ type: "confetti" });
-      const nextC = mod.concepts.slice(selectedIndex + 1).find((c) => !done.has(ref(c.id))) ?? remaining[0];
+      const nextC =
+        mod.concepts.slice(selectedIndex + 1).find((c) => !done.has(ref(c.id))) ?? remaining[0];
       if (nextC) select(nextC.id);
     }
   };
@@ -327,7 +330,9 @@ function LearnSubject() {
             <p className="label-eyebrow">Subject module</p>
             <h1 className="flex items-center gap-2 text-3xl">
               {mod.subject}
-              {allDone ? <Icon name="workspace_premium" filled className="text-[30px] text-xp" /> : null}
+              {allDone ? (
+                <Icon name="workspace_premium" filled className="text-[30px] text-xp" />
+              ) : null}
             </h1>
             <p className="mt-1 text-sm text-muted-foreground">{mod.blurb}</p>
             <div className="mt-4 flex items-center gap-3">
@@ -387,7 +392,9 @@ function LearnSubject() {
             ))}
             <div
               className="flex flex-col items-center"
-              style={{ transform: `translateX(${PATH_OFFSETS[mod.concepts.length % PATH_OFFSETS.length]}px)` }}
+              style={{
+                transform: `translateX(${PATH_OFFSETS[mod.concepts.length % PATH_OFFSETS.length]}px)`,
+              }}
             >
               <span
                 className={cn(
@@ -476,7 +483,12 @@ function LearnSubject() {
         <p className="label-eyebrow">Other modules</p>
         <div className="mt-2 flex flex-wrap gap-2">
           {LEARN_MODULES.filter((m) => m.slug !== mod.slug).map((m) => (
-            <Link key={m.slug} to="/learn/$subject" params={{ subject: m.slug }} className="chip hover:text-primary">
+            <Link
+              key={m.slug}
+              to="/learn/$subject"
+              params={{ subject: m.slug }}
+              className="chip hover:text-primary"
+            >
               {m.subject}
             </Link>
           ))}

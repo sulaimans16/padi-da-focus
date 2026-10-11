@@ -202,7 +202,11 @@ export function QuestList({ state, signedIn }: { state: GameState | null; signed
             <span
               className={cn(
                 "flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl",
-                q.claimed ? "bg-success/20 text-success" : done ? "bg-xp/20 text-xp" : "bg-surface-2 text-muted-foreground",
+                q.claimed
+                  ? "bg-success/20 text-success"
+                  : done
+                    ? "bg-xp/20 text-xp"
+                    : "bg-surface-2 text-muted-foreground",
               )}
             >
               <Icon

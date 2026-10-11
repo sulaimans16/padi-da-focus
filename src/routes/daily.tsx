@@ -83,27 +83,27 @@ function DailyPage() {
       </Reveal>
 
       {!started ? (
-      <Reveal delay={0.05}>
-        <div className="mt-6 grid grid-cols-3 gap-3 sm:gap-4">
-          <div className="card-pop p-4 sm:p-5">
-            <p className="label-eyebrow">Current streak</p>
-            <div className="mt-1 flex items-center gap-2">
-              <StreakFlame streak={streak} lit={Boolean(state?.streakExtendedToday)} size="md" />
-              <span className="text-sm text-muted-foreground">days</span>
+        <Reveal delay={0.05}>
+          <div className="mt-6 grid grid-cols-3 gap-3 sm:gap-4">
+            <div className="card-pop p-4 sm:p-5">
+              <p className="label-eyebrow">Current streak</p>
+              <div className="mt-1 flex items-center gap-2">
+                <StreakFlame streak={streak} lit={Boolean(state?.streakExtendedToday)} size="md" />
+                <span className="text-sm text-muted-foreground">days</span>
+              </div>
+            </div>
+            <div className="card-pop p-4 sm:p-5">
+              <p className="label-eyebrow">Today</p>
+              <p className="mt-1 font-display text-3xl font-bold">
+                {today ? `${today.correct}/${today.total}` : "—"}
+              </p>
+            </div>
+            <div className="card-pop p-4 sm:p-5">
+              <p className="label-eyebrow">Days played</p>
+              <p className="mt-1 font-display text-3xl font-bold">{results.length}</p>
             </div>
           </div>
-          <div className="card-pop p-4 sm:p-5">
-            <p className="label-eyebrow">Today</p>
-            <p className="mt-1 font-display text-3xl font-bold">
-              {today ? `${today.correct}/${today.total}` : "—"}
-            </p>
-          </div>
-          <div className="card-pop p-4 sm:p-5">
-            <p className="label-eyebrow">Days played</p>
-            <p className="mt-1 font-display text-3xl font-bold">{results.length}</p>
-          </div>
-        </div>
-      </Reveal>
+        </Reveal>
       ) : null}
 
       {started && questions?.length ? (
@@ -127,17 +127,17 @@ function DailyPage() {
               <Icon name="bolt" filled className="text-[48px]" />
             </motion.span>
             <div className="flex-1">
-            {today ? (
-              <p className="text-sm text-muted-foreground">
-                You already finished today's challenge with {today.correct}/{today.total}. You can
-                replay it to revise the explanations.
-              </p>
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                Ten questions, mixed subjects, no timer. Explanations appear as you go, and
-                finishing earns a <strong className="text-xp">+{XP.daily} XP</strong> bonus.
-              </p>
-            )}
+              {today ? (
+                <p className="text-sm text-muted-foreground">
+                  You already finished today's challenge with {today.correct}/{today.total}. You can
+                  replay it to revise the explanations.
+                </p>
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  Ten questions, mixed subjects, no timer. Explanations appear as you go, and
+                  finishing earns a <strong className="text-xp">+{XP.daily} XP</strong> bonus.
+                </p>
+              )}
             </div>
             <Pill
               variant="primary"

@@ -75,21 +75,61 @@ export const LEAGUE_TIERS = [
 export type BadgeDef = { id: string; title: string; description: string; icon: string };
 
 export const BADGES: BadgeDef[] = [
-  { id: "first_blood", title: "First Blood", description: "Your first correct answer", icon: "water_drop" },
+  {
+    id: "first_blood",
+    title: "First Blood",
+    description: "Your first correct answer",
+    icon: "water_drop",
+  },
   { id: "century", title: "Century", description: "100 correct answers", icon: "military_tech" },
-  { id: "thousand", title: "Thousand Club", description: "1,000 correct answers", icon: "workspace_premium" },
-  { id: "combo_10", title: "On Fire", description: "A 10-answer combo", icon: "local_fire_department" },
+  {
+    id: "thousand",
+    title: "Thousand Club",
+    description: "1,000 correct answers",
+    icon: "workspace_premium",
+  },
+  {
+    id: "combo_10",
+    title: "On Fire",
+    description: "A 10-answer combo",
+    icon: "local_fire_department",
+  },
   { id: "combo_25", title: "Unstoppable", description: "A 25-answer combo", icon: "bolt" },
   { id: "streak_7", title: "Week Warrior", description: "7-day streak", icon: "calendar_month" },
   { id: "streak_30", title: "Habit Formed", description: "30-day streak", icon: "event_available" },
   { id: "streak_100", title: "Centurion", description: "100-day streak", icon: "shield" },
-  { id: "pyq_hunter", title: "PYQ Hunter", description: "50 PYQs answered right", icon: "history_edu" },
-  { id: "mistake_slayer", title: "Mistake Slayer", description: "Fixed 25 past mistakes", icon: "healing" },
+  {
+    id: "pyq_hunter",
+    title: "PYQ Hunter",
+    description: "50 PYQs answered right",
+    icon: "history_edu",
+  },
+  {
+    id: "mistake_slayer",
+    title: "Mistake Slayer",
+    description: "Fixed 25 past mistakes",
+    icon: "healing",
+  },
   { id: "scholar", title: "Scholar", description: "Finished 10 Learn concepts", icon: "menu_book" },
-  { id: "daily_devotee", title: "Daily Devotee", description: "7 daily challenges done", icon: "today" },
-  { id: "focus_ten", title: "Deep Worker", description: "10 focus sessions completed", icon: "lock_clock" },
+  {
+    id: "daily_devotee",
+    title: "Daily Devotee",
+    description: "7 daily challenges done",
+    icon: "today",
+  },
+  {
+    id: "focus_ten",
+    title: "Deep Worker",
+    description: "10 focus sessions completed",
+    icon: "lock_clock",
+  },
   { id: "iron_focus", title: "Iron Focus", description: "A 60-minute focus lock", icon: "timer" },
-  { id: "subject_master", title: "Subject Master", description: "80%+ over 50 Qs in a subject", icon: "trophy" },
+  {
+    id: "subject_master",
+    title: "Subject Master",
+    description: "80%+ over 50 Qs in a subject",
+    icon: "trophy",
+  },
   { id: "xp_5000", title: "5K Club", description: "Earned 5,000 XP", icon: "star" },
 ];
 
@@ -147,7 +187,13 @@ export type GameEvent =
   | { type: "xp"; amount: number; combo: number; correct: boolean; silent?: boolean }
   | { type: "sync" }
   | { type: "confetti" }
-  | { type: "celebrate"; kind: "level" | "streak" | "badge" | "goal" | "lesson"; title: string; subtitle?: string; icon?: string };
+  | {
+      type: "celebrate";
+      kind: "level" | "streak" | "badge" | "goal" | "lesson";
+      title: string;
+      subtitle?: string;
+      icon?: string;
+    };
 
 type Listener = (e: GameEvent) => void;
 const listeners = new Set<Listener>();

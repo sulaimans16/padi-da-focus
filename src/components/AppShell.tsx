@@ -86,7 +86,12 @@ function GameHud({ compact = false }: { compact?: boolean }) {
     >
       <StreakFlame streak={streak} lit={lit} size="sm" className="pr-1.5" />
       <span className="flex items-center gap-1.5 border-l-2 border-glass-line px-2">
-        <DailyGoalRing todayXp={state?.todayXp ?? 0} goal={state?.dailyGoal ?? 50} size={26} strokeWidth={3.5} />
+        <DailyGoalRing
+          todayXp={state?.todayXp ?? 0}
+          goal={state?.dailyGoal ?? 50}
+          size={26}
+          strokeWidth={3.5}
+        />
         {!compact ? (
           <span className="font-display text-xs font-bold tabular-nums">
             {state?.todayXp ?? 0}
@@ -168,7 +173,6 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       {/* Desktop side navigation — dissolves into the background, no column rule */}
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 min-h-0 flex-col overflow-hidden px-4 py-5 md:flex glass-bar">
-
         <Link to="/" className="group flex shrink-0 items-center gap-2.5 px-2">
           <BrandMark className="h-9 w-9 transition-transform duration-300 ease-out group-hover:scale-105" />
           <span className="text-base font-bold tracking-tight">
@@ -176,7 +180,10 @@ export function AppShell({ children }: { children: ReactNode }) {
           </span>
         </Link>
 
-        <nav aria-label="Main navigation" className="mt-7 flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto overscroll-contain pb-3">
+        <nav
+          aria-label="Main navigation"
+          className="mt-7 flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto overscroll-contain pb-3"
+        >
           <p className="label-eyebrow px-4 pb-1">Play</p>
           <NavList items={play} pathname={pathname} />
           <p className="label-eyebrow px-4 pb-1 pt-4">Prepare</p>
@@ -195,7 +202,9 @@ export function AppShell({ children }: { children: ReactNode }) {
             </span>
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-semibold">{name}</p>
-              <p className="truncate text-[11px] font-semibold text-muted-foreground">{rank.title}</p>
+              <p className="truncate text-[11px] font-semibold text-muted-foreground">
+                {rank.title}
+              </p>
             </div>
           </div>
           <ProgressBar value={level.progress} color="var(--color-gem)" className="mt-3 h-2" />
@@ -239,7 +248,10 @@ export function AppShell({ children }: { children: ReactNode }) {
             >
               <Icon name={theme === "dark" ? "light_mode" : "dark_mode"} className="text-[18px]" />
             </motion.button>
-            <Link to="/focus" className="btn-base btn-primary hidden h-9 whitespace-nowrap px-4 text-xs sm:inline-flex">
+            <Link
+              to="/focus"
+              className="btn-base btn-primary hidden h-9 whitespace-nowrap px-4 text-xs sm:inline-flex"
+            >
               <Icon name="lock" className="text-[16px]" />
               Lock in
             </Link>

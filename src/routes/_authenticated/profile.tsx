@@ -7,6 +7,7 @@ import { BadgeGrid, LevelBar, StreakFlame } from "@/components/game/Widgets";
 import { useAuth } from "@/hooks/useAuth";
 import { useGameState } from "@/hooks/useGameState";
 import { doctorName } from "@/lib/doctor-name";
+import { SignOutButton } from "@/components/SignOutButton";
 import { BADGES, DAILY_GOALS, updateGameSettings } from "@/lib/gamification";
 import { todayKey } from "@/lib/quiz";
 import { isMuted, setMuted } from "@/lib/sfx";
@@ -300,6 +301,21 @@ function Profile() {
             {error}. Game settings switch on once the latest database update is applied.
           </p>
         ) : null}
+      </Reveal>
+
+      <Reveal delay={0.14}>
+        <section className="card-pop mt-5 flex items-center gap-4 p-5">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-tint text-primary">
+            <Icon name="logout" className="text-[20px]" />
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-semibold">Sign out</p>
+            <p className="text-xs text-muted-foreground">
+              Your XP, streak and badges stay saved — sign back in any time.
+            </p>
+          </div>
+          <SignOutButton className="shrink-0" />
+        </section>
       </Reveal>
 
       <p className="mt-6 text-center text-xs text-muted-foreground">

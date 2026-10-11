@@ -50,6 +50,13 @@ export const Route = createFileRoute("/")({
 
 const MODULES = [
   {
+    label: "Flashcards",
+    icon: "style",
+    note: "Spaced repetition, 20 new a day",
+    to: "/flashcards" as const,
+    hue: 330,
+  },
+  {
     label: "AI Roadmap",
     icon: "route",
     note: "Your phase-by-phase study trail",
@@ -114,10 +121,7 @@ const MODULES = [
   },
 ];
 
-const COMING_SOON = [
-  { label: "Flashcards", icon: "style" },
-  { label: "Cheatsheets", icon: "sticky_note_2" },
-];
+const COMING_SOON = [{ label: "Cheatsheets", icon: "sticky_note_2" }];
 
 function greeting() {
   const h = new Date().getHours();

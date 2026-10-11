@@ -37,6 +37,7 @@ type NavLink = {
     | "/pricing"
     | "/admin"
     | "/review"
+    | "/flashcards"
     | "/leagues"
     | "/profile";
   badge?: number;
@@ -46,6 +47,7 @@ const PLAY: NavLink[] = [
   { label: "Home", icon: "home", to: "/" },
   { label: "Learn", icon: "menu_book", to: "/learn" },
   { label: "Daily Challenge", icon: "bolt", to: "/daily" },
+  { label: "Flashcards", icon: "style", to: "/flashcards" },
   { label: "Fix Mistakes", icon: "healing", to: "/review" },
   { label: "Leagues", icon: "trophy", to: "/leagues" },
 ];

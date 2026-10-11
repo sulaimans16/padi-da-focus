@@ -325,6 +325,14 @@ export function registerFocus(minutes: number) {
   return amount;
 }
 
+/** Generic XP feedback (e.g. a flashcard review the server already rewarded). */
+export function registerBonusXp(amount: number, opts: { silent?: boolean } = {}) {
+  if (amount <= 0) return 0;
+  saveLocalGame(addLocalXp(loadLocalGame(), amount));
+  emitGameEvent({ type: "xp", amount, combo: 0, correct: true, silent: Boolean(opts.silent) });
+  return amount;
+}
+
 /** Ask listeners (the game-state hook) to refetch from the server. */
 export function requestGameSync() {
   emitGameEvent({ type: "sync" });

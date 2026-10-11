@@ -85,6 +85,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "theme-color", content: "#0A0F1D" },
+      // The app paints its own dark and light themes; this stops phone browsers
+      // (Samsung Internet, Chrome "darken websites") from force-darkening it.
+      { name: "color-scheme", content: "dark light" },
       { title: "PG Prep — NEET PG Sprint" },
       {
         name: "description",

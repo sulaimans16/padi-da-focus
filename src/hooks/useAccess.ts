@@ -63,7 +63,7 @@ export function useAccess(): AccessState {
     ]);
     setIsAdmin((roles.data ?? []).some((r) => r.role === "admin"));
     setSubscription((subs.data?.[0] as Subscription | undefined) ?? null);
-    setCouponUntil(coupon.error ? null : (coupon.data ?? null));
+    setCouponUntil(coupon.error ? null : ((coupon.data as string | null) ?? null));
     setLoading(false);
   }, [userId]);
 

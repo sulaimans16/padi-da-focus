@@ -5,7 +5,8 @@ import { useEffect, useState } from "react";
 import { GoalCountdown } from "@/components/GoalCountdown";
 import { ProgressRing } from "@/components/ProgressRing";
 import { Badge, Icon } from "@/components/Primitives";
-import { CountUp, Reveal, SPRING, Stagger, StaggerItem } from "@/components/motion/Reveal";
+import { CountUp, Reveal, SPRING } from "@/components/motion/Reveal";
+import { SwipeDeck } from "@/components/SwipeDeck";
 import {
   DailyGoalRing,
   LevelBar,
@@ -283,7 +284,11 @@ function Index() {
       </motion.div>
 
       {/* Continue + goal + streak */}
-      <div className="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-12">
+      <SwipeDeck
+        label="Today"
+        className="mt-8"
+        desktopClassName="md:grid md:grid-cols-1 md:gap-5 lg:grid-cols-12"
+      >
         <Reveal className="lg:col-span-7">
           <Link
             to={next.to}
@@ -353,10 +358,14 @@ function Index() {
             />
           </div>
         </Reveal>
-      </div>
+      </SwipeDeck>
 
-      {/* Quests + league */}
-      <div className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-12">
+      {/* Quests + league + roadmap */}
+      <SwipeDeck
+        label="Your progress"
+        className="mt-6 md:mt-5"
+        desktopClassName="md:grid md:grid-cols-1 md:gap-5 lg:grid-cols-12"
+      >
         <Reveal className="lg:col-span-7">
           <div className="card-pop h-full p-6">
             <div className="mb-5 flex items-center justify-between">
@@ -423,12 +432,11 @@ function Index() {
             </div>
           </Link>
         </Reveal>
-      </div>
 
-      {/* Study roadmap */}
-      <Reveal className="mt-5">
-        <RoadmapCard />
-      </Reveal>
+        <Reveal className="lg:col-span-12">
+          <RoadmapCard />
+        </Reveal>
+      </SwipeDeck>
 
       {/* Explore + focus rail */}
       <div className="mt-12 grid grid-cols-1 gap-12 lg:grid-cols-10 lg:gap-10">
@@ -439,9 +447,13 @@ function Index() {
               <span className="fade-rule flex-1" />
             </div>
 
-            <Stagger className="grid grid-cols-2 gap-4">
+            <SwipeDeck
+              dots={false}
+              itemWidth="w-[42%]"
+              desktopClassName="md:grid md:grid-cols-2 md:gap-4"
+            >
               {MODULES.map((m) => (
-                <StaggerItem key={m.label} className="h-full">
+                <div key={m.label} className="h-full">
                   <Link
                     to={m.to}
                     className="card-pop card-pop-hover group flex h-full flex-col p-5"
@@ -458,9 +470,9 @@ function Index() {
                     <p className="mt-4 text-sm font-bold leading-tight sm:text-base">{m.label}</p>
                     <p className="mt-1 text-xs leading-snug text-muted-foreground">{m.note}</p>
                   </Link>
-                </StaggerItem>
+                </div>
               ))}
-            </Stagger>
+            </SwipeDeck>
             <div className="mt-4 flex flex-wrap gap-2">
               {COMING_SOON.map((c) => (
                 <span key={c.label} className="chip opacity-70">
@@ -502,40 +514,42 @@ function Index() {
         </div>
 
         <div className="flex flex-col gap-6 lg:col-span-4">
-          <Reveal>
-            <GoalCountdown />
-          </Reveal>
+          <SwipeDeck label="Focus" desktopClassName="md:flex md:flex-col md:gap-6">
+            <Reveal>
+              <GoalCountdown />
+            </Reveal>
 
-          <Reveal delay={0.06}>
-            <div className="card-pop p-7">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold">Focus lock</h3>
-                <span className="chip text-primary">+1 XP / min</span>
+            <Reveal delay={0.06}>
+              <div className="card-pop p-7">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold">Focus lock</h3>
+                  <span className="chip text-primary">+1 XP / min</span>
+                </div>
+
+                <div className="flex flex-col items-center py-6">
+                  <ProgressRing
+                    progress={Math.min(1, todaySec / dailyTargetSec)}
+                    size={150}
+                    strokeWidth={10}
+                  >
+                    <span className="font-mono text-2xl font-bold tabular-nums">
+                      {formatClock(todaySec)}
+                    </span>
+                    <span className="label-eyebrow">today</span>
+                  </ProgressRing>
+                </div>
+
+                <p className="text-center text-sm leading-relaxed text-muted-foreground">
+                  {todaySessions.length} session{todaySessions.length === 1 ? "" : "s"} done ·
+                  target 4h. Try to escape mid-session and the deterrent plays.
+                </p>
+                <Link to="/focus" className="btn-base btn-primary mt-6 h-13 w-full text-sm">
+                  <Icon name="lock" className="text-[18px]" />
+                  Start lock-in
+                </Link>
               </div>
-
-              <div className="flex flex-col items-center py-6">
-                <ProgressRing
-                  progress={Math.min(1, todaySec / dailyTargetSec)}
-                  size={150}
-                  strokeWidth={10}
-                >
-                  <span className="font-mono text-2xl font-bold tabular-nums">
-                    {formatClock(todaySec)}
-                  </span>
-                  <span className="label-eyebrow">today</span>
-                </ProgressRing>
-              </div>
-
-              <p className="text-center text-sm leading-relaxed text-muted-foreground">
-                {todaySessions.length} session{todaySessions.length === 1 ? "" : "s"} done · target
-                4h. Try to escape mid-session and the deterrent plays.
-              </p>
-              <Link to="/focus" className="btn-base btn-primary mt-6 h-13 w-full text-sm">
-                <Icon name="lock" className="text-[18px]" />
-                Start lock-in
-              </Link>
-            </div>
-          </Reveal>
+            </Reveal>
+          </SwipeDeck>
 
           <Reveal delay={0.12}>
             <Link

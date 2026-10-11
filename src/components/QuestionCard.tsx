@@ -7,6 +7,11 @@ import {
   type Question,
 } from "@/lib/questions";
 import { fetchBookmarkIds, recordAttempt, toggleRemoteBookmark } from "@/lib/tracker";
+import { motion } from "motion/react";
+import { Icon } from "@/components/Primitives";
+import { SPRING } from "@/components/motion/Reveal";
+import { answerFeedback } from "@/lib/game-feedback";
+import { cn } from "@/lib/utils";
 
 const DIFF_LABEL: Record<Question["difficulty"], string> = {
   easy: "Easy",
@@ -27,6 +32,7 @@ export function QuestionCard({
 }) {
   const [selected, setSelected] = useState<string | null>(null);
   const [expanded, setExpanded] = useState(false);
+  const [feedback, setFeedback] = useState<ReturnType<typeof answerFeedback> | null>(null);
   const [bookmarks, setBookmarks] = useState<string[]>(() => loadBookmarks());
   const shownAt = useRef(Date.now());
   const answered = selected !== null;
@@ -46,6 +52,7 @@ export function QuestionCard({
     if (answered) return;
     setSelected(optionId);
     const isCorrect = optionId === question.correctOptionId;
+    setFeedback(answerFeedback(isCorrect));
     logAttempt({
       questionId: question.id,
       subject: question.subject,
@@ -72,7 +79,12 @@ export function QuestionCard({
   };
 
   return (
-    <article className="card-surface overflow-hidden">
+    <article
+      className={cn(
+        "card-pop overflow-hidden",
+        answered && selected !== question.correctOptionId && "animate-nag",
+      )}
+    >
       <div className="card-head">
         <div className="flex flex-wrap items-center gap-2">
           <span className="font-mono text-xs font-bold text-muted-foreground">
@@ -128,42 +140,65 @@ export function QuestionCard({
         {/* Options + feedback */}
         <div className="p-5 lg:col-span-5">
           <p className="label-eyebrow mb-2">Single best answer</p>
-          <div className="space-y-2">
-            {question.options.map((opt) => {
+          <div className="space-y-2.5">
+            {question.options.map((opt, i) => {
               const isCorrect = opt.id === question.correctOptionId;
               const isPicked = opt.id === selected;
               const state = !answered
-                ? "border-border bg-surface hover:bg-surface-2"
+                ? undefined
                 : isCorrect
-                  ? "border-success bg-success/10"
+                  ? "correct"
                   : isPicked
-                    ? "border-destructive bg-destructive/10"
-                    : "border-border bg-surface opacity-60";
+                    ? "wrong"
+                    : "dim";
               return (
-                <button
+                <motion.button
                   key={opt.id}
+                  type="button"
                   onClick={() => choose(opt.id)}
                   disabled={answered}
-                  className={`flex w-full items-start gap-3 rounded-xl border px-3 py-2.5 text-left text-sm transition-colors ${state}`}
+                  data-state={state}
+                  animate={answered && isCorrect ? { scale: [1, 1.03, 1] } : { scale: 1 }}
+                  transition={{ duration: 0.35 }}
+                  className="option-tile py-2.5"
                 >
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-surface-2 font-mono text-[11px] font-bold uppercase text-muted-foreground">
-                    {opt.id}
-                  </span>
-                  <span className="flex-1 leading-snug">{opt.text}</span>
+                  <span className="option-key text-muted-foreground">{i + 1}</span>
+                  <span className="flex-1 pt-0.5 leading-snug">{opt.text}</span>
                   {answered && isCorrect && (
-                    <span aria-hidden className="material-symbols-outlined text-[18px] text-success">
-                      check_circle
-                    </span>
+                    <Icon name="check_circle" filled className="text-[20px] text-success" />
                   )}
                   {answered && isPicked && !isCorrect && (
-                    <span aria-hidden className="material-symbols-outlined text-[18px] text-destructive">
-                      cancel
-                    </span>
+                    <Icon name="cancel" filled className="text-[20px] text-destructive" />
                   )}
-                </button>
+                </motion.button>
               );
             })}
           </div>
+
+          {feedback && (
+            <motion.div
+              initial={{ opacity: 0, y: 8, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={SPRING}
+              className={cn(
+                "mt-4 flex items-center gap-3 rounded-2xl px-4 py-3",
+                selected === question.correctOptionId ? "bg-success/15" : "bg-destructive/12",
+              )}
+            >
+              <span
+                className={cn(
+                  "flex h-9 w-9 shrink-0 items-center justify-center rounded-full",
+                  selected === question.correctOptionId
+                    ? "bg-success text-success-foreground"
+                    : "bg-destructive text-destructive-foreground",
+                )}
+              >
+                <Icon name={selected === question.correctOptionId ? "check" : "close"} className="text-[22px]" />
+              </span>
+              <p className="min-w-0 flex-1 text-sm font-semibold">{feedback.message}</p>
+              <span className="shrink-0 font-display text-sm font-bold text-xp">+{feedback.amount} XP</span>
+            </motion.div>
+          )}
 
           {answered && (
             <div className="mt-4 space-y-3 rounded-xl border border-border bg-surface-2 p-4">

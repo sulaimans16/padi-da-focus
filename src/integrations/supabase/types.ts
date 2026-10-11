@@ -127,81 +127,6 @@ export type Database = {
         }
         Relationships: []
       }
-      flashcard_reviews: {
-        Row: {
-          card_id: string
-          created_at: string
-          deck: string
-          difficulty: number
-          due_at: string
-          exam: string
-          lapses: number
-          last_rating: number
-          last_review_at: string
-          reps: number
-          stability: number
-          user_id: string
-        }
-        Insert: {
-          card_id: string
-          created_at?: string
-          deck?: string
-          difficulty: number
-          due_at: string
-          exam?: string
-          lapses?: number
-          last_rating: number
-          last_review_at?: string
-          reps?: number
-          stability: number
-          user_id: string
-        }
-        Update: {
-          card_id?: string
-          created_at?: string
-          deck?: string
-          difficulty?: number
-          due_at?: string
-          exam?: string
-          lapses?: number
-          last_rating?: number
-          last_review_at?: string
-          reps?: number
-          stability?: number
-          user_id?: string
-        }
-        Relationships: []
-      }
-      flashcards_custom: {
-        Row: {
-          back: string
-          created_at: string
-          deck: string
-          exam: string
-          front: string
-          id: string
-          user_id: string
-        }
-        Insert: {
-          back: string
-          created_at?: string
-          deck?: string
-          exam?: string
-          front: string
-          id?: string
-          user_id: string
-        }
-        Update: {
-          back?: string
-          created_at?: string
-          deck?: string
-          exam?: string
-          front?: string
-          id?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
       focus_sessions: {
         Row: {
           completed: boolean
@@ -654,18 +579,6 @@ export type Database = {
       is_pro: { Args: { _user_id: string }; Returns: boolean }
       my_coupon_access: { Args: never; Returns: string }
       redeem_coupon: { Args: { _code: string }; Returns: Json }
-      review_flashcard: {
-        Args: {
-          _card_id: string
-          _deck?: string
-          _difficulty: number
-          _due_at: string
-          _exam?: string
-          _rating: number
-          _stability: number
-        }
-        Returns: number
-      }
       update_game_settings: {
         Args: {
           _daily_goal?: number

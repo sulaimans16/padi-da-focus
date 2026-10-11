@@ -6,6 +6,7 @@ import { QuizRunner } from "@/components/QuizRunner";
 import { Icon } from "@/components/Primitives";
 import { Reveal, SPRING } from "@/components/motion/Reveal";
 import { ProgressBar } from "@/components/game/Widgets";
+import { Mascot } from "@/components/mascot/Mascot";
 import { fetchMistakes } from "@/lib/gamification";
 import { fetchQuestionsByIds, shuffle } from "@/lib/quiz";
 import type { Question } from "@/lib/questions";
@@ -141,7 +142,7 @@ function Review() {
       {!rows.length && !mistakes.isLoading && !mistakes.error ? (
         <Reveal delay={0.08}>
           <div className="mt-6 rounded-3xl border-2 border-dashed border-glass-line p-8 text-center">
-            <p className="text-4xl">🎯</p>
+            <Mascot mood="cheer" size={110} className="mx-auto" />
             <p className="mt-2 font-semibold">Nothing to fix. Clean sheet!</p>
             <p className="mt-1 text-sm text-muted-foreground">
               Drill the QBank and anything you miss will show up here.

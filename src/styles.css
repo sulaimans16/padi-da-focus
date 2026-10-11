@@ -729,3 +729,19 @@ html:not(.dark) .focus\:bg-white\/10:focus {
   font-weight: 300;
   line-height: 1;
 }
+
+/* ---------- mascot ---------- */
+@keyframes mascot-blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.1); }
+}
+.mascot-blink {
+  animation: mascot-blink 4.2s ease-in-out infinite;
+}
+
+@keyframes roadmap-draw {
+  to { stroke-dashoffset: -64; }
+}
+.roadmap-draw {
+  animation: roadmap-draw 1s linear infinite;
+}

@@ -755,3 +755,12 @@ html:not(.dark) .focus\:bg-white\/10:focus {
     --os-prefers-dark: 1;
   }
 }
+
+/* Horizontal swipe decks: keep native momentum scrolling, hide the bar. */
+@utility scrollbar-none {
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

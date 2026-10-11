@@ -7,7 +7,12 @@ function apply(theme: Theme) {
   if (typeof document === "undefined") return;
   const root = document.documentElement;
   root.classList.toggle("dark", theme === "dark");
-  root.style.colorScheme = theme;
+  // "only light" stops phone browsers from force-darkening the light theme.
+  root.style.colorScheme = theme === "dark" ? "dark" : "only light";
+  // Match the phone's status bar / address bar to the active theme.
+  document
+    .querySelector('meta[name="theme-color"]')
+    ?.setAttribute("content", theme === "dark" ? "#0A0F1D" : "#F5F9FB");
 }
 
 export function useTheme() {

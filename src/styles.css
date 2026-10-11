@@ -174,7 +174,9 @@ html:not(.dark) {
   }
 
   html:not(.dark) {
-    color-scheme: light;
+    /* "only" opts out of the browser's forced dark mode, which otherwise
+       repaints the light theme into unreadable colours on dark-mode phones. */
+    color-scheme: only light;
   }
 
   body {
@@ -744,4 +746,12 @@ html:not(.dark) .focus\:bg-white\/10:focus {
 }
 .roadmap-draw {
   animation: roadmap-draw 1s linear infinite;
+}
+
+/* Signals dark-mode support to browsers that look for it before force-darkening a page
+   (Samsung Internet). Theme itself is chosen in-app via the .dark class. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --os-prefers-dark: 1;
+  }
 }

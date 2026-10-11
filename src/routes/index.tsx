@@ -14,6 +14,7 @@ import {
   TierEmblem,
 } from "@/components/game/Widgets";
 import { MascotSays } from "@/components/mascot/Mascot";
+import { RoadmapCard } from "@/components/roadmap/RoadmapCard";
 import { useAuth } from "@/hooks/useAuth";
 import { dashboardLine } from "@/lib/mascot";
 import { useGameState } from "@/hooks/useGameState";
@@ -47,6 +48,13 @@ export const Route = createFileRoute("/")({
 });
 
 const MODULES = [
+  {
+    label: "AI Roadmap",
+    icon: "route",
+    note: "Your phase-by-phase study trail",
+    to: "/roadmap" as const,
+    hue: 140,
+  },
   {
     label: "Subject Modules",
     icon: "menu_book",
@@ -416,6 +424,11 @@ function Index() {
           </Link>
         </Reveal>
       </div>
+
+      {/* Study roadmap */}
+      <Reveal className="mt-5">
+        <RoadmapCard />
+      </Reveal>
 
       {/* Explore + focus rail */}
       <div className="mt-12 grid grid-cols-1 gap-12 lg:grid-cols-10 lg:gap-10">

@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useMemo, useState } from "react";
 import { generateRoadmap, type Roadmap } from "@/lib/roadmap.functions";
+import { loadSaved, rememberLastRoadmap, storageKey, type SavedMap } from "@/lib/roadmap-store";
 import { useAccess } from "@/hooks/useAccess";
 import { Icon } from "@/components/Primitives";
 import { ProGate } from "@/components/ProGate";
@@ -136,24 +137,6 @@ const SAMPLE: Roadmap = {
   ],
 };
 
-type SavedMap = { goal: string; roadmap: Roadmap; done: string[] };
-
-function storageKey(goal: string) {
-  return `padida.roadmap.${goal
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .slice(0, 60)}`;
-}
-
-function loadSaved(goal: string): SavedMap | null {
-  try {
-    const raw = localStorage.getItem(storageKey(goal));
-    return raw ? (JSON.parse(raw) as SavedMap) : null;
-  } catch {
-    return null;
-  }
-}
-
 function RoadmapPage() {
   const { isPro, loading } = useAccess();
   const generate = useServerFn(generateRoadmap);
@@ -182,11 +165,7 @@ function RoadmapPage() {
   useEffect(() => {
     if (!current) return;
     setDone(new Set(current.done));
-    try {
-      localStorage.setItem("padida.roadmap.__last", current.goal);
-    } catch {
-      // ignore
-    }
+    rememberLastRoadmap(current.goal);
   }, [current]);
 
   const totalSteps = useMemo(

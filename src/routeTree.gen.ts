@@ -24,6 +24,9 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as VideosRouteImport } from './routes/videos'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedLeaguesRouteImport } from './routes/_authenticated/leagues'
+import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
+import { Route as AuthenticatedReviewRouteImport } from './routes/_authenticated/review'
 import { Route as AuthenticatedTrackerRouteImport } from './routes/_authenticated/tracker'
 import { Route as AuthenticatedWeakSpotsRouteImport } from './routes/_authenticated/weak-spots'
 import { Route as BankIndexRouteImport } from './routes/bank.index'
@@ -107,6 +110,21 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedLeaguesRoute = AuthenticatedLeaguesRouteImport.update({
+  id: '/leagues',
+  path: '/leagues',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedReviewRoute = AuthenticatedReviewRouteImport.update({
+  id: '/review',
+  path: '/review',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedTrackerRoute = AuthenticatedTrackerRouteImport.update({
   id: '/tracker',
   path: '/tracker',
@@ -164,6 +182,9 @@ export interface FileRoutesByFullPath {
   '/videos': typeof VideosRoute
   '/welcome': typeof WelcomeRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/leagues': typeof AuthenticatedLeaguesRoute
+  '/profile': typeof AuthenticatedProfileRoute
+  '/review': typeof AuthenticatedReviewRoute
   '/tracker': typeof AuthenticatedTrackerRoute
   '/weak-spots': typeof AuthenticatedWeakSpotsRoute
   '/bank/$subject': typeof BankSubjectRoute
@@ -188,6 +209,9 @@ export interface FileRoutesByTo {
   '/videos': typeof VideosRoute
   '/welcome': typeof WelcomeRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/leagues': typeof AuthenticatedLeaguesRoute
+  '/profile': typeof AuthenticatedProfileRoute
+  '/review': typeof AuthenticatedReviewRoute
   '/tracker': typeof AuthenticatedTrackerRoute
   '/weak-spots': typeof AuthenticatedWeakSpotsRoute
   '/bank/$subject': typeof BankSubjectRoute
@@ -214,6 +238,9 @@ export interface FileRoutesById {
   '/videos': typeof VideosRoute
   '/welcome': typeof WelcomeRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/leagues': typeof AuthenticatedLeaguesRoute
+  '/_authenticated/profile': typeof AuthenticatedProfileRoute
+  '/_authenticated/review': typeof AuthenticatedReviewRoute
   '/_authenticated/tracker': typeof AuthenticatedTrackerRoute
   '/_authenticated/weak-spots': typeof AuthenticatedWeakSpotsRoute
   '/bank/$subject': typeof BankSubjectRoute
@@ -240,6 +267,9 @@ export interface FileRouteTypes {
     | '/videos'
     | '/welcome'
     | '/admin'
+    | '/leagues'
+    | '/profile'
+    | '/review'
     | '/tracker'
     | '/weak-spots'
     | '/bank/$subject'
@@ -264,6 +294,9 @@ export interface FileRouteTypes {
     | '/videos'
     | '/welcome'
     | '/admin'
+    | '/leagues'
+    | '/profile'
+    | '/review'
     | '/tracker'
     | '/weak-spots'
     | '/bank/$subject'
@@ -289,6 +322,9 @@ export interface FileRouteTypes {
     | '/videos'
     | '/welcome'
     | '/_authenticated/admin'
+    | '/_authenticated/leagues'
+    | '/_authenticated/profile'
+    | '/_authenticated/review'
     | '/_authenticated/tracker'
     | '/_authenticated/weak-spots'
     | '/bank/$subject'
@@ -429,6 +465,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/leagues': {
+      id: '/_authenticated/leagues'
+      path: '/leagues'
+      fullPath: '/leagues'
+      preLoaderRoute: typeof AuthenticatedLeaguesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/profile': {
+      id: '/_authenticated/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AuthenticatedProfileRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/review': {
+      id: '/_authenticated/review'
+      path: '/review'
+      fullPath: '/review'
+      preLoaderRoute: typeof AuthenticatedReviewRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/tracker': {
       id: '/_authenticated/tracker'
       path: '/tracker'
@@ -490,12 +547,18 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedLeaguesRoute: typeof AuthenticatedLeaguesRoute
+  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
+  AuthenticatedReviewRoute: typeof AuthenticatedReviewRoute
   AuthenticatedTrackerRoute: typeof AuthenticatedTrackerRoute
   AuthenticatedWeakSpotsRoute: typeof AuthenticatedWeakSpotsRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedLeaguesRoute: AuthenticatedLeaguesRoute,
+  AuthenticatedProfileRoute: AuthenticatedProfileRoute,
+  AuthenticatedReviewRoute: AuthenticatedReviewRoute,
   AuthenticatedTrackerRoute: AuthenticatedTrackerRoute,
   AuthenticatedWeakSpotsRoute: AuthenticatedWeakSpotsRoute,
 }

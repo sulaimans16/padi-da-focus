@@ -304,17 +304,17 @@ function Profile() {
       </Reveal>
 
       <Reveal delay={0.14}>
-        <section className="card-pop mt-5 flex items-center gap-4 p-5 md:pr-28">
+        <section className="card-pop mt-5 flex flex-wrap items-center gap-4 p-5">
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-tint text-primary">
             <Icon name="logout" className="text-[20px]" />
           </span>
-          <div className="min-w-0 flex-1">
+          <div className="min-w-0">
             <p className="text-sm font-semibold">Sign out</p>
             <p className="text-xs text-muted-foreground">
               Your XP, streak and badges stay saved — sign back in any time.
             </p>
           </div>
-          <SignOutButton className="shrink-0" />
+          <SignOutButton className="shrink-0 md:ml-2" />
         </section>
       </Reveal>
 

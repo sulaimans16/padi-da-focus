@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { useAccess } from "@/hooks/useAccess";
+import { CouponRedeem } from "@/components/CouponRedeem";
 
 function Icon({ name, className = "" }: { name: string; className?: string }) {
   return (
@@ -48,6 +49,7 @@ export function ProGate({
           </Link>
         ) : null}
       </div>
+      <CouponRedeem compact className="mt-1" />
     </section>
   );
 }

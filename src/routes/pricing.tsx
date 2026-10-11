@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useAccess } from "@/hooks/useAccess";
+import { CouponRedeem } from "@/components/CouponRedeem";
 import { useAuth } from "@/hooks/useAuth";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
@@ -65,7 +66,7 @@ const FREE_FEATURES = [
 ];
 
 function Pricing() {
-  const { isPro, isAdmin, subscription, signedIn, refresh } = useAccess();
+  const { isPro, isAdmin, subscription, couponUntil, signedIn, refresh } = useAccess();
   const { user } = useAuth();
   const { openCheckout, loadingPrice, error } = usePaddleCheckout();
 
@@ -96,16 +97,28 @@ function Pricing() {
       {isPro ? (
         <div className="card-surface mt-5 p-4">
           <p className="text-sm font-bold text-success">
-            {isAdmin ? "Admin access — all Pro tools unlocked." : "You're on PG Prep Pro."}
+            {isAdmin
+              ? "Admin access — all Pro tools unlocked."
+              : !subscription && couponUntil
+                ? "Coupon applied — all Pro tools unlocked."
+                : "You're on PG Prep Pro."}
           </p>
           {subscription ? (
             <p className="mt-1 text-xs text-muted-foreground">
               {subscription.plan === "yearly" ? "Yearly plan" : "3-month plan"} · active until{" "}
               {new Date(subscription.current_period_end).toLocaleDateString()}
             </p>
+          ) : !isAdmin && couponUntil ? (
+            <p className="mt-1 text-xs text-muted-foreground">
+              Coupon access until {new Date(couponUntil).toLocaleDateString()}
+            </p>
           ) : null}
         </div>
-      ) : null}
+      ) : (
+        <div className="card-pop mt-5 p-5">
+          <CouponRedeem />
+        </div>
+      )}
 
       <div className="mt-6 grid gap-4 md:grid-cols-2">
         {PLANS.map((plan) => (

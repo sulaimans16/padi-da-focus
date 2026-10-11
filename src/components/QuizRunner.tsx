@@ -5,6 +5,7 @@ import { Icon, Pill, Badge, GlassCard } from "@/components/Primitives";
 import { ProgressRing } from "@/components/ProgressRing";
 import { CountUp, SPRING } from "@/components/motion/Reveal";
 import { ComboMeter, ProgressBar } from "@/components/game/Widgets";
+import { Mascot, type MascotMood } from "@/components/mascot/Mascot";
 import { useAuth } from "@/hooks/useAuth";
 import { answerFeedback } from "@/lib/game-feedback";
 import { emitGameEvent } from "@/lib/gamification";
@@ -29,6 +30,12 @@ function fmt(total: number) {
 }
 
 type Feedback = { correct: boolean; amount: number; combo: number; message: string };
+
+function buddyMood(feedback: Feedback | null, combo: number): MascotMood {
+  if (!feedback) return combo >= 5 ? "fire" : "think";
+  if (!feedback.correct) return "sad";
+  return combo >= 5 ? "fire" : "happy";
+}
 
 export function QuizRunner({
   questions,
@@ -168,8 +175,9 @@ export function QuizRunner({
   return (
     <div className={cn("grid gap-5 lg:grid-cols-[1fr_260px]", showAnswer && "pb-44 sm:pb-28")}>
       <div className="min-w-0 space-y-4">
-        {/* Lesson progress */}
+        {/* Lesson progress, with Dr. Pulse reacting alongside */}
         <div className="flex items-center gap-3">
+          <Mascot mood={buddyMood(feedback, combo)} size={48} />
           <ProgressBar
             value={(index + (chosen ? 1 : 0)) / questions.length}
             color="var(--color-success)"
@@ -388,20 +396,22 @@ export function QuizRunner({
           >
             <div className="mx-auto flex max-w-4xl flex-wrap items-center gap-4">
               <motion.span
-                initial={{ scale: 0.3, rotate: -30 }}
-                animate={{ scale: 1, rotate: 0 }}
+                initial={{ scale: 0.3, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
                 transition={SPRING}
-                className={cn(
-                  "flex h-12 w-12 shrink-0 items-center justify-center rounded-full",
-                  feedback.correct
-                    ? "bg-success text-success-foreground"
-                    : "bg-destructive text-destructive-foreground",
-                )}
+                className="relative -mt-10 shrink-0"
               >
-                <Icon
-                  name={feedback.correct ? "check" : "close"}
-                  className="text-[28px] font-bold"
-                />
+                <Mascot mood={buddyMood(feedback, feedback.combo)} size={76} />
+                <span
+                  className={cn(
+                    "absolute -right-1 bottom-1 flex h-7 w-7 items-center justify-center rounded-full ring-2 ring-background",
+                    feedback.correct
+                      ? "bg-success text-success-foreground"
+                      : "bg-destructive text-destructive-foreground",
+                  )}
+                >
+                  <Icon name={feedback.correct ? "check" : "close"} className="text-[18px]" />
+                </span>
               </motion.span>
               <div className="min-w-0 flex-1">
                 <p
@@ -490,18 +500,21 @@ function ResultReview({
   return (
     <div className="space-y-5">
       <div className="card-pop p-6 sm:p-8">
-        <motion.h2
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={SPRING}
-          className="mb-6 text-center text-3xl sm:text-left"
-        >
-          {great
-            ? "Lesson complete! 🎉"
-            : pct >= 40
-              ? "Good session 💪"
-              : "Every miss is a lesson 📚"}
-        </motion.h2>
+        <div className="mb-6 flex items-center justify-center gap-4 sm:justify-start">
+          <Mascot mood={great ? "cheer" : pct >= 40 ? "happy" : "sad"} size={92} />
+          <motion.h2
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={SPRING}
+            className="text-2xl sm:text-3xl"
+          >
+            {great
+              ? "Lesson complete! 🎉"
+              : pct >= 40
+                ? "Good session 💪"
+                : "Every miss is a lesson 📚"}
+          </motion.h2>
+        </div>
         <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-center">
           <motion.div
             initial={{ scale: 0.7, opacity: 0 }}

@@ -24,6 +24,9 @@ export async function assertPro(
     .limit(1);
 
   if (!subs || subs.length === 0) {
+    // Promo coupon (e.g. MINI_TRIP) grants Pro until the coupon expires.
+    const { data: couponUntil } = await supabase.rpc("my_coupon_access");
+    if (couponUntil) return { isAdmin: false };
     throw new Error("AI tools are part of PG Prep Pro. Upgrade from the Pricing page to unlock them.");
   }
   return { isAdmin: false };

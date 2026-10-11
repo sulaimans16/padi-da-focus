@@ -5,7 +5,8 @@ export const anatomy: LearnModule = {
   group: "Pre-clinical",
   subject: "Anatomy",
   icon: "accessibility_new",
-  blurb: "Brachial plexus, inguinal canal, cranial nerves and muscle mechanics — the diagrams NBE keeps returning to.",
+  blurb:
+    "Brachial plexus, inguinal canal, cranial nerves and muscle mechanics — the diagrams NBE keeps returning to.",
   cover: {
     file: "Human skeleton front en.svg",
     caption: "Human skeleton, anterior view",
@@ -16,6 +17,10 @@ export const anatomy: LearnModule = {
     "Explain hernia types from the relationship to the inferior epigastric vessels.",
     "Map each cranial nerve to its exit foramen and the sign produced by its palsy.",
     "Relate sarcomere architecture to the length–tension behaviour of muscle.",
+    "Predict the gait and deficit from a lower-limb nerve injury.",
+    "Trace each pharyngeal arch and pouch to its adult derivatives.",
+    "Name the portosystemic anastomoses and the varices each produces.",
+    "Localise a stroke syndrome to its artery from the clinical signs.",
   ],
   concepts: [
     {
@@ -38,10 +43,30 @@ export const anatomy: LearnModule = {
         columns: ["Nerve", "Motor loss", "Sensory loss", "Classic cause"],
         rows: [
           ["Axillary", "Abduction 15–90°", "Regimental badge patch", "Surgical neck fracture"],
-          ["Radial", "Wrist and finger extension (wrist drop)", "First dorsal web space", "Midshaft humerus / 'Saturday night'"],
-          ["Median", "Thumb opposition, LOAF muscles", "Lateral 3½ digits, palmar", "Carpal tunnel, supracondylar fracture"],
-          ["Ulnar", "Interossei, adductor pollicis (claw)", "Medial 1½ digits", "Medial epicondyle, Guyon's canal"],
-          ["Musculocutaneous", "Elbow flexion and supination", "Lateral forearm", "Direct axillary trauma"],
+          [
+            "Radial",
+            "Wrist and finger extension (wrist drop)",
+            "First dorsal web space",
+            "Midshaft humerus / 'Saturday night'",
+          ],
+          [
+            "Median",
+            "Thumb opposition, LOAF muscles",
+            "Lateral 3½ digits, palmar",
+            "Carpal tunnel, supracondylar fracture",
+          ],
+          [
+            "Ulnar",
+            "Interossei, adductor pollicis (claw)",
+            "Medial 1½ digits",
+            "Medial epicondyle, Guyon's canal",
+          ],
+          [
+            "Musculocutaneous",
+            "Elbow flexion and supination",
+            "Lateral forearm",
+            "Direct axillary trauma",
+          ],
         ],
       },
       pitfalls: [
@@ -83,7 +108,12 @@ export const anatomy: LearnModule = {
         columns: ["Feature", "Indirect", "Direct", "Femoral"],
         rows: [
           ["Relation to epigastric vessels", "Lateral", "Medial", "Below inguinal ligament"],
-          ["Relation to pubic tubercle", "Above and medial", "Above and medial", "Below and lateral"],
+          [
+            "Relation to pubic tubercle",
+            "Above and medial",
+            "Above and medial",
+            "Below and lateral",
+          ],
           ["Age", "Any, often young", "Older", "Older women"],
           ["Strangulation risk", "Moderate", "Low", "High"],
         ],
@@ -139,7 +169,8 @@ export const anatomy: LearnModule = {
         "A 'pupil-sparing' third nerve palsy is not benign in a young patient — image it.",
         "Forehead sparing points to a stroke, not Bell's palsy; missing this delays thrombolysis.",
       ],
-      mnemonic: "Standing Room Only — Superior orbital fissure, foramen Rotundum, foramen Ovale for V1, V2, V3.",
+      mnemonic:
+        "Standing Room Only — Superior orbital fissure, foramen Rotundum, foramen Ovale for V1, V2, V3.",
       vignette: {
         stem: "A 58-year-old diabetic develops sudden ptosis with the right eye deviated down and out. The pupil is 3 mm and reactive.",
         answer: "Ischaemic (microvascular) third nerve palsy.",
@@ -176,14 +207,283 @@ export const anatomy: LearnModule = {
       vignette: {
         stem: "A researcher stretches an isolated skeletal muscle fibre well beyond its resting length and stimulates it. Active tension falls sharply.",
         answer: "Reduced thick–thin filament overlap.",
-        reasoning: "Fewer cross-bridges can form, and active tension tracks cross-bridge number almost linearly.",
+        reasoning:
+          "Fewer cross-bridges can form, and active tension tracks cross-bridge number almost linearly.",
       },
-      highYield: "During contraction the A band stays the same width — only the I band and H zone shrink.",
+      highYield:
+        "During contraction the A band stays the same width — only the I band and H zone shrink.",
       figure: {
         file: "Sarcomere.svg",
         caption: "Sarcomere showing A band, I band, H zone, Z-line and M-line",
         credit: "Wikimedia Commons",
       },
+    },
+    {
+      id: "lower-limb-nerves",
+      title: "Lower-limb nerve injuries",
+      minutes: 7,
+      summary:
+        "Each lower-limb nerve has a vulnerable spot, a muscle group it powers and a gait or posture that gives the lesion away.",
+      examFocus:
+        "Foot drop after fibular neck fracture, Trendelenburg sign, safe intramuscular injection site, and the root values of the knee and ankle jerks.",
+      mechanism:
+        "A nerve is most easily injured where it runs superficially over bone or close to a joint. The common peroneal nerve wraps around the neck of the fibula just under the skin, so a fracture or a tight plaster there paralyses the dorsiflexors and evertors and the foot hangs. Gluteus medius and minimus hold the pelvis level when you stand on one leg; if the superior gluteal nerve is cut they can't, and the pelvis sags towards the unsupported side.",
+      points: [
+        "Common peroneal (fibular) nerve: at the fibular neck — foot drop, loss of dorsiflexion and eversion, high-stepping gait, sensory loss over the dorsum of the foot and lateral leg.",
+        "Deep peroneal branch supplies skin of the first web space; superficial peroneal supplies most of the dorsum and the evertors.",
+        "Tibial nerve: plantarflexion and inversion; lesion → can't stand on tiptoe, loss of sensation on the sole (tarsal tunnel at the medial malleolus).",
+        "Femoral nerve (L2–L4): quadriceps — weak knee extension, absent knee jerk, numb anterior thigh and medial leg (saphenous branch).",
+        "Obturator nerve (L2–L4): adductors of the thigh; sensory patch on the medial thigh.",
+        "Superior gluteal nerve: positive Trendelenburg sign — standing on the affected leg, the pelvis drops on the opposite side.",
+        "Inferior gluteal nerve: gluteus maximus — difficulty rising from a chair and climbing stairs.",
+        "Sciatic nerve: injured in posterior hip dislocation or a wrongly placed gluteal injection — give injections in the upper outer quadrant.",
+        "Reflexes: knee jerk L3–L4; ankle jerk S1–S2.",
+      ],
+      table: {
+        title: "Nerve, muscle, deficit",
+        columns: ["Nerve", "Key action", "Lesion sign"],
+        rows: [
+          ["Common peroneal", "Dorsiflexion, eversion", "Foot drop, high-stepping gait"],
+          ["Tibial", "Plantarflexion, inversion", "Can't tiptoe; numb sole"],
+          ["Femoral", "Knee extension", "Lost knee jerk; knee buckles"],
+          ["Obturator", "Thigh adduction", "Weak adduction"],
+          ["Superior gluteal", "Hip abduction", "Trendelenburg sign"],
+          ["Inferior gluteal", "Hip extension", "Can't climb stairs"],
+        ],
+      },
+      pitfalls: [
+        "In a Trendelenburg sign the pelvis drops on the sound (opposite) side, not the side of the lesion.",
+        "Foot drop with weak inversion too suggests an L5 root or sciatic lesion, not the peroneal nerve — the tibial nerve does inversion.",
+      ],
+      mnemonic: "PED and TIP: Peroneal Everts and Dorsiflexes; Tibial Inverts and Plantarflexes.",
+      vignette: {
+        stem: "After a below-knee plaster for an ankle fracture, a man cannot lift his foot and has numbness over the dorsum of the foot.",
+        answer: "Common peroneal nerve compression at the neck of the fibula.",
+        reasoning:
+          "The nerve lies superficially on the fibular neck where a tight cast presses it, causing foot drop and dorsal sensory loss.",
+      },
+      highYield:
+        "Fibular neck → common peroneal → foot drop. Superior gluteal → Trendelenburg. Sciatic → posterior hip dislocation. Knee jerk L3–4, ankle jerk S1–2.",
+      checks: [
+        {
+          q: "Fracture of the neck of the fibula most commonly causes:",
+          options: ["Claw toes", "Foot drop", "Loss of knee jerk", "Trendelenburg gait"],
+          answer: 1,
+          why: "The common peroneal nerve winds around the fibular neck and supplies the dorsiflexors.",
+        },
+        {
+          q: "A positive Trendelenburg sign indicates weakness of:",
+          options: ["Gluteus maximus", "Gluteus medius and minimus", "Quadriceps", "Hamstrings"],
+          answer: 1,
+          why: "These abductors, supplied by the superior gluteal nerve, keep the pelvis level in single-leg stance.",
+        },
+      ],
+    },
+    {
+      id: "pharyngeal-arches",
+      title: "Pharyngeal arches & pouches",
+      minutes: 8,
+      summary:
+        "The head and neck develop from a series of pharyngeal arches, each with its own nerve, muscles, cartilage and artery, plus the pouches and clefts between them.",
+      examFocus:
+        "The nerve of each arch, derivatives of the 1st and 2nd arch cartilages, the parathyroid and thymus pouches, and DiGeorge syndrome.",
+      mechanism:
+        "Each arch is a package: a cartilage rod, a block of muscle, an artery and one cranial nerve that grows in with the muscle. Because a muscle keeps the nerve of its arch for life, you can predict a muscle's innervation from its origin — every muscle from the 2nd arch, from stapedius to the facial muscles, is supplied by the facial nerve. The pouches line the inside; the 3rd and 4th pouches migrate down the neck, which is why the inferior parathyroid comes from a higher pouch than the superior one.",
+      points: [
+        "1st arch (mandibular nerve, V3): muscles of mastication, mylohyoid, anterior belly of digastric, tensor tympani, tensor veli palatini. Meckel's cartilage → malleus, incus, sphenomandibular ligament.",
+        "2nd arch (facial nerve, VII): muscles of facial expression, stapedius, stylohyoid, posterior belly of digastric. Reichert's cartilage → stapes, styloid process, lesser horn of hyoid.",
+        "3rd arch (glossopharyngeal, IX): stylopharyngeus only; greater horn of hyoid; common and internal carotid arteries.",
+        "4th arch (superior laryngeal, X): cricothyroid, pharyngeal constrictors; thyroid cartilage; arch of aorta (left), right subclavian.",
+        "6th arch (recurrent laryngeal, X): all intrinsic laryngeal muscles except cricothyroid; pulmonary arteries and ductus arteriosus.",
+        "Pouches: 1st → middle ear and Eustachian tube; 2nd → palatine tonsil; 3rd → inferior parathyroid and thymus; 4th → superior parathyroid and parafollicular C cells.",
+        "1st cleft → external acoustic meatus. A persisting 2nd cleft gives a branchial cyst at the anterior border of sternocleidomastoid.",
+        "DiGeorge syndrome (22q11 deletion): 3rd and 4th pouches fail → hypocalcaemia, absent thymus (T-cell deficiency), conotruncal heart defects.",
+      ],
+      table: {
+        title: "Arch at a glance",
+        columns: ["Arch", "Nerve", "Muscle clue", "Cartilage clue"],
+        rows: [
+          ["1st", "V3", "Mastication", "Malleus, incus"],
+          ["2nd", "VII", "Facial expression, stapedius", "Stapes, styloid"],
+          ["3rd", "IX", "Stylopharyngeus", "Greater horn of hyoid"],
+          ["4th", "X (superior laryngeal)", "Cricothyroid", "Thyroid cartilage"],
+          ["6th", "X (recurrent laryngeal)", "Intrinsic laryngeal", "Cricoid, arytenoid"],
+        ],
+      },
+      pitfalls: [
+        "The inferior parathyroid comes from the 3rd pouch and the superior from the 4th — the 3rd pouch tissue migrates further down with the thymus.",
+        "There is no adult derivative from the 5th arch.",
+      ],
+      mnemonic:
+        "Arch nerves in order: 5, 7, 9, 10, 10 (V3, VII, IX, superior laryngeal, recurrent laryngeal).",
+      vignette: {
+        stem: "A neonate has tetany on day 2, recurrent infections, a cleft palate and an interrupted aortic arch.",
+        answer: "DiGeorge syndrome — failure of the 3rd and 4th pharyngeal pouches.",
+        reasoning:
+          "Absent parathyroids cause hypocalcaemia and an absent thymus causes T-cell deficiency, with conotruncal heart defects.",
+      },
+      highYield:
+        "1st arch V3 + malleus/incus; 2nd arch VII + stapes; 3rd IX + stylopharyngeus; 4th/6th vagus. 3rd pouch → inferior parathyroid + thymus. DiGeorge = 3rd/4th pouch.",
+      checks: [
+        {
+          q: "Stapedius is derived from the:",
+          options: ["1st arch", "2nd arch", "3rd arch", "4th arch"],
+          answer: 1,
+          why: "Stapedius is a 2nd-arch muscle and so is supplied by the facial nerve.",
+        },
+        {
+          q: "The inferior parathyroid gland develops from the:",
+          options: ["2nd pouch", "3rd pouch", "4th pouch", "1st cleft"],
+          answer: 1,
+          why: "The 3rd pouch forms the inferior parathyroid and thymus, which descend together.",
+        },
+      ],
+    },
+    {
+      id: "portosystemic",
+      title: "Portal vein & portosystemic anastomoses",
+      minutes: 6,
+      summary:
+        "Where portal and systemic veins meet, blood can bypass the liver. In portal hypertension these connections swell into varices.",
+      examFocus:
+        "Formation of the portal vein, each anastomosis and the varix it forms, and caput medusae.",
+      mechanism:
+        "The portal system has no valves, so when flow through a cirrhotic liver is obstructed and pressure rises, blood takes any route back to the systemic veins. The small veins at these meeting points dilate under the extra flow. The lower oesophagus matters most clinically because the varices there sit in thin submucosa, exposed to acid and food, and can bleed torrentially.",
+      points: [
+        "Portal vein: formed behind the neck of the pancreas by the superior mesenteric and splenic veins (at about L1–L2).",
+        "Lower oesophagus: left gastric (portal) ↔ oesophageal tributaries of the azygos (systemic) → oesophageal varices.",
+        "Anorectal junction: superior rectal (portal) ↔ middle and inferior rectal (systemic) → anorectal varices.",
+        "Umbilicus: paraumbilical veins (portal) ↔ superficial epigastric veins (systemic) → caput medusae.",
+        "Retroperitoneum: colonic veins ↔ retroperitoneal veins (veins of Retzius).",
+        "Bare area of the liver: portal ↔ phrenic veins (veins of Sappey).",
+        "Clinically significant portal hypertension: hepatic venous pressure gradient ≥ 10 mmHg; varices bleed above ~12 mmHg.",
+        "TIPS connects the portal vein to a hepatic vein within the liver to decompress the portal system.",
+      ],
+      table: {
+        title: "Anastomoses and their varices",
+        columns: ["Site", "Portal side", "Systemic side", "Result"],
+        rows: [
+          ["Lower oesophagus", "Left gastric", "Azygos tributaries", "Oesophageal varices"],
+          ["Anorectum", "Superior rectal", "Middle/inferior rectal", "Anorectal varices"],
+          ["Umbilicus", "Paraumbilical", "Superficial epigastric", "Caput medusae"],
+          ["Retroperitoneum", "Colic veins", "Veins of Retzius", "Retroperitoneal varices"],
+        ],
+      },
+      pitfalls: [
+        "Anorectal varices are not the same as haemorrhoids — haemorrhoids are vascular cushions and are no commoner in portal hypertension.",
+        "In caput medusae from portal hypertension, blood flows away from the umbilicus; in IVC obstruction, flow in the abdominal wall veins is upwards.",
+      ],
+      vignette: {
+        stem: "A man with alcoholic cirrhosis vomits a large amount of fresh blood. He has prominent veins radiating from the umbilicus.",
+        answer:
+          "Bleeding oesophageal varices from left gastric–azygos anastomosis; caput medusae from paraumbilical veins.",
+        reasoning:
+          "Portal hypertension opens all portosystemic channels; the oesophageal one is the one that bleeds dangerously.",
+      },
+      highYield:
+        "Portal vein = SMV + splenic vein behind pancreatic neck. Oesophageal: left gastric ↔ azygos. Rectal: superior ↔ middle/inferior rectal. Umbilical: paraumbilical → caput medusae.",
+      checks: [
+        {
+          q: "Oesophageal varices form at the anastomosis between the left gastric vein and:",
+          options: [
+            "Inferior phrenic vein",
+            "Azygos tributaries",
+            "Splenic vein",
+            "Inferior rectal vein",
+          ],
+          answer: 1,
+          why: "Oesophageal tributaries of the azygos system drain the lower oesophagus into the systemic circulation.",
+        },
+        {
+          q: "Caput medusae is due to dilatation of:",
+          options: [
+            "Paraumbilical veins",
+            "Veins of Retzius",
+            "Veins of Sappey",
+            "Superior rectal veins",
+          ],
+          answer: 0,
+          why: "Paraumbilical veins along the ligamentum teres connect the portal vein to abdominal wall veins.",
+        },
+      ],
+    },
+    {
+      id: "brain-blood-supply",
+      title: "Blood supply of the brain & stroke syndromes",
+      minutes: 9,
+      summary:
+        "The circle of Willis links carotid and vertebrobasilar territories. The pattern of weakness, sensory loss and cranial nerve signs tells you which artery is blocked.",
+      examFocus:
+        "ACA vs MCA vs PCA deficits, lenticulostriate arteries, lateral and medial medullary syndromes, and Weber syndrome.",
+      mechanism:
+        "The motor and sensory homunculus is laid out over the cortex with the leg on the medial surface and the face and arm on the lateral surface. The anterior cerebral artery supplies the medial surface and the middle cerebral the lateral, so an ACA stroke weakens the leg while an MCA stroke weakens the face and arm. In the brainstem, a crossed picture — cranial nerve signs on one side and limb signs on the other — localises the lesion because the cranial nerve nuclei are ipsilateral while the long tracts have not yet crossed or already have.",
+      points: [
+        "Circle of Willis: anterior communicating, anterior cerebral, internal carotid, posterior communicating and posterior cerebral arteries. The commonest site of a berry aneurysm is the anterior communicating artery.",
+        "ACA: contralateral leg weakness and sensory loss, urinary incontinence, apathy (frontal lobe).",
+        "MCA: contralateral face and arm > leg weakness and sensory loss, homonymous hemianopia; aphasia if the dominant hemisphere, neglect if non-dominant.",
+        "Lenticulostriate branches of the MCA supply the internal capsule — pure motor lacunar strokes and hypertensive haemorrhage (Charcot–Bouchard microaneurysms).",
+        "PCA: contralateral homonymous hemianopia with macular sparing (the occipital pole has MCA collateral supply).",
+        "Lateral medullary (Wallenberg) syndrome — vertebral or PICA: ipsilateral facial pain/temperature loss, contralateral body pain/temperature loss, ipsilateral Horner's, dysphagia and hoarseness (nucleus ambiguus), vertigo, ataxia. No limb weakness.",
+        "Medial medullary syndrome — anterior spinal artery: contralateral hemiplegia and loss of proprioception, tongue deviates to the side of the lesion (XII).",
+        "Weber syndrome (midbrain): ipsilateral oculomotor palsy with contralateral hemiplegia.",
+      ],
+      table: {
+        title: "Brainstem syndromes",
+        columns: ["Syndrome", "Artery", "Ipsilateral", "Contralateral"],
+        rows: [
+          ["Weber (midbrain)", "PCA branches", "CN III palsy", "Hemiplegia"],
+          [
+            "Lateral medullary",
+            "Vertebral / PICA",
+            "Face pain-temp loss, Horner's, IX/X",
+            "Body pain-temp loss",
+          ],
+          [
+            "Medial medullary",
+            "Anterior spinal",
+            "Tongue deviation (XII)",
+            "Hemiplegia, proprioception loss",
+          ],
+        ],
+      },
+      pitfalls: [
+        "Lateral medullary syndrome has no limb weakness — the pyramids are medial.",
+        "In a hypoglossal lesion the tongue deviates towards the side of the lesion.",
+      ],
+      mnemonic:
+        "Lateral medullary — the 'D's: Dysphagia, Dysarthria, Dysphonia, Diplopia, Dizziness (vertigo), and crossed sensory loss.",
+      vignette: {
+        stem: "A 60-year-old has sudden vertigo, hoarseness and difficulty swallowing. There is loss of pain sensation on the left face and right side of the body, with a left Horner's syndrome. Power is normal.",
+        answer: "Left lateral medullary syndrome — left vertebral artery / PICA.",
+        reasoning:
+          "Crossed pain-temperature loss, nucleus ambiguus involvement and Horner's without weakness localise to the lateral medulla.",
+      },
+      highYield:
+        "ACA = leg; MCA = face + arm, aphasia; PCA = hemianopia with macular sparing. Lenticulostriate = capsular stroke + hypertensive bleed. Wallenberg: crossed sensory loss, no weakness.",
+      checks: [
+        {
+          q: "Contralateral leg weakness with urinary incontinence suggests occlusion of the:",
+          options: [
+            "Middle cerebral artery",
+            "Anterior cerebral artery",
+            "Posterior cerebral artery",
+            "Basilar artery",
+          ],
+          answer: 1,
+          why: "The ACA supplies the medial surface where the leg area and frontal micturition centre lie.",
+        },
+        {
+          q: "Which feature is NOT seen in lateral medullary syndrome?",
+          options: [
+            "Ipsilateral Horner's syndrome",
+            "Dysphagia",
+            "Contralateral hemiplegia",
+            "Vertigo",
+          ],
+          answer: 2,
+          why: "The corticospinal tracts run medially, sparing them in a lateral medullary infarct.",
+        },
+      ],
     },
   ],
 };

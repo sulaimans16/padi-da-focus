@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { figureUrl, LEARN_MODULES } from "@/lib/learn";
+import { ProgressBar } from "@/components/game/Widgets";
+import { useLearned } from "@/hooks/useLearned";
 
 export const Route = createFileRoute("/learn/")({
   staticData: { sitemap: true },
@@ -24,6 +26,7 @@ export const Route = createFileRoute("/learn/")({
 });
 
 function LearnIndex() {
+  const { done } = useLearned();
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
       <p className="label-eyebrow">Learn</p>
@@ -60,7 +63,7 @@ function LearnIndex() {
             key={m.slug}
             to="/learn/$subject"
             params={{ subject: m.slug }}
-            className="card-surface group overflow-hidden transition-colors hover:bg-surface-2"
+            className="card-pop card-pop-hover group overflow-hidden"
           >
             <img
               src={figureUrl(m.cover.file, 900)}
@@ -78,9 +81,30 @@ function LearnIndex() {
                 <h2 className="text-base font-bold">{m.subject}</h2>
               </div>
               <p className="mt-2 text-xs leading-snug text-muted-foreground">{m.blurb}</p>
-              <p className="label-eyebrow mt-3 text-primary">
-                {m.concepts.length} concepts · Start learning →
-              </p>
+              {(() => {
+                const learned = m.concepts.filter((c) => done.has(`${m.slug}/${c.id}`)).length;
+                return (
+                  <div className="mt-3">
+                    <div className="flex items-center gap-2">
+                      <ProgressBar
+                        value={learned / Math.max(1, m.concepts.length)}
+                        color="var(--color-xp)"
+                        className="h-2.5 flex-1"
+                      />
+                      <span className="text-[11px] font-bold tabular-nums text-muted-foreground">
+                        {learned}/{m.concepts.length}
+                      </span>
+                    </div>
+                    <p className="label-eyebrow mt-2 text-primary">
+                      {learned === m.concepts.length
+                        ? "Completed 🏆 · Review →"
+                        : learned
+                          ? "Continue →"
+                          : "Start learning →"}
+                    </p>
+                  </div>
+                );
+              })()}
             </div>
           </Link>
         ))}

@@ -253,8 +253,7 @@ export const ent: LearnModule = {
         "Don't tilt the head back — blood is swallowed (vomiting) and the bleed is hidden.",
         "Pinching the nasal bones does nothing; pressure must be on the soft cartilaginous part.",
       ],
-      mnemonic:
-        "Little's area vessels: 'Let's Go Spend Super' — anterior ethmoidal (Let's), Greater palatine, Sphenopalatine, Superior labial.",
+      mnemonic: "LEGS — superior Labial, anterior Ethmoidal, Greater palatine, Sphenopalatine.",
       vignette: {
         stem: "A 10-year-old has a nosebleed after picking his nose. He is otherwise well.",
         answer:

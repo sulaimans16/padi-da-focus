@@ -11,6 +11,8 @@ import { psm } from "./learn-modules/psm";
 import { microbiology } from "./learn-modules/microbiology";
 import { ophthalmology } from "./learn-modules/ophthalmology";
 import { ent } from "./learn-modules/ent";
+import { orthopaedics } from "./learn-modules/orthopaedics";
+import { dermatology } from "./learn-modules/dermatology";
 
 /**
  * Concept modules for the Learn section.
@@ -120,6 +122,8 @@ export const LEARN_MODULES: LearnModule[] = [
   microbiology,
   ophthalmology,
   ent,
+  orthopaedics,
+  dermatology,
 ];
 
 export function getModule(slug: string) {

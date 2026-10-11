@@ -107,6 +107,66 @@ export type Database = {
         }
         Relationships: []
       }
+      game_profiles: {
+        Row: {
+          best_combo: number
+          best_combo_today: number
+          combo_day: string | null
+          created_at: string
+          current_combo: number
+          daily_goal: number
+          last_attempt_at: string | null
+          last_streak_day: string | null
+          league_opt_out: boolean
+          league_tier: number
+          longest_streak: number
+          streak: number
+          streak_freezes: number
+          timezone: string
+          updated_at: string
+          user_id: string
+          xp_total: number
+        }
+        Insert: {
+          best_combo?: number
+          best_combo_today?: number
+          combo_day?: string | null
+          created_at?: string
+          current_combo?: number
+          daily_goal?: number
+          last_attempt_at?: string | null
+          last_streak_day?: string | null
+          league_opt_out?: boolean
+          league_tier?: number
+          longest_streak?: number
+          streak?: number
+          streak_freezes?: number
+          timezone?: string
+          updated_at?: string
+          user_id: string
+          xp_total?: number
+        }
+        Update: {
+          best_combo?: number
+          best_combo_today?: number
+          combo_day?: string | null
+          created_at?: string
+          current_combo?: number
+          daily_goal?: number
+          last_attempt_at?: string | null
+          last_streak_day?: string | null
+          league_opt_out?: boolean
+          league_tier?: number
+          longest_streak?: number
+          streak?: number
+          streak_freezes?: number
+          timezone?: string
+          updated_at?: string
+          user_id?: string
+          xp_total?: number
+        }
+        Relationships: []
+      }
       goals: {
         Row: {
           created_at: string
@@ -130,6 +190,57 @@ export type Database = {
           target_at?: string
           title?: string
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      league_memberships: {
+        Row: {
+          cohort: number
+          created_at: string
+          tier: number
+          user_id: string
+          week_start: string
+        }
+        Insert: {
+          cohort: number
+          created_at?: string
+          tier: number
+          user_id: string
+          week_start: string
+        }
+        Update: {
+          cohort?: number
+          created_at?: string
+          tier?: number
+          user_id?: string
+          week_start?: string
+        }
+        Relationships: []
+      }
+      mistake_queue: {
+        Row: {
+          created_at: string
+          due_at: string
+          question_id: string
+          stage: number
+          subject: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          due_at?: string
+          question_id: string
+          stage?: number
+          subject?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          due_at?: string
+          question_id?: string
+          stage?: number
+          subject?: string
           user_id?: string
         }
         Relationships: []
@@ -263,6 +374,24 @@ export type Database = {
         }
         Relationships: []
       }
+      user_badges: {
+        Row: {
+          badge_id: string
+          unlocked_at: string
+          user_id: string
+        }
+        Insert: {
+          badge_id: string
+          unlocked_at?: string
+          user_id: string
+        }
+        Update: {
+          badge_id?: string
+          unlocked_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -284,11 +413,44 @@ export type Database = {
         }
         Relationships: []
       }
+      xp_events: {
+        Row: {
+          amount: number
+          created_at: string
+          day: string
+          id: string
+          ref_id: string
+          source: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          day: string
+          id?: string
+          ref_id?: string
+          source: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          day?: string
+          id?: string
+          ref_id?: string
+          source?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      claim_xp: { Args: { _ref: string; _source: string }; Returns: number }
+      get_game_state: { Args: never; Returns: Json }
+      get_league: { Args: never; Returns: Json }
       has_active_subscription: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
         Args: {
@@ -298,6 +460,14 @@ export type Database = {
         Returns: boolean
       }
       is_pro: { Args: { _user_id: string }; Returns: boolean }
+      update_game_settings: {
+        Args: {
+          _daily_goal?: number
+          _league_opt_out?: boolean
+          _timezone?: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "admin" | "user"

@@ -4,6 +4,7 @@ import { ProgressRing } from "@/components/ProgressRing";
 import { NagOverlay } from "@/components/NagOverlay";
 import { playSuccess } from "@/lib/sfx";
 import { recordFocusSession } from "@/lib/tracker";
+import { registerFocus } from "@/lib/gamification";
 
 import {
   SUBJECTS,
@@ -113,6 +114,7 @@ function FocusPage() {
             completed,
             startedAt: new Date(prev.startedAt).toISOString(),
           });
+          if (completed) registerFocus((Date.now() - prev.startedAt) / 60000);
         }
         return null;
       });

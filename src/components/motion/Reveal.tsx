@@ -1,7 +1,10 @@
-import { motion, type HTMLMotionProps } from "motion/react";
-import type { ReactNode } from "react";
+import { animate, motion, useMotionValue, useTransform, type HTMLMotionProps } from "motion/react";
+import { useEffect, type ReactNode } from "react";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
+
+/** Bouncy spring used for game feedback (pops, badges, toasts). */
+export const SPRING = { type: "spring", stiffness: 520, damping: 22, mass: 0.7 } as const;
 
 /** Fade + slide-up on scroll into view. */
 export function Reveal({
@@ -93,16 +96,43 @@ export function PageTransition({
   );
 }
 
-/** Animated integer counter. */
-export function CountUp({ value, className }: { value: number; className?: string }) {
+/** Animated integer counter — rolls from the previous value to the new one. */
+export function CountUp({
+  value,
+  className,
+  duration = 0.8,
+}: {
+  value: number;
+  className?: string;
+  duration?: number;
+}) {
+  const mv = useMotionValue(value);
+  const text = useTransform(mv, (v) => Math.round(v).toLocaleString());
+  useEffect(() => {
+    const controls = animate(mv, value, { duration, ease: EASE });
+    return () => controls.stop();
+  }, [mv, value, duration]);
+  return <motion.span className={className}>{text}</motion.span>;
+}
+
+/** Springy scale-in for rewards and status chips. */
+export function Pop({
+  children,
+  className,
+  delay = 0,
+}: {
+  children: ReactNode;
+  className?: string;
+  delay?: number;
+}) {
   return (
-    <motion.span
+    <motion.div
       className={className}
-      initial={{ opacity: 0, y: 6 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: EASE }}
+      initial={{ scale: 0.6, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ ...SPRING, delay }}
     >
-      {value}
-    </motion.span>
+      {children}
+    </motion.div>
   );
 }

@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { requestGameSync } from "./gamification";
 
 export type AttemptRow = {
   id: string;
@@ -49,6 +50,7 @@ export async function recordAttempt(input: {
     context: input.context,
   });
   if (error) console.error("[tracker] attempt insert failed", error.message);
+  else requestGameSync();
 }
 
 export async function recordFocusSession(input: {
@@ -69,6 +71,7 @@ export async function recordFocusSession(input: {
     started_at: input.startedAt,
   });
   if (error) console.error("[tracker] session insert failed", error.message);
+  else requestGameSync();
 }
 
 export async function fetchAttempts(): Promise<AttemptRow[]> {

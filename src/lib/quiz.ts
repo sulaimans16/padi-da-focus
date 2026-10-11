@@ -139,3 +139,25 @@ export function dailyStreak(results: DailyResult[]): number {
   }
   return streak;
 }
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/** Loads specific questions, from the bank (uuid ids) or the bundled/custom set. */
+export async function fetchQuestionsByIds(ids: string[]): Promise<Question[]> {
+  const remote = ids.filter((id) => UUID_RE.test(id));
+  const localMap = new Map(allQuestions().map((q) => [q.id, q]));
+  const found = new Map<string, Question>();
+  ids.forEach((id) => {
+    const q = localMap.get(id);
+    if (q) found.set(id, q);
+  });
+  for (let i = 0; i < remote.length; i += 100) {
+    const { data, error } = await supabase
+      .from("questions")
+      .select("*")
+      .in("id", remote.slice(i, i + 100));
+    if (error) throw new Error(error.message);
+    ((data ?? []) as QuestionRow[]).map(toQuestionRow).forEach((q) => found.set(q.id, q));
+  }
+  return ids.map((id) => found.get(id)).filter((q): q is Question => Boolean(q));
+}

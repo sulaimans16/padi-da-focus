@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { Icon } from "@/components/Primitives";
 import { SPRING } from "@/components/motion/Reveal";
 import { ProgressBar } from "@/components/game/Widgets";
@@ -8,14 +8,9 @@ import { useLearned } from "@/hooks/useLearned";
 import { emitGameEvent } from "@/lib/gamification";
 import { playCorrect } from "@/lib/sfx";
 import { cn } from "@/lib/utils";
-import {
-  figureSource,
-  figureUrl,
-  getModule,
-  LEARN_MODULES,
-  type Concept,
-  type Vignette,
-} from "@/lib/learn";
+import { getModule, LEARN_MODULES } from "@/lib/learn";
+import { ModuleCover } from "@/components/learn/ModuleCover";
+import { ConceptBody } from "@/components/learn/ConceptBody";
 
 export const Route = createFileRoute("/learn/$subject")({
   staticData: { sitemap: true },
@@ -57,135 +52,6 @@ function ModuleNotFound() {
   );
 }
 
-function VignetteBlock({ v }: { v: Vignette }) {
-  const [show, setShow] = useState(false);
-  return (
-    <div className="mt-5 rounded-xl border border-border p-4">
-      <p className="label-eyebrow text-primary">Test yourself</p>
-      <p className="clinical-text mt-1">{v.stem}</p>
-      {show ? (
-        <div className="mt-3 rounded-lg bg-surface-2 p-3">
-          <p className="text-sm font-bold">{v.answer}</p>
-          <p className="mt-1 text-sm leading-snug text-muted-foreground">{v.reasoning}</p>
-        </div>
-      ) : (
-        <button
-          type="button"
-          onClick={() => setShow(true)}
-          className="btn-base btn-ghost mt-3 text-xs"
-        >
-          Reveal answer
-        </button>
-      )}
-    </div>
-  );
-}
-
-function ConceptBody({ c }: { c: Concept }) {
-  return (
-    <div className="p-5">
-      <figure className="mb-4 overflow-hidden rounded-xl border border-border bg-surface">
-        <img
-          src={figureUrl(c.figure.file, 1200)}
-          alt={c.figure.caption}
-          loading="lazy"
-          className="max-h-80 w-full object-contain p-3"
-        />
-        <figcaption className="flex flex-wrap items-center justify-between gap-2 border-t border-border bg-surface-2 px-4 py-2">
-          <span className="text-xs font-semibold">{c.figure.caption}</span>
-          <a
-            href={figureSource(c.figure.file)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="label-eyebrow text-primary"
-          >
-            {c.figure.credit} ↗
-          </a>
-        </figcaption>
-      </figure>
-
-      <p className="clinical-text">{c.summary}</p>
-
-      <h3 className="label-eyebrow mt-5 text-primary">Why this is true</h3>
-      <p className="clinical-text mt-1">{c.mechanism}</p>
-
-      <h3 className="label-eyebrow mt-5">Key points</h3>
-      <ul className="mt-2 space-y-2">
-        {c.points.map((p) => (
-          <li key={p} className="flex gap-2 text-sm leading-snug">
-            <span aria-hidden className="material-symbols-outlined mt-0.5 text-[16px] text-primary">
-              check_circle
-            </span>
-            <span>{p}</span>
-          </li>
-        ))}
-      </ul>
-
-      {c.table && (
-        <div className="mt-5">
-          <h3 className="label-eyebrow">{c.table.title}</h3>
-          <div className="mt-2 overflow-x-auto rounded-xl border border-border">
-            <table className="w-full border-collapse text-left text-sm">
-              <thead className="bg-surface-2">
-                <tr>
-                  {c.table.columns.map((col) => (
-                    <th key={col} className="px-3 py-2 text-xs font-bold uppercase tracking-wide">
-                      {col}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {c.table.rows.map((row) => (
-                  <tr key={row.join("|")} className="border-t border-border">
-                    {row.map((cell) => (
-                      <td key={cell} className="px-3 py-2 align-top leading-snug">
-                        {cell}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
-      {c.pitfalls && c.pitfalls.length > 0 && (
-        <div className="mt-5 rounded-xl border border-border bg-surface-2 p-4">
-          <p className="label-eyebrow flex items-center gap-1">
-            <span aria-hidden className="material-symbols-outlined text-[16px]">
-              warning
-            </span>
-            Common traps
-          </p>
-          <ul className="mt-2 space-y-2">
-            {c.pitfalls.map((p) => (
-              <li key={p} className="text-sm leading-snug">
-                {p}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {c.mnemonic && (
-        <p className="mt-4 rounded-xl border border-dashed border-border px-4 py-3 text-sm">
-          <span className="label-eyebrow mr-2">Mnemonic</span>
-          {c.mnemonic}
-        </p>
-      )}
-
-      {c.vignette && <VignetteBlock v={c.vignette} />}
-
-      <div className="mt-4 rounded-xl border border-border bg-tint/60 p-4">
-        <p className="label-eyebrow text-primary">High-yield</p>
-        <p className="mt-1 text-sm font-semibold">{c.highYield}</p>
-      </div>
-    </div>
-  );
-}
-
 // Zig-zag offsets for the lesson path, Duolingo style.
 const PATH_OFFSETS = [0, 46, 70, 46, 0, -46, -70, -46];
 
@@ -210,8 +76,9 @@ function PathNode({
         : "var(--color-surface-3)";
   return (
     <div
-      className="relative flex flex-col items-center"
-      style={{ transform: `translateX(${PATH_OFFSETS[index % PATH_OFFSETS.length]}px)` }}
+      data-path-node={index}
+      className="relative flex w-24 shrink-0 snap-center flex-col items-center lg:w-auto lg:translate-x-(--path-x)"
+      style={{ "--path-x": `${PATH_OFFSETS[index % PATH_OFFSETS.length]}px` } as CSSProperties}
     >
       {state === "current" && !selected ? (
         <motion.span
@@ -254,7 +121,7 @@ function PathNode({
       </motion.button>
       <p
         className={cn(
-          "mt-3 max-w-[11rem] text-center text-xs font-semibold leading-tight",
+          "mt-3 line-clamp-3 max-w-[11rem] text-center text-xs font-semibold leading-tight lg:line-clamp-none",
           selected ? "text-foreground" : "text-muted-foreground",
         )}
       >
@@ -276,9 +143,35 @@ function LearnSubject() {
   const contentRef = useRef<HTMLDivElement>(null);
   const [saving, setSaving] = useState(false);
 
+  // Deep link from search: /learn/<subject>#<concept-id> opens that concept.
+  useEffect(() => {
+    const id = decodeURIComponent(window.location.hash.slice(1));
+    if (id && mod.concepts.some((c) => c.id === id)) {
+      setOpen(id);
+      window.setTimeout(
+        () => contentRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }),
+        120,
+      );
+    }
+  }, [mod]);
+
   const learnedCount = mod.concepts.filter((c) => done.has(ref(c.id))).length;
   const currentIndex = mod.concepts.findIndex((c) => !done.has(ref(c.id)));
   const selectedIndex = mod.concepts.findIndex((c) => c.id === selectedId);
+  const pathRef = useRef<HTMLDivElement>(null);
+  const [showGoals, setShowGoals] = useState(false);
+
+  // On phones the path is a horizontal strip — keep the open lesson's node in view.
+  useEffect(() => {
+    const strip = pathRef.current;
+    if (!strip || strip.scrollWidth <= strip.clientWidth) return;
+    const node = strip.querySelector<HTMLElement>(`[data-path-node="${selectedIndex}"]`);
+    if (!node) return;
+    strip.scrollTo({
+      left: node.offsetLeft - strip.clientWidth / 2 + node.offsetWidth / 2,
+      behavior: "smooth",
+    });
+  }, [selectedIndex]);
   const selected = mod.concepts[selectedIndex];
   const allDone = learnedCount === mod.concepts.length;
 
@@ -326,7 +219,7 @@ function LearnSubject() {
       {/* Module header */}
       <section className="card-pop mt-3 overflow-hidden">
         <div className="grid gap-0 md:grid-cols-[1fr_280px]">
-          <div className="p-6">
+          <div className="p-5 sm:p-6">
             <p className="label-eyebrow">Subject module</p>
             <h1 className="flex items-center gap-2 text-3xl">
               {mod.subject}
@@ -345,7 +238,19 @@ function LearnSubject() {
                 {learnedCount}/{mod.concepts.length}
               </span>
             </div>
-            <ul className="mt-4 space-y-1.5">
+            <button
+              type="button"
+              onClick={() => setShowGoals((v) => !v)}
+              aria-expanded={showGoals}
+              className="mt-4 flex items-center gap-1 text-xs font-semibold text-primary md:hidden"
+            >
+              What you'll learn ({mod.objectives.length})
+              <Icon
+                name="expand_more"
+                className={cn("text-[18px] transition-transform", showGoals && "rotate-180")}
+              />
+            </button>
+            <ul className={cn("mt-3 space-y-1.5 md:mt-4 md:block", showGoals ? "block" : "hidden")}>
               {mod.objectives.map((o) => (
                 <li key={o} className="flex gap-2 text-sm leading-snug">
                   <Icon name="task_alt" className="mt-0.5 text-[16px] text-primary" />
@@ -368,18 +273,17 @@ function LearnSubject() {
               </Link>
             </div>
           </div>
-          <img
-            src={figureUrl(mod.cover.file, 900)}
-            alt={mod.cover.caption}
-            className="hidden h-full max-h-72 w-full bg-surface/60 object-contain p-4 md:block"
-          />
+          <ModuleCover mod={mod} className="hidden h-full max-h-72 w-full md:flex" />
         </div>
       </section>
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-[300px_1fr]">
+      <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-[300px_minmax(0,1fr)]">
         {/* Lesson path */}
-        <nav aria-label="Concept path" className="lg:sticky lg:top-20 lg:self-start">
-          <div className="card-surface flex flex-col items-center gap-9 px-4 pb-8 pt-12">
+        <nav aria-label="Concept path" className="min-w-0 lg:sticky lg:top-20 lg:self-start">
+          <div
+            ref={pathRef}
+            className="card-surface scrollbar-none relative flex snap-x gap-3 overflow-x-auto px-4 pb-5 pt-12 lg:flex-col lg:items-center lg:gap-9 lg:overflow-visible lg:pb-8"
+          >
             {mod.concepts.map((c, i) => (
               <PathNode
                 key={c.id}
@@ -391,10 +295,12 @@ function LearnSubject() {
               />
             ))}
             <div
-              className="flex flex-col items-center"
-              style={{
-                transform: `translateX(${PATH_OFFSETS[mod.concepts.length % PATH_OFFSETS.length]}px)`,
-              }}
+              className="flex w-24 shrink-0 flex-col items-center lg:w-auto lg:translate-x-(--path-x)"
+              style={
+                {
+                  "--path-x": `${PATH_OFFSETS[mod.concepts.length % PATH_OFFSETS.length]}px`,
+                } as CSSProperties
+              }
             >
               <span
                 className={cn(
@@ -410,7 +316,7 @@ function LearnSubject() {
         </nav>
 
         {/* Selected concept */}
-        <div ref={contentRef} className="scroll-mt-20">
+        <div ref={contentRef} className="min-w-0 scroll-mt-20">
           <AnimatePresence mode="wait">
             {selected ? (
               <motion.article
@@ -432,12 +338,12 @@ function LearnSubject() {
                     </span>
                   </span>
                   {done.has(ref(selected.id)) ? (
-                    <span className="chip text-xp">
+                    <span className="chip shrink-0 whitespace-nowrap text-xp">
                       <Icon name="check_circle" filled className="text-[14px]" />
                       Learned
                     </span>
                   ) : (
-                    <span className="chip text-xp">+15 XP</span>
+                    <span className="chip shrink-0 whitespace-nowrap text-xp">+15 XP</span>
                   )}
                 </div>
                 <ConceptBody c={selected} />

@@ -111,10 +111,25 @@ function Tracker() {
       </div>
 
       <section className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Kpi label="Attempted" icon="task_alt" value={rows.length} sub="Questions answered overall" />
-        <Kpi label="Overall accuracy" icon="target" value={`${accuracy}%`} sub="Target benchmark: 72%" />
+        <Kpi
+          label="Attempted"
+          icon="task_alt"
+          value={rows.length}
+          sub="Questions answered overall"
+        />
+        <Kpi
+          label="Overall accuracy"
+          icon="target"
+          value={`${accuracy}%`}
+          sub="Target benchmark: 72%"
+        />
         <Kpi label="Today" icon="today" value={todayRows.length} sub="Questions attempted today" />
-        <Kpi label="Streak" icon="local_fire_department" value={`${streakDays(rows)}d`} sub="Consecutive study days" />
+        <Kpi
+          label="Streak"
+          icon="local_fire_department"
+          value={`${streakDays(rows)}d`}
+          sub="Consecutive study days"
+        />
       </section>
 
       <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-12">
@@ -144,9 +159,9 @@ function Tracker() {
                   const b = band(s.accuracy);
                   return (
                     <tr key={s.subject} className="border-b border-border/60 last:border-0">
-                      <td className="px-5 py-4 text-sm font-bold">{s.subject}</td>
-                      <td className="px-5 py-4">
-                        <div className="flex items-center gap-3">
+                      <td className="px-3 py-3 text-sm font-bold sm:px-5 sm:py-4">{s.subject}</td>
+                      <td className="w-full px-1 py-3 sm:px-5 sm:py-4">
+                        <div className="flex items-center gap-2 sm:gap-3">
                           <div className="h-2 flex-1 overflow-hidden rounded-full bg-surface-3">
                             <div
                               className="h-full rounded-full"
@@ -156,7 +171,7 @@ function Tracker() {
                               }}
                             />
                           </div>
-                          <span className="w-20 text-right font-mono text-xs tabular-nums text-muted-foreground">
+                          <span className="hidden w-20 text-right font-mono text-xs tabular-nums text-muted-foreground sm:inline">
                             {s.correct}/{s.attempts}
                           </span>
                           <span className="w-10 text-right font-mono text-xs font-bold tabular-nums">
@@ -164,7 +179,7 @@ function Tracker() {
                           </span>
                         </div>
                       </td>
-                      <td className="px-5 py-4 text-right">
+                      <td className="px-3 py-3 text-right sm:px-5 sm:py-4">
                         <span className={`chip ${b.cls}`}>{b.label}</span>
                       </td>
                     </tr>

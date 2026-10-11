@@ -15,6 +15,7 @@ import { useGameState } from "@/hooks/useGameState";
 import { GameLayer } from "@/components/game/GameLayer";
 import { DailyGoalRing, ProgressBar, StreakFlame } from "@/components/game/Widgets";
 import { cn } from "@/lib/utils";
+import { SignOutButton } from "@/components/SignOutButton";
 
 type NavLink = {
   label: string;
@@ -212,6 +213,8 @@ export function AppShell({ children }: { children: ReactNode }) {
             {user ? "View profile & badges →" : "Sign in to save your XP →"}
           </p>
         </Link>
+
+        {user ? <SignOutButton className="mt-2 shrink-0 justify-start" /> : null}
         <Link
           to="/privacy"
           className="mt-2 inline-block px-2 text-[11px] text-muted-foreground transition-colors duration-300 ease-out hover:text-primary"

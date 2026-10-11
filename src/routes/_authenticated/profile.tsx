@@ -7,6 +7,7 @@ import { BadgeGrid, LevelBar, StreakFlame } from "@/components/game/Widgets";
 import { useAuth } from "@/hooks/useAuth";
 import { useGameState } from "@/hooks/useGameState";
 import { doctorName } from "@/lib/doctor-name";
+import { SignOutButton } from "@/components/SignOutButton";
 import { BADGES, DAILY_GOALS, updateGameSettings } from "@/lib/gamification";
 import { todayKey } from "@/lib/quiz";
 import { isMuted, setMuted } from "@/lib/sfx";

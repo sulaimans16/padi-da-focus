@@ -6,7 +6,7 @@ export const physiology: LearnModule = {
   subject: "Physiology",
   icon: "monitor_heart",
   blurb:
-    "Cardiac cycle, pressure–volume loops, acid–base, nephron transport and action potentials — number-driven concepts with easy marks.",
+    "PV loops, acid–base, nephron transport, action potentials, the oxygen dissociation curve, lung volumes, GI hormones and sleep — number-driven concepts with easy marks.",
   cover: {
     file: "Wiggers Diagram 2.svg",
     caption: "Wiggers diagram of the cardiac cycle",

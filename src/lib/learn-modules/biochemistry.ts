@@ -6,7 +6,7 @@ export const biochemistry: LearnModule = {
   subject: "Biochemistry",
   icon: "science",
   blurb:
-    "Rate-limiting enzymes, vitamin deficiencies, urea cycle and molecular techniques — pure recall points, taught with the logic behind them.",
+    "Rate-limiting enzymes, vitamins, urea cycle, molecular techniques, glycogen and lysosomal storage diseases, lipoproteins and porphyrias — taught with the logic behind them.",
   cover: {
     file: "Citric acid cycle with aconitate 2.svg",
     caption: "Citric acid (Krebs) cycle",

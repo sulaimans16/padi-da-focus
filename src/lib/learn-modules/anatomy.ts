@@ -6,7 +6,7 @@ export const anatomy: LearnModule = {
   subject: "Anatomy",
   icon: "accessibility_new",
   blurb:
-    "Brachial plexus, inguinal canal, cranial nerves and muscle mechanics — the diagrams NBE keeps returning to.",
+    "Brachial plexus, inguinal canal, cranial nerves, lower-limb nerves, pharyngeal arches, portosystemic anastomoses and stroke syndromes — the diagrams NBE keeps returning to.",
   cover: {
     file: "Human skeleton front en.svg",
     caption: "Human skeleton, anterior view",

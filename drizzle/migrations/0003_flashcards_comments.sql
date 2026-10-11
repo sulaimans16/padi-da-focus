@@ -1,0 +1,1 @@
+COMMENT ON TABLE public.flashcard_reviews IS 'FSRS schedule per user and card';

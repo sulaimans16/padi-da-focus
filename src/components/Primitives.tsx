@@ -2,16 +2,32 @@ import { motion } from "motion/react";
 import { useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-/** Material symbol icon. */
-export function Icon({ name, className = "" }: { name: string; className?: string }) {
+/** Material symbol icon. `filled` uses the solid variant (game icons: flame, bolt, trophy). */
+export function Icon({
+  name,
+  className = "",
+  filled = false,
+}: {
+  name: string;
+  className?: string;
+  filled?: boolean;
+}) {
   return (
-    <span aria-hidden className={cn("material-symbols-outlined", className)}>
+    <span aria-hidden className={cn("material-symbols-outlined", filled && "icon-fill", className)}>
       {name}
     </span>
   );
 }
 
-/** Pill button with press feedback. Use `variant` for emphasis. */
+const PILL_VARIANT = {
+  primary: "btn-primary",
+  ghost: "btn-ghost",
+  success: "btn-success",
+  danger: "btn-danger",
+  xp: "btn-xp",
+} as const;
+
+/** Chunky pill button that presses down on tap (depth comes from the CSS). */
 export function Pill({
   children,
   variant = "ghost",
@@ -19,14 +35,12 @@ export function Pill({
   ...rest
 }: {
   children: ReactNode;
-  variant?: "primary" | "ghost";
+  variant?: keyof typeof PILL_VARIANT;
 } & Omit<React.ComponentProps<typeof motion.button>, "children">) {
   return (
     <motion.button
-      whileHover={{ y: -1, scale: 1.02 }}
-      whileTap={{ scale: 0.96 }}
-      transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-      className={cn("btn-base", variant === "primary" ? "btn-primary" : "btn-ghost", className)}
+      type="button"
+      className={cn("btn-base", PILL_VARIANT[variant], className)}
       {...rest}
     >
       {children}

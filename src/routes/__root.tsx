@@ -13,7 +13,7 @@ import { LockGuard } from "@/components/LockGuard";
 import { AppShell } from "@/components/AppShell";
 import { Splash } from "@/components/Splash";
 import { supabase } from "@/integrations/supabase/client";
-
+import { migrateLegacyStorage } from "@/lib/track-state";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -88,10 +88,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       // The app paints its own dark and light themes; this stops phone browsers
       // (Samsung Internet, Chrome "darken websites") from force-darkening it.
       { name: "color-scheme", content: "dark light" },
-      { title: "PG Prep — NEET PG Sprint" },
+      { title: "Learners Studio Prep — NEET UG & NEET PG" },
       {
         name: "description",
-        content: "Focus-locked NEET PG 2026 revision app. 30 days. 200 questions. No excuses.",
+        content:
+          "Focus-locked NEET UG and NEET PG revision: lessons, question banks, PYQs, mocks, streaks and leagues.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -134,6 +135,9 @@ function RootShell({ children }: { children: ReactNode }) {
 }
 
 const SPLASH_KEY = "padida.splashed";
+
+// Pre-track localStorage data belongs to NEET PG; move it before any screen reads it.
+migrateLegacyStorage();
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();

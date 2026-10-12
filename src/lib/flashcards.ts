@@ -1,10 +1,12 @@
 import { supabase } from "@/integrations/supabase/client";
-import { LEARN_MODULES } from "./learn";
+import type { LearnModule } from "./learn";
 import { loadBookmarks } from "./questions";
 import { fetchQuestionsByIds, todayKey } from "./quiz";
 import { fetchBookmarkIds } from "./tracker";
 import { registerBonusXp, requestGameSync } from "./gamification";
 import { schedule, type CardState, type Rating } from "./fsrs";
+import { trackKey } from "@/lib/track-state";
+import { currentExam } from "./exam-query";
 
 /*
  * Flashcards: cards come from Learn concepts (high-yield facts, mnemonics, traps,
@@ -12,7 +14,6 @@ import { schedule, type CardState, type Rating } from "./fsrs";
  * FSRS-scheduled, stored in Supabase for signed-in learners and on-device for guests.
  */
 
-export const EXAM = "neet_pg";
 export const NEW_PER_DAY = 20;
 
 export type Flashcard = {
@@ -50,8 +51,8 @@ export const kindLabel = (k: Flashcard["kind"]) => KIND_LABEL[k];
 const HUES = [205, 160, 25, 85, 0, 270, 235, 300, 140, 50, 330, 190];
 
 /** Every Learn module becomes a deck. Deterministic, so ids stay stable. */
-export function learnDecks(): Deck[] {
-  return LEARN_MODULES.map((m, i) => {
+export function learnDecks(modules: LearnModule[]): Deck[] {
+  return modules.map((m, i) => {
     const cards: Flashcard[] = [];
     m.concepts.forEach((c) => {
       const base = `learn:${m.slug}/${c.id}`;
@@ -92,7 +93,7 @@ export function learnDecks(): Deck[] {
         });
       }
     });
-    return { id: m.slug, title: m.subject, icon: m.icon, hue: HUES[i % HUES.length]!, cards };
+    return { id: m.slug, title: m.title ?? m.subject, icon: m.icon, hue: HUES[i % HUES.length]!, cards };
   });
 }
 
@@ -123,13 +124,13 @@ export async function savedQuestionDeck(): Promise<Deck> {
 
 // ---------- custom cards ----------
 
-const CUSTOM_KEY = "padida.flashcards.custom";
+const CUSTOM_KEY = () => trackKey("flashcards.custom");
 
 type CustomRow = { id: string; front: string; back: string; created_at: string };
 
 function readLocalCustom(): CustomRow[] {
   try {
-    return JSON.parse(localStorage.getItem(CUSTOM_KEY) ?? "[]") as CustomRow[];
+    return JSON.parse(localStorage.getItem(CUSTOM_KEY()) ?? "[]") as CustomRow[];
   } catch {
     return [];
   }
@@ -146,7 +147,7 @@ export async function customDeck(): Promise<Deck> {
     const { data, error } = await supabase
       .from("flashcards_custom")
       .select("id, front, back, created_at")
-      .eq("exam", EXAM)
+      .eq("exam", currentExam())
       .order("created_at", { ascending: false })
       .limit(1000);
     if (!error) rows = data ?? [];
@@ -171,7 +172,7 @@ export async function addCustomCard(front: string, back: string) {
   if (userId) {
     const { error } = await supabase
       .from("flashcards_custom")
-      .insert({ user_id: userId, exam: EXAM, front: front.trim(), back: back.trim() });
+      .insert({ user_id: userId, exam: currentExam(), front: front.trim(), back: back.trim() });
     if (error) throw new Error(error.message);
     return;
   }
@@ -181,7 +182,7 @@ export async function addCustomCard(front: string, back: string) {
     back: back.trim(),
     created_at: new Date().toISOString(),
   };
-  localStorage.setItem(CUSTOM_KEY, JSON.stringify([row, ...readLocalCustom()].slice(0, 1000)));
+  localStorage.setItem(CUSTOM_KEY(), JSON.stringify([row, ...readLocalCustom()].slice(0, 1000)));
 }
 
 export async function deleteCustomCard(cardId: string) {
@@ -189,17 +190,17 @@ export async function deleteCustomCard(cardId: string) {
   if (await signedInUserId()) {
     await supabase.from("flashcards_custom").delete().eq("id", id);
   }
-  localStorage.setItem(CUSTOM_KEY, JSON.stringify(readLocalCustom().filter((r) => r.id !== id)));
+  localStorage.setItem(CUSTOM_KEY(), JSON.stringify(readLocalCustom().filter((r) => r.id !== id)));
 }
 
 // ---------- review state ----------
 
-const REVIEWS_KEY = "padida.flashcards.reviews";
-const NEW_COUNT_KEY = "padida.flashcards.new";
+const REVIEWS_KEY = () => trackKey("flashcards.reviews");
+const NEW_COUNT_KEY = () => trackKey("flashcards.new");
 
 function readLocalReviews(): ReviewMap {
   try {
-    return JSON.parse(localStorage.getItem(REVIEWS_KEY) ?? "{}") as ReviewMap;
+    return JSON.parse(localStorage.getItem(REVIEWS_KEY()) ?? "{}") as ReviewMap;
   } catch {
     return {};
   }
@@ -207,7 +208,7 @@ function readLocalReviews(): ReviewMap {
 
 function writeLocalReviews(map: ReviewMap) {
   try {
-    localStorage.setItem(REVIEWS_KEY, JSON.stringify(map));
+    localStorage.setItem(REVIEWS_KEY(), JSON.stringify(map));
   } catch {
     /* storage full */
   }
@@ -219,7 +220,7 @@ export async function fetchReviews(): Promise<ReviewMap> {
   const { data, error } = await supabase
     .from("flashcard_reviews")
     .select("card_id, stability, difficulty, reps, lapses, last_review_at, due_at")
-    .eq("exam", EXAM)
+    .eq("exam", currentExam())
     .limit(10000);
   if (error) return local;
   const remote: ReviewMap = {};
@@ -240,7 +241,7 @@ export async function fetchReviews(): Promise<ReviewMap> {
 /** New cards introduced today (on this device), for the daily new-card limit. */
 export function newCardsToday(): number {
   try {
-    const raw = JSON.parse(localStorage.getItem(NEW_COUNT_KEY) ?? "{}") as {
+    const raw = JSON.parse(localStorage.getItem(NEW_COUNT_KEY()) ?? "{}") as {
       day?: string;
       n?: number;
     };
@@ -253,7 +254,7 @@ export function newCardsToday(): number {
 function bumpNewCards() {
   try {
     localStorage.setItem(
-      NEW_COUNT_KEY,
+      NEW_COUNT_KEY(),
       JSON.stringify({ day: todayKey(), n: newCardsToday() + 1 }),
     );
   } catch {
@@ -282,7 +283,7 @@ export async function reviewCard(card: Flashcard, rating: Rating, prev: CardStat
       _difficulty: next.difficulty,
       _due_at: next.dueAt,
       _deck: card.deck,
-      _exam: EXAM,
+      _exam: currentExam(),
     });
     if (!error) {
       granted = Number(data ?? 0);

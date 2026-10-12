@@ -1,3 +1,6 @@
+import { activeTrackId, trackKey } from "@/lib/track-state";
+import { UG_SEED_QUESTIONS } from "./ug/questions";
+
 export type Difficulty = "easy" | "med" | "hard";
 
 export type Question = {
@@ -96,7 +99,8 @@ export const SEED_QUESTIONS: Question[] = [
       c: "Nitroprusside risks fetal cyanide accumulation; reserved for refractory crises.",
       d: "Atenolol is linked to fetal growth restriction.",
     },
-    highYield: "Pregnancy safe: labetalol, methyldopa, nifedipine, hydralazine. Avoid ACEI/ARB/atenolol.",
+    highYield:
+      "Pregnancy safe: labetalol, methyldopa, nifedipine, hydralazine. Avoid ACEI/ARB/atenolol.",
     difficulty: "easy",
     isPyq: true,
     pyqYear: 2022,
@@ -150,7 +154,8 @@ export const SEED_QUESTIONS: Question[] = [
       c: "Medullary carcinoma shows amyloid stroma and calcitonin positivity.",
       d: "Anaplastic carcinoma shows pleomorphic giant cells, dismal prognosis.",
     },
-    highYield: "Psammoma bodies: papillary thyroid, meningioma, serous ovarian carcinoma, mesothelioma.",
+    highYield:
+      "Psammoma bodies: papillary thyroid, meningioma, serous ovarian carcinoma, mesothelioma.",
     difficulty: "easy",
     isPyq: true,
     pyqYear: 2020,
@@ -341,9 +346,9 @@ export const SEED_QUESTIONS: Question[] = [
 
 // ---------- local persistence (moves to Lovable Cloud later) ----------
 
-const CUSTOM_KEY = "padida.questions.custom";
-const BOOKMARK_KEY = "padida.bookmarks";
-const ATTEMPT_KEY = "padida.attempts";
+const CUSTOM_KEY = () => trackKey("questions.custom");
+const BOOKMARK_KEY = () => trackKey("bookmarks");
+const ATTEMPT_KEY = () => trackKey("attempts");
 
 const isBrowser = () => typeof window !== "undefined";
 
@@ -362,18 +367,18 @@ function write(key: string, value: unknown) {
   window.localStorage.setItem(key, JSON.stringify(value));
 }
 
-export const loadCustomQuestions = () => read<Question[]>(CUSTOM_KEY, []);
+export const loadCustomQuestions = () => read<Question[]>(CUSTOM_KEY(), []);
 
 export function saveCustomQuestion(q: Question) {
-  write(CUSTOM_KEY, [q, ...loadCustomQuestions()]);
+  write(CUSTOM_KEY(), [q, ...loadCustomQuestions()]);
 }
 
-export const loadBookmarks = () => read<string[]>(BOOKMARK_KEY, []);
+export const loadBookmarks = () => read<string[]>(BOOKMARK_KEY(), []);
 
 export function toggleBookmark(id: string) {
   const list = loadBookmarks();
   const next = list.includes(id) ? list.filter((x) => x !== id) : [id, ...list];
-  write(BOOKMARK_KEY, next);
+  write(BOOKMARK_KEY(), next);
   return next;
 }
 
@@ -386,14 +391,16 @@ export type Attempt = {
   attemptedAt: number;
 };
 
-export const loadAttempts = () => read<Attempt[]>(ATTEMPT_KEY, []);
+export const loadAttempts = () => read<Attempt[]>(ATTEMPT_KEY(), []);
 
 export function logAttempt(attempt: Attempt) {
-  write(ATTEMPT_KEY, [attempt, ...loadAttempts()].slice(0, 2000));
+  write(ATTEMPT_KEY(), [attempt, ...loadAttempts()].slice(0, 2000));
 }
 
+/** Bundled + custom questions for the active track only. */
 export function allQuestions() {
-  return [...loadCustomQuestions(), ...SEED_QUESTIONS];
+  const seed = activeTrackId() === "neet_ug" ? UG_SEED_QUESTIONS : SEED_QUESTIONS;
+  return [...loadCustomQuestions(), ...seed];
 }
 
 export const SUBJECT_HUE: Record<string, number> = {
@@ -416,7 +423,11 @@ export const SUBJECT_HUE: Record<string, number> = {
   Psychiatry: 285,
   Dermatology: 345,
   "Forensic Medicine": 120,
+  // NEET UG
+  Physics: 230,
+  Chemistry: 40,
+  Botany: 145,
+  Zoology: 320,
 };
 
-export const subjectColor = (subject: string) =>
-  `oklch(0.72 0.15 ${SUBJECT_HUE[subject] ?? 250})`;
+export const subjectColor = (subject: string) => `oklch(0.72 0.15 ${SUBJECT_HUE[subject] ?? 250})`;

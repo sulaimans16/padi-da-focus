@@ -86,14 +86,26 @@ export type Concept = {
   figure?: Figure;
   /** Up to two quick self-checks shown after the teaching. */
   checks?: Check[];
+  /** Key formulae / equations (Physics and Chemistry). */
+  formulae?: Formula[];
 };
 
-export type SubjectGroup = "Pre-clinical" | "Para-clinical" | "Clinical";
+export type Formula = {
+  label: string;
+  expr: string;
+  note?: string;
+};
+
+/** Section a module is listed under (per track, e.g. "Clinical" or "Physics"). */
+export type SubjectGroup = string;
 
 export type LearnModule = {
   slug: string;
   group: SubjectGroup;
+  /** QBank subject this module practises (also its colour). */
   subject: string;
+  /** Display name when several modules share a subject (e.g. "Mechanics" in Physics). */
+  title?: string;
   icon: string;
   cover?: Figure;
   blurb: string;
@@ -101,6 +113,9 @@ export type LearnModule = {
   objectives: string[];
   concepts: Concept[];
 };
+
+/** Name to show for a module. */
+export const moduleTitle = (m: Pick<LearnModule, "subject" | "title">) => m.title ?? m.subject;
 
 /** Rendered image URL for a Commons file. */
 export function figureUrl(file: string, width = 900) {

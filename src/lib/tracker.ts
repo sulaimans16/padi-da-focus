@@ -1,5 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import { requestGameSync } from "./gamification";
+import { currentExam, examColumnKnownMissing, scoped } from "./exam-query";
 
 export type AttemptRow = {
   id: string;
@@ -39,7 +40,11 @@ export async function recordAttempt(input: {
 }) {
   const userId = await currentUserId();
   if (!userId) return;
+  const exam = currentExam();
+  // Before migration 0004 only NEET PG can be stored on the server.
+  if (examColumnKnownMissing() && exam !== "neet_pg") return;
   const { error } = await supabase.from("attempts").insert({
+    ...(examColumnKnownMissing() ? {} : { exam }),
     user_id: userId,
     question_id: input.questionId,
     subject: input.subject,
@@ -62,7 +67,10 @@ export async function recordFocusSession(input: {
 }) {
   const userId = await currentUserId();
   if (!userId) return;
+  const exam = currentExam();
+  if (examColumnKnownMissing() && exam !== "neet_pg") return;
   const { error } = await supabase.from("focus_sessions").insert({
+    ...(examColumnKnownMissing() ? {} : { exam }),
     user_id: userId,
     minutes: Math.max(0, Math.round(input.minutes)),
     planned_minutes: Math.max(0, Math.round(input.plannedMinutes)),
@@ -75,27 +83,32 @@ export async function recordFocusSession(input: {
 }
 
 export async function fetchAttempts(): Promise<AttemptRow[]> {
-  const { data, error } = await supabase
-    .from("attempts")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(5000);
+  const { data, error } = await scoped((on) => {
+    const q = supabase.from("attempts").select("*");
+    return (on ? q.eq("exam", currentExam()) : q)
+      .order("created_at", { ascending: false })
+      .limit(5000);
+  });
   if (error) throw new Error(error.message);
   return (data ?? []) as AttemptRow[];
 }
 
 export async function fetchFocusSessions(): Promise<FocusRow[]> {
-  const { data, error } = await supabase
-    .from("focus_sessions")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(500);
+  const { data, error } = await scoped((on) => {
+    const q = supabase.from("focus_sessions").select("*");
+    return (on ? q.eq("exam", currentExam()) : q)
+      .order("created_at", { ascending: false })
+      .limit(500);
+  });
   if (error) throw new Error(error.message);
   return (data ?? []) as FocusRow[];
 }
 
 export async function fetchBookmarkIds(): Promise<string[]> {
-  const { data, error } = await supabase.from("bookmarks").select("question_id").limit(2000);
+  const { data, error } = await scoped((on) => {
+    const q = supabase.from("bookmarks").select("question_id");
+    return (on ? q.eq("exam", currentExam()) : q).limit(2000);
+  });
   if (error) throw new Error(error.message);
   return ((data ?? []) as { question_id: string }[]).map((r) => r.question_id);
 }
@@ -104,7 +117,13 @@ export async function toggleRemoteBookmark(questionId: string, on: boolean) {
   const userId = await currentUserId();
   if (!userId) return;
   if (on) {
-    await supabase.from("bookmarks").insert({ user_id: userId, question_id: questionId });
+    const exam = currentExam();
+    if (examColumnKnownMissing() && exam !== "neet_pg") return;
+    await supabase.from("bookmarks").insert({
+      ...(examColumnKnownMissing() ? {} : { exam }),
+      user_id: userId,
+      question_id: questionId,
+    });
   } else {
     await supabase.from("bookmarks").delete().eq("user_id", userId).eq("question_id", questionId);
   }

@@ -5,6 +5,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 const AskInput = z.object({
   question: z.string().min(2).max(2000),
   context: z.string().max(2000).optional(),
+  exam: z.enum(["neet_pg", "neet_ug"]).optional(),
 });
 
 export const askStudyAi = createServerFn({ method: "POST" })
@@ -15,12 +16,13 @@ export const askStudyAi = createServerFn({ method: "POST" })
     await assertPro(context.supabase, context.userId);
     const openRouterKey = process.env["OPENROUTER_API_KEY"];
     const lovableKey = process.env["LOVABLE_API_KEY"];
-    if (!openRouterKey && !lovableKey) throw new Error("AI is not configured for this project yet.");
+    if (!openRouterKey && !lovableKey)
+      throw new Error("AI is not configured for this project yet.");
 
     const { generateText } = await import("ai");
     const { createLovableAiGatewayProvider, createOpenRouterProvider, OPENROUTER_MODEL } =
       await import("./ai-gateway.server");
-    const { ASK_SYSTEM, friendlyAiError } = await import("./ai-help.server");
+    const { ASK_SYSTEM, ASK_SYSTEM_UG, friendlyAiError } = await import("./ai-help.server");
 
     const useOpenRouter = Boolean(openRouterKey);
     const gateway = useOpenRouter
@@ -37,7 +39,7 @@ export const askStudyAi = createServerFn({ method: "POST" })
     try {
       const result = await generateText({
         model: gateway(useOpenRouter ? OPENROUTER_MODEL : "openai/gpt-5.6-sol"),
-        system: ASK_SYSTEM,
+        system: data.exam === "neet_ug" ? ASK_SYSTEM_UG : ASK_SYSTEM,
         prompt,
         ...(useOpenRouter
           ? { maxOutputTokens: 4000 }

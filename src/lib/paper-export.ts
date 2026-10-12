@@ -1,12 +1,13 @@
 import type { Question } from "./questions";
 
-const esc = (s: string) =>
-  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 export function buildPaperHtml(
   title: string,
   questions: Question[],
   withAnswers: boolean,
+  exam = "NEET PG",
+  brand = "PG Prep",
 ): string {
   const body = questions
     .map(
@@ -17,7 +18,7 @@ export function buildPaperHtml(
       <ol class="opts">
         ${q.options.map((o) => `<li>${esc(o.text)}</li>`).join("")}
       </ol>
-      <p class="meta">${esc(q.subject)} · ${esc(q.topic)}${q.pyqYear ? ` · NEET PG ${q.pyqYear}` : ""}</p>
+      <p class="meta">${esc(q.subject)} · ${esc(q.topic)}${q.pyqYear ? ` · ${exam} ${q.pyqYear}` : ""}</p>
       ${
         withAnswers
           ? `<p class="ans"><b>Answer:</b> ${esc(
@@ -47,7 +48,7 @@ export function buildPaperHtml(
 </style></head>
 <body>
   <h1>${esc(title)}</h1>
-  <p class="sub">PG Prep · ${questions.length} questions${withAnswers ? " · with answer key" : ""} · generated ${new Date().toLocaleDateString()}</p>
+  <p class="sub">${esc(brand)} · ${questions.length} questions${withAnswers ? " · with answer key" : ""} · generated ${new Date().toLocaleDateString()}</p>
   ${body}
 </body></html>`;
 }
@@ -74,4 +75,7 @@ export function printHtml(html: string) {
 }
 
 export const slug = (s: string) =>
-  s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  s
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");

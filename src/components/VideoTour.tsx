@@ -298,7 +298,7 @@ export function VideoTour({ onClose }: { onClose: () => void }) {
         </button>
 
         <p className="label-eyebrow">Interactive tour</p>
-        <h2 className="mt-1 pr-12 text-2xl sm:text-3xl">How PG Prep works</h2>
+        <h2 className="mt-1 pr-12 text-2xl sm:text-3xl">How the app works</h2>
 
         {/* chapter progress bars, like a video timeline */}
         <div className="mt-5 flex gap-1.5">
@@ -312,7 +312,8 @@ export function VideoTour({ onClose }: { onClose: () => void }) {
               <div
                 className="h-full rounded-full bg-primary transition-[width] duration-100"
                 style={{
-                  width: i < index ? "100%" : i === index ? `${(elapsed / c.seconds) * 100}%` : "0%",
+                  width:
+                    i < index ? "100%" : i === index ? `${(elapsed / c.seconds) * 100}%` : "0%",
                 }}
               />
             </button>

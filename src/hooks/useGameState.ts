@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useTrack } from "@/hooks/useTrack";
 import {
   fetchGameState,
   levelForXp,
@@ -42,11 +43,12 @@ export const GAME_QUERY_KEY = ["game-state"] as const;
 /** Live game state: server-backed when signed in, local mirror otherwise. */
 export function useGameState() {
   const { user, loading: authLoading } = useAuth();
+  const track = useTrack();
   const [local, setLocal] = useState<GameState | null>(null);
   const extra = usePendingXp();
 
   const query = useQuery({
-    queryKey: [...GAME_QUERY_KEY, user?.id ?? "guest"],
+    queryKey: [...GAME_QUERY_KEY, track.id, user?.id ?? "guest"],
     queryFn: fetchGameState,
     enabled: Boolean(user),
     staleTime: 30_000,
@@ -58,7 +60,7 @@ export function useGameState() {
     return onGameEvent((e) => {
       if (e.type === "xp" || e.type === "sync") setLocal(localGameState());
     });
-  }, []);
+  }, [track.id]);
 
   const server = query.data;
   const base: GameState | null = server ?? local;

@@ -7,6 +7,7 @@ import { ProgressBar } from "@/components/game/Widgets";
 import { Mascot } from "@/components/mascot/Mascot";
 import { loadLastRoadmap, roadmapProgress, type SavedMap } from "@/lib/roadmap-store";
 import { cn } from "@/lib/utils";
+import { useTrack } from "@/hooks/useTrack";
 
 /** Horizontal mini trail: one milestone per phase, Dr. Pulse standing at the current one. */
 function MiniTrail({
@@ -116,6 +117,7 @@ const SAMPLE_DONE = [true, true, false, false];
 
 /** Home-page roadmap: continue your saved route, or start one. */
 export function RoadmapCard() {
+  const track = useTrack();
   const [map, setMap] = useState<SavedMap | null>(null);
   const [ready, setReady] = useState(false);
   useEffect(() => {
@@ -128,7 +130,8 @@ export function RoadmapCard() {
   if (!map) {
     return (
       <Link
-        to="/roadmap"
+        to="/$track/roadmap"
+        params={{ track: track.slug }}
         className="card-pop card-pop-hover group flex flex-col gap-4 p-6 sm:flex-row sm:items-center"
       >
         <div className="min-w-0 flex-1">
@@ -188,7 +191,11 @@ export function RoadmapCard() {
             </>
           ) : null}
         </p>
-        <Link to="/roadmap" className="btn-base btn-primary h-11 px-5 text-sm">
+        <Link
+          to="/$track/roadmap"
+          params={{ track: track.slug }}
+          className="btn-base btn-primary h-11 px-5 text-sm"
+        >
           {finished ? "Plan a new route" : "Continue route"}
           <Icon name="arrow_forward" className="text-[18px]" />
         </Link>

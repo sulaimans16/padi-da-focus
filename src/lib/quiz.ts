@@ -1,6 +1,8 @@
 import { supabase } from "@/integrations/supabase/client";
 import { allQuestions, type Question } from "./questions";
 import { toQuestionRow, type QuestionRow } from "./question-row";
+import { currentExam, scoped } from "./exam-query";
+import { trackKey } from "@/lib/track-state";
 
 /** Deterministic 32-bit RNG so the daily challenge is identical for every user. */
 export function seededRandom(seed: string) {
@@ -29,18 +31,20 @@ export function shuffle<T>(items: T[], rng: () => number = Math.random): T[] {
 }
 
 async function totalQuestions(): Promise<number> {
-  const { count } = await supabase
-    .from("questions")
-    .select("id", { count: "exact", head: true });
+  const { count } = await scoped((on) => {
+    const q = supabase.from("questions").select("id", { count: "exact", head: true });
+    return on ? q.eq("exam", currentExam()) : q;
+  });
   return count ?? 0;
 }
 
 async function fetchBlock(offset: number, size: number): Promise<Question[]> {
-  const { data, error } = await supabase
-    .from("questions")
-    .select("*")
-    .order("id", { ascending: true })
-    .range(offset, offset + size - 1);
+  const { data, error } = await scoped((on) => {
+    const q = supabase.from("questions").select("*");
+    return (on ? q.eq("exam", currentExam()) : q)
+      .order("id", { ascending: true })
+      .range(offset, offset + size - 1);
+  });
   if (error) throw new Error(error.message);
   return ((data ?? []) as QuestionRow[]).map(toQuestionRow);
 }
@@ -53,11 +57,10 @@ function localFallback(count: number, rng: () => number): Question[] {
 export async function fetchMockQuestions(count: number, subject?: string): Promise<Question[]> {
   try {
     if (subject) {
-      const { data, error } = await supabase
-        .from("questions")
-        .select("*")
-        .eq("subject", subject)
-        .limit(1500);
+      const { data, error } = await scoped((on) => {
+        const q = supabase.from("questions").select("*").eq("subject", subject);
+        return (on ? q.eq("exam", currentExam()) : q).limit(1500);
+      });
       if (error) throw new Error(error.message);
       const pool = ((data ?? []) as QuestionRow[]).map(toQuestionRow);
       return shuffle(pool).slice(0, count);
@@ -90,7 +93,11 @@ export function todayKey(d: Date = new Date()): string {
 
 /** The same 10 questions for everyone, rotating each calendar day. */
 export async function fetchDailyChallenge(dayKey: string, count = 10): Promise<Question[]> {
-  const rng = seededRandom(`padida-daily-${dayKey}`);
+  // NEET PG keeps its original seed so today's set doesn't change for existing users.
+  const exam = currentExam();
+  const rng = seededRandom(
+    exam === "neet_pg" ? `padida-daily-${dayKey}` : `padida-daily-${exam}-${dayKey}`,
+  );
   try {
     const total = await totalQuestions();
     if (!total) return localFallback(count, rng);
@@ -108,14 +115,14 @@ export async function fetchDailyChallenge(dayKey: string, count = 10): Promise<Q
 
 // ---------- local completion record (works signed out too) ----------
 
-const DAILY_KEY = "padida.daily.results";
+const DAILY_KEY = () => trackKey("daily.results");
 
 export type DailyResult = { day: string; correct: number; total: number };
 
 export function loadDailyResults(): DailyResult[] {
   if (typeof window === "undefined") return [];
   try {
-    const raw = window.localStorage.getItem(DAILY_KEY);
+    const raw = window.localStorage.getItem(DAILY_KEY());
     return raw ? (JSON.parse(raw) as DailyResult[]) : [];
   } catch {
     return [];
@@ -125,7 +132,7 @@ export function loadDailyResults(): DailyResult[] {
 export function saveDailyResult(result: DailyResult) {
   if (typeof window === "undefined") return;
   const rest = loadDailyResults().filter((r) => r.day !== result.day);
-  window.localStorage.setItem(DAILY_KEY, JSON.stringify([result, ...rest].slice(0, 120)));
+  window.localStorage.setItem(DAILY_KEY(), JSON.stringify([result, ...rest].slice(0, 120)));
 }
 
 /** Consecutive days finished, counting back from today. */

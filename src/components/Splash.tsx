@@ -4,7 +4,7 @@ import { Aurora } from "@/components/Aurora";
 import { BrandMark } from "@/components/BrandMark";
 
 const OFFERINGS = [
-  "23,000+ NEET PG questions with exam-style traps",
+  "NEET UG and NEET PG question banks with exam-style traps",
   "Timed mocks, daily challenges & PYQ vault",
   "Focus Lock that keeps you honest",
   "Weak-spot analytics that find your leaks",

@@ -10,6 +10,7 @@ const GenerateInput = z.object({
   pyqOnly: z.boolean().optional(),
   year: z.number().nullable().optional(),
   tricky: z.boolean().optional(),
+  exam: z.enum(["neet_pg", "neet_ug"]).optional(),
 });
 
 const QuestionSchema = z.object({
@@ -45,6 +46,24 @@ const SYSTEM = [
   "Never repeat a stem concept already listed as covered.",
 ].join(" ");
 
+const SYSTEM_UG = [
+  "You are a senior NTA NEET UG (Indian undergraduate medical entrance) question setter.",
+  "Write NTA-style single-correct MCQs at real exam difficulty, strictly within the NCERT",
+  "Class 11 and 12 syllabus for Physics, Chemistry and Biology (Botany, Zoology).",
+  "Mix direct NCERT-line questions, statement-based (I/II), assertion-reason, match-the-column",
+  "and, for Physics/Chemistry, short numericals with clean values. Exactly 4 options with ids",
+  "a, b, c, d. Every fact must agree with the NCERT textbooks; never invent data, constants",
+  "or exceptions. Write formulae in plain text (e.g. v = u + at, E = mc^2).",
+  "oneLiner: one crisp sentence a tired student can read at 2am.",
+  "explanation: 2-4 sentences of reasoning, with the working for numericals.",
+  "distractors: one entry per WRONG option id saying exactly why it is wrong.",
+  "highYield: a one-line NCERT fact worth memorising.",
+  "difficulty: one of easy, med, hard.",
+  "isPyq: true only for concepts genuinely asked in past NEET UG / AIPMT papers;",
+  "then set pyqYear (2013-2025) and repeatCount (1-6). Otherwise both null.",
+  "Never repeat a stem concept already listed as covered.",
+].join(" ");
+
 export const generateQuestionBatch = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => GenerateInput.parse(input))
@@ -54,13 +73,17 @@ export const generateQuestionBatch = createServerFn({ method: "POST" })
 
     const openRouterKey = process.env["OPENROUTER_API_KEY"];
     const lovableKey = process.env["LOVABLE_API_KEY"];
-    if (!openRouterKey && !lovableKey) throw new Error("AI is not configured for this project yet.");
+    if (!openRouterKey && !lovableKey)
+      throw new Error("AI is not configured for this project yet.");
 
     const { generateText, Output, NoObjectGeneratedError } = await import("ai");
     const { createLovableAiGatewayProvider, createOpenRouterProvider, OPENROUTER_MODEL } =
       await import("./ai-gateway.server");
     const { researchTopic } = await import("./web-research.server");
 
+    const exam = data.exam ?? "neet_pg";
+    const isUg = exam === "neet_ug";
+    const examName = isUg ? "NEET UG" : "NEET PG";
     const count = Math.max(1, Math.min(10, Math.round(data.count)));
     const topicLine =
       data.topic === "all"
@@ -68,7 +91,7 @@ export const generateQuestionBatch = createServerFn({ method: "POST" })
         : `All of them must be on the topic "${data.topic}" within ${data.subject}.`;
 
     // Scout the public web first so questions mirror what is actually being asked/discussed.
-    const sources = await researchTopic(data.subject, data.topic);
+    const sources = await researchTopic(data.subject, data.topic, examName);
     const researchBlock = sources.length
       ? [
           "Use the following freshly scouted web material as your factual and pattern reference.",
@@ -80,13 +103,14 @@ export const generateQuestionBatch = createServerFn({ method: "POST" })
     const pyqLine = data.pyqOnly
       ? [
           "Every question must be a previous-year style question: model it on concepts that have",
-          "genuinely been asked in NEET PG / AIIMS / INICET papers.",
+          isUg
+            ? "genuinely been asked in NEET UG / AIPMT papers."
+            : "genuinely been asked in NEET PG / AIIMS / INICET papers.",
           data.year
             ? `Set isPyq true, pyqYear ${data.year}, and repeatCount 1-6 for all of them.`
             : "Set isPyq true, pick pyqYear between 2016 and 2025, and repeatCount 1-6.",
         ].join(" ")
       : "";
-
 
     const trickyLine = data.tricky
       ? [
@@ -104,7 +128,7 @@ export const generateQuestionBatch = createServerFn({ method: "POST" })
       : "";
 
     const prompt = [
-      `Write ${count} NEET PG questions for the subject "${data.subject}".`,
+      `Write ${count} ${examName} questions for the subject "${data.subject}".`,
       topicLine,
       pyqLine,
       trickyLine,
@@ -128,7 +152,7 @@ export const generateQuestionBatch = createServerFn({ method: "POST" })
     try {
       const { output } = await generateText({
         model: gateway(modelId),
-        system: SYSTEM,
+        system: isUg ? SYSTEM_UG : SYSTEM,
         prompt,
         output: Output.object({ schema: BatchSchema }),
         ...(useOpenRouter
@@ -166,6 +190,8 @@ export const generateQuestionBatch = createServerFn({ method: "POST" })
           q.options.some((o) => o.id === q.correctOptionId),
       )
       .map((q) => ({
+        // NEET PG relies on the column default so it also works before migration 0004.
+        ...(isUg ? { exam } : {}),
         subject: data.subject,
         topic: (data.topic === "all" ? q.topic : data.topic).trim() || "Mixed",
         stem: q.stem.trim(),
@@ -181,16 +207,8 @@ export const generateQuestionBatch = createServerFn({ method: "POST" })
             ? q.difficulty
             : "med",
         is_pyq: data.pyqOnly ? true : q.isPyq,
-        pyq_year: data.pyqOnly
-          ? (data.year ?? q.pyqYear ?? 2024)
-          : q.isPyq
-            ? q.pyqYear
-            : null,
-        repeat_count: data.pyqOnly
-          ? (q.repeatCount ?? 2)
-          : q.isPyq
-            ? q.repeatCount
-            : null,
+        pyq_year: data.pyqOnly ? (data.year ?? q.pyqYear ?? 2024) : q.isPyq ? q.pyqYear : null,
+        repeat_count: data.pyqOnly ? (q.repeatCount ?? 2) : q.isPyq ? q.repeatCount : null,
         source: sources.length
           ? "AI + web research — verify against a standard text"
           : "AI generated — verify against a standard text",

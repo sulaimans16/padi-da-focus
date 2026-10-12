@@ -35,6 +35,7 @@ export function GeneratePyqs({
       while (produced < want) {
         const res = await generate({
           data: {
+            exam: track.id,
             subject,
             topic: "all",
             count: Math.min(BATCH, want - produced),

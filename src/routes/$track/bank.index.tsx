@@ -37,7 +37,7 @@ function BankIndex() {
   const load = useCallback(async () => {
     setQuestions(allQuestions());
     try {
-      setRemote(await fetchRemoteCounts());
+      setRemote(await fetchRemoteCounts(track.subjects));
     } catch {
       /* offline: local counts only */
     }
@@ -117,18 +117,20 @@ function BankIndex() {
         </div>
       </section>
 
-      <p className="mt-4 text-xs text-muted-foreground">
-        Bank includes questions from the open-source{" "}
-        <a
-          href="https://github.com/medmcqa/medmcqa"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="underline underline-offset-2"
-        >
-          MedMCQA
-        </a>{" "}
-        dataset (AIIMS &amp; NEET-PG entrance MCQs with explanations, MIT licensed).
-      </p>
+      {track.id === "neet_pg" ? (
+        <p className="mt-4 text-xs text-muted-foreground">
+          Bank includes questions from the open-source{" "}
+          <a
+            href="https://github.com/medmcqa/medmcqa"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline underline-offset-2"
+          >
+            MedMCQA
+          </a>{" "}
+          dataset (AIIMS &amp; NEET-PG entrance MCQs with explanations, MIT licensed).
+        </p>
+      ) : null}
 
       <div className="mt-6">
         <button

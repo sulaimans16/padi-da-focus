@@ -64,7 +64,7 @@ function Bar({ accuracy, color }: { accuracy: number; color: string }) {
 
 function WeakSpots() {
   const track = useTrack();
-  const attempts = useQuery({ queryKey: ["attempts"], queryFn: fetchAttempts });
+  const attempts = useQuery({ queryKey: ["attempts", track.id], queryFn: fetchAttempts });
   const [source, setSource] = useState<SourceKey>("all");
   const [minAttempts, setMinAttempts] = useState(3);
 

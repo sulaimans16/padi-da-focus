@@ -1,4 +1,5 @@
-import { trackKey } from "@/lib/track-state";
+import { activeTrackId, trackKey } from "@/lib/track-state";
+import { UG_SEED_QUESTIONS } from "./ug/questions";
 
 export type Difficulty = "easy" | "med" | "hard";
 
@@ -396,8 +397,10 @@ export function logAttempt(attempt: Attempt) {
   write(ATTEMPT_KEY(), [attempt, ...loadAttempts()].slice(0, 2000));
 }
 
+/** Bundled + custom questions for the active track only. */
 export function allQuestions() {
-  return [...loadCustomQuestions(), ...SEED_QUESTIONS];
+  const seed = activeTrackId() === "neet_ug" ? UG_SEED_QUESTIONS : SEED_QUESTIONS;
+  return [...loadCustomQuestions(), ...seed];
 }
 
 export const SUBJECT_HUE: Record<string, number> = {

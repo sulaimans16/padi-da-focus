@@ -1,6 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { todayKey } from "./quiz";
 import { trackKey } from "@/lib/track-state";
+import { currentExam, examRpc, scoped } from "./exam-query";
 
 /*
  * Gamification model — XP, levels, streaks, quests, badges and leagues.
@@ -362,7 +363,9 @@ type RawState = {
 };
 
 export async function fetchGameState(): Promise<GameState> {
-  const { data, error } = await supabase.rpc("get_game_state");
+  const { data, error } = await examRpc((on) =>
+    on ? supabase.rpc("get_game_state", { _exam: currentExam() }) : supabase.rpc("get_game_state"),
+  );
   if (error) throw new Error(error.message);
   const r = data as unknown as RawState;
   return {
@@ -402,7 +405,13 @@ export async function claimXp(
   localAmount = 0,
 ): Promise<number> {
   if (await signedIn()) {
-    const { data, error } = await supabase.rpc("claim_xp", { _source: source, _ref: ref });
+    const { data, error } = await examRpc((on) =>
+      supabase.rpc("claim_xp", {
+        _source: source,
+        _ref: ref,
+        ...(on ? { _exam: currentExam() } : {}),
+      }),
+    );
     if (!error) {
       const granted = Number(data ?? 0);
       if (granted > 0) emitGameEvent({ type: "xp", amount: granted, combo: 0, correct: true });
@@ -428,18 +437,23 @@ export async function updateGameSettings(input: {
   const g = loadLocalGame();
   if (input.dailyGoal) saveLocalGame({ ...g, dailyGoal: input.dailyGoal });
   if (await signedIn()) {
-    const { error } = await supabase.rpc("update_game_settings", {
-      ...(input.dailyGoal != null ? { _daily_goal: input.dailyGoal } : {}),
-      ...(input.timezone != null ? { _timezone: input.timezone } : {}),
-      ...(input.leagueOptOut != null ? { _league_opt_out: input.leagueOptOut } : {}),
-    });
+    const { error } = await examRpc((on) =>
+      supabase.rpc("update_game_settings", {
+        ...(input.dailyGoal != null ? { _daily_goal: input.dailyGoal } : {}),
+        ...(input.timezone != null ? { _timezone: input.timezone } : {}),
+        ...(input.leagueOptOut != null ? { _league_opt_out: input.leagueOptOut } : {}),
+        ...(on ? { _exam: currentExam() } : {}),
+      }),
+    );
     if (error) throw new Error(error.message);
   }
   requestGameSync();
 }
 
 export async function fetchLeague(): Promise<LeagueState> {
-  const { data, error } = await supabase.rpc("get_league");
+  const { data, error } = await examRpc((on) =>
+    on ? supabase.rpc("get_league", { _exam: currentExam() }) : supabase.rpc("get_league"),
+  );
   if (error) throw new Error(error.message);
   return data as unknown as LeagueState;
 }
@@ -447,11 +461,10 @@ export async function fetchLeague(): Promise<LeagueState> {
 export type MistakeRow = { question_id: string; subject: string; stage: number; due_at: string };
 
 export async function fetchMistakes(): Promise<MistakeRow[]> {
-  const { data, error } = await supabase
-    .from("mistake_queue")
-    .select("question_id, subject, stage, due_at")
-    .order("due_at", { ascending: true })
-    .limit(500);
+  const { data, error } = await scoped((on) => {
+    const q = supabase.from("mistake_queue").select("question_id, subject, stage, due_at");
+    return (on ? q.eq("exam", currentExam()) : q).order("due_at", { ascending: true }).limit(500);
+  });
   if (error) throw new Error(error.message);
   return (data ?? []) as MistakeRow[];
 }

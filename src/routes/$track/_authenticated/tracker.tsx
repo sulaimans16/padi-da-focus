@@ -79,9 +79,12 @@ function Tracker() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const attempts = useQuery({ queryKey: ["attempts"], queryFn: fetchAttempts });
-  const sessions = useQuery({ queryKey: ["focus-sessions"], queryFn: fetchFocusSessions });
-  const bookmarks = useQuery({ queryKey: ["bookmarks"], queryFn: fetchBookmarkIds });
+  const attempts = useQuery({ queryKey: ["attempts", track.id], queryFn: fetchAttempts });
+  const sessions = useQuery({
+    queryKey: ["focus-sessions", track.id],
+    queryFn: fetchFocusSessions,
+  });
+  const bookmarks = useQuery({ queryKey: ["bookmarks", track.id], queryFn: fetchBookmarkIds });
 
   const rows = attempts.data ?? [];
   const today = new Date().toDateString();

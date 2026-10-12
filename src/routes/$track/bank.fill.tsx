@@ -46,7 +46,7 @@ function FillBank() {
 
   const refresh = useCallback(async () => {
     try {
-      setCounts(await fetchRemoteCounts());
+      setCounts(await fetchRemoteCounts(track.subjects));
     } catch {
       /* offline */
     }
@@ -71,6 +71,7 @@ function FillBank() {
           try {
             const res = await generate({
               data: {
+                exam: track.id,
                 subject,
                 topic: "all",
                 count: Math.min(BATCH, target - have),

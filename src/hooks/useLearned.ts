@@ -2,6 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useTrack } from "@/hooks/useTrack";
+import { scoped } from "@/lib/exam-query";
 import { XP, claimXp } from "@/lib/gamification";
 import { trackKey } from "@/lib/track-state";
 
@@ -27,19 +29,19 @@ function writeLocal(ids: string[]) {
 /** Concepts marked as learned — `${moduleSlug}/${conceptId}` — merged from device and account. */
 export function useLearned() {
   const { user } = useAuth();
+  const track = useTrack();
   const [local, setLocal] = useState<string[]>([]);
-  useEffect(() => setLocal(readLocal()), []);
+  useEffect(() => setLocal(readLocal()), [track.id]);
 
   const remote = useQuery({
-    queryKey: ["learned", user?.id],
+    queryKey: ["learned", track.id, user?.id],
     enabled: Boolean(user),
     retry: false,
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("xp_events")
-        .select("ref_id")
-        .eq("source", "concept_done")
-        .limit(2000);
+      const { data, error } = await scoped((on) => {
+        const q = supabase.from("xp_events").select("ref_id").eq("source", "concept_done");
+        return (on ? q.eq("exam", track.id) : q).limit(2000);
+      }, track.id);
       if (error) throw new Error(error.message);
       return (data ?? []).map((r) => r.ref_id);
     },

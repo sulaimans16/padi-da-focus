@@ -33,7 +33,7 @@ const STAGES = ["New", "1 day", "3 days", "7 days"];
 
 function Review() {
   const track = useTrack();
-  const mistakes = useQuery({ queryKey: ["mistakes"], queryFn: fetchMistakes });
+  const mistakes = useQuery({ queryKey: ["mistakes", track.id], queryFn: fetchMistakes });
   const [session, setSession] = useState<Question[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

@@ -5,6 +5,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 const RoadmapInput = z.object({
   goal: z.string().min(3).max(300),
   weeks: z.number().min(1).max(52).optional(),
+  exam: z.enum(["neet_pg", "neet_ug"]).optional(),
 });
 
 const StepSchema = z.object({
@@ -43,6 +44,20 @@ const SYSTEM = [
   "resources. Titles under 8 words, details under 25 words.",
 ].join(" ");
 
+const SYSTEM_UG = [
+  "You are a senior NEET UG mentor designing study roadmaps for Indian Class 11-12 students",
+  "and droppers preparing for the NTA NEET UG exam (Physics, Chemistry, Botany, Zoology).",
+  "Given a study goal, produce a structured, ordered roadmap like roadmap.sh:",
+  "phases in dependency order (NCERT reading and concepts first, then numericals and",
+  "PYQs, revision and full mocks last), each phase with concrete, actionable steps.",
+  "Every step: a short title, one sentence of detail on what to do, and an optional",
+  "resource naming the NCERT textbook chapter or a standard book (NCERT Class 11/12,",
+  "NCERT Exemplar, HC Verma, DC Pandey, MS Chouhan, Trueman's Biology) or one of the",
+  "app's tools (UG Prep QBank, UG Prep PYQ Vault, UG Prep Mock Tests, Focus Lock,",
+  "Weak Spots). Keep it realistic for a school student. No fluff, no invented",
+  "resources. Titles under 8 words, details under 25 words.",
+].join(" ");
+
 export const generateRoadmap = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => RoadmapInput.parse(input))
@@ -52,7 +67,8 @@ export const generateRoadmap = createServerFn({ method: "POST" })
 
     const openRouterKey = process.env["OPENROUTER_API_KEY"];
     const lovableKey = process.env["LOVABLE_API_KEY"];
-    if (!openRouterKey && !lovableKey) throw new Error("AI is not configured for this project yet.");
+    if (!openRouterKey && !lovableKey)
+      throw new Error("AI is not configured for this project yet.");
 
     const { generateText, Output, NoObjectGeneratedError } = await import("ai");
     const { createLovableAiGatewayProvider, createOpenRouterProvider, OPENROUTER_MODEL } =
@@ -77,7 +93,7 @@ export const generateRoadmap = createServerFn({ method: "POST" })
     try {
       const { output } = await generateText({
         model: gateway(useOpenRouter ? OPENROUTER_MODEL : "openai/gpt-5.6-sol"),
-        system: SYSTEM,
+        system: data.exam === "neet_ug" ? SYSTEM_UG : SYSTEM,
         prompt,
         output: Output.object({ schema: RoadmapSchema }),
         ...(useOpenRouter

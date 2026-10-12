@@ -3,13 +3,14 @@ const GATEWAY = "https://connector-gateway.lovable.dev/firecrawl/v2";
 export type SourceSnippet = { title: string; url: string; text: string };
 
 /**
- * Scouts the public web (Firecrawl) for recent NEET PG material on a subject/topic so
+ * Scouts the public web (Firecrawl) for recent exam material on a subject/topic so
  * question generation is grounded in real published content instead of pure recall.
  * Returns [] whenever research is unavailable — generation must still work.
  */
 export async function researchTopic(
   subject: string,
   topic: string,
+  exam = "NEET PG",
   limit = 4,
 ): Promise<SourceSnippet[]> {
   const lovableKey = process.env["LOVABLE_API_KEY"];
@@ -18,8 +19,8 @@ export async function researchTopic(
 
   const query =
     topic === "all"
-      ? `NEET PG previous year questions high yield points ${subject}`
-      : `NEET PG previous year questions high yield ${topic} ${subject}`;
+      ? `${exam} previous year questions high yield points ${subject}`
+      : `${exam} previous year questions high yield ${topic} ${subject}`;
 
   try {
     const res = await fetch(`${GATEWAY}/search`, {

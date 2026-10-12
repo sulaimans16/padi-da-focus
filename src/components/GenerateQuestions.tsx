@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { generateQuestionBatch } from "@/lib/questions-ai.functions";
+import { useTrack } from "@/hooks/useTrack";
 
 const BATCH = 10;
 
@@ -17,6 +18,7 @@ export function GenerateQuestions({
   currentCount: number;
   onDone: () => void | Promise<void>;
 }) {
+  const track = useTrack();
   const generate = useServerFn(generateQuestionBatch);
   const [busy, setBusy] = useState(false);
   const [made, setMade] = useState(0);
@@ -35,7 +37,14 @@ export function GenerateQuestions({
       while (produced < want) {
         const batch = Math.min(BATCH, want - produced);
         const res = await generate({
-          data: { subject, topic, count: batch, avoid: avoid.slice(0, 60), tricky },
+          data: {
+            subject,
+            topic,
+            count: batch,
+            avoid: avoid.slice(0, 60),
+            tricky,
+            exam: track.id,
+          },
         });
         if (!res.inserted) break;
         produced += res.inserted;
@@ -75,8 +84,8 @@ export function GenerateQuestions({
           <span className="font-semibold">Tricky mode</span>
           <span className="text-muted-foreground">
             {" "}
-            — hard, exam-trap questions where all four options look almost identical and one
-            detail decides the answer.
+            — hard, exam-trap questions where all four options look almost identical and one detail
+            decides the answer.
           </span>
         </span>
       </label>

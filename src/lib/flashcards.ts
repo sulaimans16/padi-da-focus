@@ -6,6 +6,7 @@ import { fetchBookmarkIds } from "./tracker";
 import { registerBonusXp, requestGameSync } from "./gamification";
 import { schedule, type CardState, type Rating } from "./fsrs";
 import { trackKey } from "@/lib/track-state";
+import { currentExam } from "./exam-query";
 
 /*
  * Flashcards: cards come from Learn concepts (high-yield facts, mnemonics, traps,
@@ -13,7 +14,6 @@ import { trackKey } from "@/lib/track-state";
  * FSRS-scheduled, stored in Supabase for signed-in learners and on-device for guests.
  */
 
-export const EXAM = "neet_pg";
 export const NEW_PER_DAY = 20;
 
 export type Flashcard = {
@@ -147,7 +147,7 @@ export async function customDeck(): Promise<Deck> {
     const { data, error } = await supabase
       .from("flashcards_custom")
       .select("id, front, back, created_at")
-      .eq("exam", EXAM)
+      .eq("exam", currentExam())
       .order("created_at", { ascending: false })
       .limit(1000);
     if (!error) rows = data ?? [];
@@ -172,7 +172,7 @@ export async function addCustomCard(front: string, back: string) {
   if (userId) {
     const { error } = await supabase
       .from("flashcards_custom")
-      .insert({ user_id: userId, exam: EXAM, front: front.trim(), back: back.trim() });
+      .insert({ user_id: userId, exam: currentExam(), front: front.trim(), back: back.trim() });
     if (error) throw new Error(error.message);
     return;
   }
@@ -220,7 +220,7 @@ export async function fetchReviews(): Promise<ReviewMap> {
   const { data, error } = await supabase
     .from("flashcard_reviews")
     .select("card_id, stability, difficulty, reps, lapses, last_review_at, due_at")
-    .eq("exam", EXAM)
+    .eq("exam", currentExam())
     .limit(10000);
   if (error) return local;
   const remote: ReviewMap = {};
@@ -283,7 +283,7 @@ export async function reviewCard(card: Flashcard, rating: Rating, prev: CardStat
       _difficulty: next.difficulty,
       _due_at: next.dueAt,
       _deck: card.deck,
-      _exam: EXAM,
+      _exam: currentExam(),
     });
     if (!error) {
       granted = Number(data ?? 0);

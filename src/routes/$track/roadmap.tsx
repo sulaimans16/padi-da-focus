@@ -216,7 +216,7 @@ function RoadmapPage() {
 
     setBusy(true);
     try {
-      const res = await generate({ data: { goal: q, weeks } });
+      const res = await generate({ data: { goal: q, weeks, exam: track.id } });
       const saved: SavedMap = { goal: q, roadmap: res.roadmap, done: [] };
       try {
         localStorage.setItem(storageKey(q), JSON.stringify(saved));

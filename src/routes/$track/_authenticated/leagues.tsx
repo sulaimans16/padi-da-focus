@@ -58,7 +58,11 @@ function ZoneLabel({ tone, children }: { tone: "up" | "down"; children: React.Re
 function Leagues() {
   const track = useTrack();
   const { user } = useAuth();
-  const league = useQuery({ queryKey: ["league", user?.id], queryFn: fetchLeague, retry: false });
+  const league = useQuery({
+    queryKey: ["league", track.id, user?.id],
+    queryFn: fetchLeague,
+    retry: false,
+  });
   const data = league.data;
   const tier = data?.tier ?? 0;
   const t = LEAGUE_TIERS[tier] ?? LEAGUE_TIERS[0];

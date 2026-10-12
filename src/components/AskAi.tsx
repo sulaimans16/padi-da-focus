@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouterState } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
+import { activeTrackId } from "@/lib/track-state";
 import { askStudyAi } from "@/lib/ai-help.functions";
 import { AnimatePresence, motion } from "motion/react";
 import { useAccess } from "@/hooks/useAccess";
@@ -63,7 +64,9 @@ export function AskAi() {
     setTurns((t) => [...t, { role: "you", text: q }]);
     setBusy(true);
     try {
-      const res = await ask({ data: { question: q, context: `app page ${pathname}` } });
+      const res = await ask({
+        data: { question: q, context: `app page ${pathname}`, exam: activeTrackId() },
+      });
       setTurns((t) => [...t, { role: "ai", text: res.answer }]);
     } catch (e) {
       setError(e instanceof Error ? e.message : "AI request failed.");

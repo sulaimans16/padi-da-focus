@@ -188,7 +188,7 @@ function Index() {
   const { user, displayName } = useAuth();
   const { state, level, rank } = useGameState();
   const league = useQuery({
-    queryKey: ["league", user?.id],
+    queryKey: ["league", track.id, user?.id],
     queryFn: fetchLeague,
     enabled: Boolean(user),
     staleTime: 60_000,
@@ -279,8 +279,8 @@ function Index() {
           </MascotSays>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <Badge tone="primary" tooltip="Questions available across all subjects">
-            23,000+ Qs
+          <Badge tone="primary" tooltip="Subjects in this exam">
+            {track.subjects.length} subjects
           </Badge>
           {!user ? (
             <Link to="/auth" className="btn-base btn-primary text-xs">

@@ -3,6 +3,8 @@ import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { trackKey } from "@/lib/track-state";
+import { useTrack } from "@/hooks/useTrack";
+import { examColumnKnownMissing, scoped } from "@/lib/exam-query";
 
 type Goal = { id: string; title: string; target_at: string };
 
@@ -43,6 +45,7 @@ function useTicker() {
 
 export function GoalCountdown({ className = "" }: { className?: string }) {
   const { user, loading } = useAuth();
+  const track = useTrack();
   const now = useTicker();
   const [goal, setGoal] = useState<Goal | null>(null);
   const [editing, setEditing] = useState(false);
@@ -52,16 +55,15 @@ export function GoalCountdown({ className = "" }: { className?: string }) {
 
   const load = useCallback(async () => {
     if (user) {
-      const { data } = await supabase
-        .from("goals")
-        .select("id, title, target_at")
-        .order("target_at", { ascending: true })
-        .limit(1);
+      const { data } = await scoped((on) => {
+        const q = supabase.from("goals").select("id, title, target_at");
+        return (on ? q.eq("exam", track.id) : q).order("target_at", { ascending: true }).limit(1);
+      }, track.id);
       setGoal(data?.[0] ?? null);
     } else {
       setGoal(readLocalGoal());
     }
-  }, [user]);
+  }, [user, track.id]);
 
   useEffect(() => {
     if (loading) return;
@@ -86,7 +88,11 @@ export function GoalCountdown({ className = "" }: { className?: string }) {
       if (goal) {
         await supabase.from("goals").update(payload).eq("id", goal.id);
       } else {
-        await supabase.from("goals").insert({ ...payload, user_id: user.id });
+        if (!examColumnKnownMissing()) {
+          await supabase.from("goals").insert({ ...payload, user_id: user.id, exam: track.id });
+        } else if (track.id === "neet_pg") {
+          await supabase.from("goals").insert({ ...payload, user_id: user.id });
+        }
       }
       await load();
     } else {

@@ -1,6 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { allQuestions, type Question } from "./questions";
 import { toQuestionRow, type QuestionRow } from "./question-row";
+import { trackKey } from "@/lib/track-state";
 
 /** Deterministic 32-bit RNG so the daily challenge is identical for every user. */
 export function seededRandom(seed: string) {
@@ -29,9 +30,7 @@ export function shuffle<T>(items: T[], rng: () => number = Math.random): T[] {
 }
 
 async function totalQuestions(): Promise<number> {
-  const { count } = await supabase
-    .from("questions")
-    .select("id", { count: "exact", head: true });
+  const { count } = await supabase.from("questions").select("id", { count: "exact", head: true });
   return count ?? 0;
 }
 
@@ -108,14 +107,14 @@ export async function fetchDailyChallenge(dayKey: string, count = 10): Promise<Q
 
 // ---------- local completion record (works signed out too) ----------
 
-const DAILY_KEY = "padida.daily.results";
+const DAILY_KEY = () => trackKey("daily.results");
 
 export type DailyResult = { day: string; correct: number; total: number };
 
 export function loadDailyResults(): DailyResult[] {
   if (typeof window === "undefined") return [];
   try {
-    const raw = window.localStorage.getItem(DAILY_KEY);
+    const raw = window.localStorage.getItem(DAILY_KEY());
     return raw ? (JSON.parse(raw) as DailyResult[]) : [];
   } catch {
     return [];
@@ -125,7 +124,7 @@ export function loadDailyResults(): DailyResult[] {
 export function saveDailyResult(result: DailyResult) {
   if (typeof window === "undefined") return;
   const rest = loadDailyResults().filter((r) => r.day !== result.day);
-  window.localStorage.setItem(DAILY_KEY, JSON.stringify([result, ...rest].slice(0, 120)));
+  window.localStorage.setItem(DAILY_KEY(), JSON.stringify([result, ...rest].slice(0, 120)));
 }
 
 /** Consecutive days finished, counting back from today. */

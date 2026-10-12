@@ -22,19 +22,22 @@ import {
   type ReviewMap,
 } from "@/lib/flashcards";
 import { cn } from "@/lib/utils";
+import { useTrack } from "@/hooks/useTrack";
+import { localizeHead } from "@/lib/tracks";
 
-export const Route = createFileRoute("/flashcards")({
+export const Route = createFileRoute("/$track/flashcards")({
   staticData: { sitemap: true },
-  head: () => ({
-    meta: [
-      { title: "Flashcards — PG Prep" },
-      {
-        name: "description",
-        content:
-          "Spaced-repetition flashcards for NEET PG: high-yield facts, mnemonics, exam traps and clinical cases, scheduled with FSRS so you review right before you'd forget.",
-      },
-    ],
-  }),
+  head: ({ params }) =>
+    localizeHead(params.track, {
+      meta: [
+        { title: "Flashcards — PG Prep" },
+        {
+          name: "description",
+          content:
+            "Spaced-repetition flashcards for NEET PG: high-yield facts, mnemonics, exam traps and clinical cases, scheduled with FSRS so you review right before you'd forget.",
+        },
+      ],
+    }),
   component: FlashcardsPage,
 });
 
@@ -145,7 +148,8 @@ function DeckCard({
 }
 
 function FlashcardsPage() {
-  const decks = useMemo(() => learnDecks(), []);
+  const track = useTrack();
+  const decks = useMemo(() => learnDecks(track.learn), [track.learn]);
   const [saved, setSaved] = useState<Deck | null>(null);
   const [custom, setCustom] = useState<Deck | null>(null);
   const [reviews, setReviews] = useState<ReviewMap>({});

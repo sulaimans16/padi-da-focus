@@ -216,7 +216,11 @@ function WelcomePage() {
             <Link to="/pricing" className="transition-colors hover:text-foreground">
               Pricing
             </Link>
-            <Link to="/papers" className="transition-colors hover:text-foreground">
+            <Link
+              to="/$track/papers"
+              params={{ track: "neet-pg" }}
+              className="transition-colors hover:text-foreground"
+            >
               Free papers
             </Link>
           </nav>

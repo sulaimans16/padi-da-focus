@@ -1,5 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import { todayKey } from "./quiz";
+import { trackKey } from "@/lib/track-state";
 
 /*
  * Gamification model — XP, levels, streaks, quests, badges and leagues.
@@ -211,7 +212,7 @@ export function emitGameEvent(e: GameEvent) {
 
 // ---------- local mirror ----------
 
-const LOCAL_KEY = "padida.game.local";
+const LOCAL_KEY = () => trackKey("game.local");
 
 type LocalGame = {
   xp: number;
@@ -236,7 +237,7 @@ const EMPTY_LOCAL: LocalGame = {
 export function loadLocalGame(): LocalGame {
   if (typeof window === "undefined") return EMPTY_LOCAL;
   try {
-    const raw = window.localStorage.getItem(LOCAL_KEY);
+    const raw = window.localStorage.getItem(LOCAL_KEY());
     return raw ? { ...EMPTY_LOCAL, ...(JSON.parse(raw) as Partial<LocalGame>) } : EMPTY_LOCAL;
   } catch {
     return EMPTY_LOCAL;
@@ -246,7 +247,7 @@ export function loadLocalGame(): LocalGame {
 function saveLocalGame(next: LocalGame) {
   if (typeof window === "undefined") return;
   try {
-    window.localStorage.setItem(LOCAL_KEY, JSON.stringify(next));
+    window.localStorage.setItem(LOCAL_KEY(), JSON.stringify(next));
   } catch {
     /* storage full or blocked — feedback still works for this session */
   }

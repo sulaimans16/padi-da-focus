@@ -5,26 +5,30 @@ import { subjectColor } from "@/lib/questions";
 import { fetchAttempts, subjectStats, topicStats } from "@/lib/tracker";
 import { GlassCard, Icon, Pill, Badge } from "@/components/Primitives";
 import { Reveal } from "@/components/motion/Reveal";
+import { useTrack } from "@/hooks/useTrack";
+import { localizeHead } from "@/lib/tracks";
 
-export const Route = createFileRoute("/_authenticated/weak-spots")({
+export const Route = createFileRoute("/$track/_authenticated/weak-spots")({
   staticData: { sitemap: false },
-  head: () => ({
-    meta: [
-      { title: "Weak Spots — PG Prep Accuracy Analyzer" },
-      {
-        name: "description",
-        content:
-          "See your lowest-accuracy NEET PG subjects and topics from Question Bank and PYQ attempts, and jump straight into targeted practice.",
-      },
-      { property: "og:title", content: "Weak Spots — PG Prep" },
-      {
-        property: "og:description",
-        content: "Your weakest subjects and topics ranked by accuracy, with one-tap practice links.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: ({ params }) =>
+    localizeHead(params.track, {
+      meta: [
+        { title: "Weak Spots — PG Prep Accuracy Analyzer" },
+        {
+          name: "description",
+          content:
+            "See your lowest-accuracy NEET PG subjects and topics from Question Bank and PYQ attempts, and jump straight into targeted practice.",
+        },
+        { property: "og:title", content: "Weak Spots — PG Prep" },
+        {
+          property: "og:description",
+          content:
+            "Your weakest subjects and topics ranked by accuracy, with one-tap practice links.",
+        },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+    }),
   component: WeakSpots,
 });
 
@@ -59,13 +63,15 @@ function Bar({ accuracy, color }: { accuracy: number; color: string }) {
 }
 
 function WeakSpots() {
+  const track = useTrack();
   const attempts = useQuery({ queryKey: ["attempts"], queryFn: fetchAttempts });
   const [source, setSource] = useState<SourceKey>("all");
   const [minAttempts, setMinAttempts] = useState(3);
 
   const rows = useMemo(() => {
     const all = attempts.data ?? [];
-    if (source === "all") return all.filter((r) => r.context === "question_bank" || r.context === "pyq");
+    if (source === "all")
+      return all.filter((r) => r.context === "question_bank" || r.context === "pyq");
     return all.filter((r) => r.context === source);
   }, [attempts.data, source]);
 
@@ -129,11 +135,19 @@ function WeakSpots() {
             <p className="mt-2 text-sm font-semibold">Nothing to analyze yet</p>
             <p className="mt-1 text-sm text-muted-foreground">
               Answer questions in the{" "}
-              <Link to="/bank" className="font-bold text-primary">
+              <Link
+                to="/$track/bank"
+                params={{ track: track.slug }}
+                className="font-bold text-primary"
+              >
                 Question Bank
               </Link>{" "}
               or{" "}
-              <Link to="/pyq" className="font-bold text-primary">
+              <Link
+                to="/$track/pyq"
+                params={{ track: track.slug }}
+                className="font-bold text-primary"
+              >
                 PYQ Vault
               </Link>{" "}
               and your weak spots appear here.
@@ -196,8 +210,8 @@ function WeakSpots() {
                     <div key={s.subject} className="p-4">
                       <div className="flex items-center justify-between gap-3">
                         <Link
-                          to="/bank/$subject"
-                          params={{ subject: s.subject }}
+                          to="/$track/bank/$subject"
+                          params={{ track: track.slug, subject: s.subject }}
                           className="truncate text-sm font-bold transition-colors duration-300 ease-out hover:text-primary"
                         >
                           {s.subject}
@@ -233,15 +247,16 @@ function WeakSpots() {
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-bold">{t.topic}</p>
                         <p className="mt-0.5 truncate text-xs text-muted-foreground">
-                          {t.subject} · last seen{" "}
-                          {new Date(t.lastAttemptAt).toLocaleDateString()}
+                          {t.subject} · last seen {new Date(t.lastAttemptAt).toLocaleDateString()}
                         </p>
                         <div className="mt-2">
                           <Bar accuracy={t.accuracy} color={subjectColor(t.subject)} />
                         </div>
                       </div>
                       <div className="shrink-0 text-right">
-                        <p className="font-mono text-sm font-bold tabular-nums">{pct(t.accuracy)}</p>
+                        <p className="font-mono text-sm font-bold tabular-nums">
+                          {pct(t.accuracy)}
+                        </p>
                         <p className="font-mono text-[11px] tabular-nums text-muted-foreground">
                           {t.correct}/{t.attempts}
                         </p>
@@ -250,8 +265,8 @@ function WeakSpots() {
                         </Badge>
                       </div>
                       <Link
-                        to="/bank/$subject"
-                        params={{ subject: t.subject }}
+                        to="/$track/bank/$subject"
+                        params={{ track: track.slug, subject: t.subject }}
                         className="btn-base btn-ghost shrink-0 text-xs"
                       >
                         <Icon name="play_arrow" className="text-[16px]" />

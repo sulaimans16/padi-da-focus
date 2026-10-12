@@ -12,10 +12,13 @@ import { BADGES, DAILY_GOALS, updateGameSettings } from "@/lib/gamification";
 import { todayKey } from "@/lib/quiz";
 import { isMuted, setMuted } from "@/lib/sfx";
 import { cn } from "@/lib/utils";
+import { useTrack } from "@/hooks/useTrack";
+import { localizeHead } from "@/lib/tracks";
 
-export const Route = createFileRoute("/_authenticated/profile")({
+export const Route = createFileRoute("/$track/_authenticated/profile")({
   staticData: { sitemap: false },
-  head: () => ({ meta: [{ title: "Profile & Badges — PG Prep" }] }),
+  head: ({ params }) =>
+    localizeHead(params.track, { meta: [{ title: "Profile & Badges — PG Prep" }] }),
   component: Profile,
 });
 
@@ -63,6 +66,7 @@ function StreakCalendar({
 }
 
 function Profile() {
+  const track = useTrack();
   const { user, displayName } = useAuth();
   const { state, level, rank } = useGameState();
   const [muted, setMutedState] = useState(false);
@@ -320,7 +324,11 @@ function Profile() {
 
       <p className="mt-6 text-center text-xs text-muted-foreground">
         Want the numbers behind the game?{" "}
-        <Link to="/tracker" className="font-semibold text-primary">
+        <Link
+          to="/$track/tracker"
+          params={{ track: track.slug }}
+          className="font-semibold text-primary"
+        >
           Open your analytics →
         </Link>
       </p>

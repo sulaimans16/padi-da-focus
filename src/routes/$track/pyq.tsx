@@ -7,28 +7,32 @@ import { Pagination, usePagination } from "@/components/Pagination";
 
 import { fetchRemotePyqs } from "@/lib/remote-questions";
 import { allQuestions, type Question } from "@/lib/questions";
+import { localizeHead } from "@/lib/tracks";
+import { useTrack } from "@/hooks/useTrack";
 
-export const Route = createFileRoute("/pyq")({
+export const Route = createFileRoute("/$track/pyq")({
   staticData: { sitemap: true },
-  head: () => ({
-    meta: [
-      { title: "NEET PG PYQs by Year — PG Prep" },
-      {
-        name: "description",
-        content:
-          "Previous year NEET PG questions filtered by exam year and subject, with repeat-frequency badges marking frequently repeated high-yield questions.",
-      },
-      { property: "og:title", content: "NEET PG PYQs by Year — PG Prep" },
-      {
-        property: "og:description",
-        content: "Year-wise and subject-wise PYQ drilling with repeat-frequency tags.",
-      },
-    ],
-  }),
+  head: ({ params }) =>
+    localizeHead(params.track, {
+      meta: [
+        { title: "NEET PG PYQs by Year — PG Prep" },
+        {
+          name: "description",
+          content:
+            "Previous year NEET PG questions filtered by exam year and subject, with repeat-frequency badges marking frequently repeated high-yield questions.",
+        },
+        { property: "og:title", content: "NEET PG PYQs by Year — PG Prep" },
+        {
+          property: "og:description",
+          content: "Year-wise and subject-wise PYQ drilling with repeat-frequency tags.",
+        },
+      ],
+    }),
   component: PyqPage,
 });
 
 function PyqPage() {
+  const track = useTrack();
   const [pyqs, setPyqs] = useState<Question[]>([]);
   const [year, setYear] = useState<string>("all");
   const [subject, setSubject] = useState<string>("all");
@@ -66,8 +70,6 @@ function PyqPage() {
 
   const { page, setPage, totalPages, pageItems, offset } = usePagination(shown);
 
-
-
   const themeLabel =
     year === "all" && subject === "all"
       ? "All PYQs"
@@ -96,7 +98,7 @@ function PyqPage() {
             <option value="all">All years</option>
             {years.map((y) => (
               <option key={y} value={String(y)}>
-                NEET PG {y}
+                {track.name} {y}
               </option>
             ))}
           </select>
@@ -147,7 +149,6 @@ function PyqPage() {
         onChange={setPage}
         totalItems={shown.length}
       />
-
     </div>
   );
 }

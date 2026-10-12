@@ -1,12 +1,13 @@
 import type { Roadmap } from "./roadmap.functions";
+import { trackKey } from "./track-state";
 
 /** A generated roadmap saved on this device, with the steps ticked off ("phase:step"). */
 export type SavedMap = { goal: string; roadmap: Roadmap; done: string[] };
 
-const LAST_KEY = "padida.roadmap.__last";
+export const LAST_KEY = () => trackKey("roadmap.__last");
 
 export function storageKey(goal: string) {
-  return `padida.roadmap.${goal
+  return `${trackKey("roadmap")}.${goal
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .slice(0, 60)}`;
@@ -24,7 +25,7 @@ export function loadSaved(goal: string): SavedMap | null {
 /** The roadmap the learner opened most recently, if any. */
 export function loadLastRoadmap(): SavedMap | null {
   try {
-    const last = localStorage.getItem(LAST_KEY);
+    const last = localStorage.getItem(LAST_KEY());
     return last ? loadSaved(last) : null;
   } catch {
     return null;
@@ -33,7 +34,7 @@ export function loadLastRoadmap(): SavedMap | null {
 
 export function rememberLastRoadmap(goal: string) {
   try {
-    localStorage.setItem(LAST_KEY, goal);
+    localStorage.setItem(LAST_KEY(), goal);
   } catch {
     // ignore
   }

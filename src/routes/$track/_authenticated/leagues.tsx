@@ -14,10 +14,13 @@ import {
   type LeagueMember,
 } from "@/lib/gamification";
 import { cn } from "@/lib/utils";
+import { useTrack } from "@/hooks/useTrack";
+import { localizeHead } from "@/lib/tracks";
 
-export const Route = createFileRoute("/_authenticated/leagues")({
+export const Route = createFileRoute("/$track/_authenticated/leagues")({
   staticData: { sitemap: false },
-  head: () => ({ meta: [{ title: "Weekly Leagues — PG Prep" }] }),
+  head: ({ params }) =>
+    localizeHead(params.track, { meta: [{ title: "Weekly Leagues — PG Prep" }] }),
   component: Leagues,
 });
 
@@ -53,6 +56,7 @@ function ZoneLabel({ tone, children }: { tone: "up" | "down"; children: React.Re
 }
 
 function Leagues() {
+  const track = useTrack();
   const { user } = useAuth();
   const league = useQuery({ queryKey: ["league", user?.id], queryFn: fetchLeague, retry: false });
   const data = league.data;
@@ -160,7 +164,11 @@ function Leagues() {
               <p className="mt-1 text-sm text-muted-foreground">
                 Answer a question and you'll be placed with up to 30 learners at your level.
               </p>
-              <Link to="/daily" className="btn-base btn-primary mt-5 h-12 px-6 text-sm">
+              <Link
+                to="/$track/daily"
+                params={{ track: track.slug }}
+                className="btn-base btn-primary mt-5 h-12 px-6 text-sm"
+              >
                 <Icon name="bolt" filled className="text-[18px]" />
                 Start the daily challenge
               </Link>

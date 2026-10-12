@@ -3,26 +3,28 @@ import { useEffect, useMemo, useState } from "react";
 import { fetchRemotePyqs } from "@/lib/remote-questions";
 import { allQuestions, type Question } from "@/lib/questions";
 import { buildPaperHtml, downloadHtml, printHtml, slug } from "@/lib/paper-export";
+import { localizeHead } from "@/lib/tracks";
 
-export const Route = createFileRoute("/papers")({
+export const Route = createFileRoute("/$track/papers")({
   staticData: { sitemap: true },
-  head: () => ({
-    meta: [
-      { title: "Download NEET PG Past Year Papers — PG Prep" },
-      {
-        name: "description",
-        content:
-          "Free year-wise and subject-wise NEET PG past year question papers you can download or print, with an optional answer key and explanations.",
-      },
-      { property: "og:title", content: "Download NEET PG Past Year Papers — PG Prep" },
-      {
-        property: "og:description",
-        content: "Free downloadable year-wise NEET PG question papers with answer keys.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: ({ params }) =>
+    localizeHead(params.track, {
+      meta: [
+        { title: "Download NEET PG Past Year Papers — PG Prep" },
+        {
+          name: "description",
+          content:
+            "Free year-wise and subject-wise NEET PG past year question papers you can download or print, with an optional answer key and explanations.",
+        },
+        { property: "og:title", content: "Download NEET PG Past Year Papers — PG Prep" },
+        {
+          property: "og:description",
+          content: "Free downloadable year-wise NEET PG question papers with answer keys.",
+        },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+    }),
   component: PapersPage,
 });
 
@@ -51,10 +53,7 @@ function PapersPage() {
     })();
   }, []);
 
-  const subjects = useMemo(
-    () => Array.from(new Set(pyqs.map((q) => q.subject))).sort(),
-    [pyqs],
-  );
+  const subjects = useMemo(() => Array.from(new Set(pyqs.map((q) => q.subject))).sort(), [pyqs]);
 
   const pool = useMemo(
     () => (subject === "all" ? pyqs : pyqs.filter((q) => q.subject === subject)),
@@ -68,10 +67,15 @@ function PapersPage() {
       byYear.set(q.pyqYear, [...(byYear.get(q.pyqYear) ?? []), q]);
     });
     return Array.from(byYear.entries())
-      .map(([year, qs]) => [
-        year,
-        [...qs].sort((a, b) => a.subject.localeCompare(b.subject) || a.topic.localeCompare(b.topic)),
-      ] as [number, Question[]])
+      .map(
+        ([year, qs]) =>
+          [
+            year,
+            [...qs].sort(
+              (a, b) => a.subject.localeCompare(b.subject) || a.topic.localeCompare(b.topic),
+            ),
+          ] as [number, Question[]],
+      )
       .sort((a, b) => b[0] - a[0]);
   }, [pool]);
 
@@ -92,8 +96,8 @@ function PapersPage() {
         <p className="label-eyebrow">Free for everyone</p>
         <h1 className="text-3xl sm:text-4xl">Past Year Papers</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Year-wise papers assembled from the PYQ vault — download or print for offline revision.
-          No subscription needed.
+          Year-wise papers assembled from the PYQ vault — download or print for offline revision. No
+          subscription needed.
         </p>
       </div>
 
@@ -144,7 +148,10 @@ function PapersPage() {
             onClick={() => setWithAnswers((v) => !v)}
             className={`btn-base mt-auto text-sm ${withAnswers ? "btn-primary" : "btn-ghost"}`}
           >
-            <Icon name={withAnswers ? "check_circle" : "radio_button_unchecked"} className="text-[18px]" />
+            <Icon
+              name={withAnswers ? "check_circle" : "radio_button_unchecked"}
+              className="text-[18px]"
+            />
             Include answer key & explanations
           </button>
         </div>
@@ -163,8 +170,8 @@ function PapersPage() {
               </span>
             </div>
             <p className="text-xs text-muted-foreground">
-              {qs.length} questions ·{" "}
-              {Array.from(new Set(qs.map((q) => q.subject))).length} subjects
+              {qs.length} questions · {Array.from(new Set(qs.map((q) => q.subject))).length}{" "}
+              subjects
               {withAnswers ? " · answer key included" : ""}
             </p>
             <div className="mt-auto flex flex-wrap gap-2">

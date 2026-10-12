@@ -7,7 +7,6 @@ import { recordFocusSession } from "@/lib/tracker";
 import { registerFocus } from "@/lib/gamification";
 
 import {
-  SUBJECTS,
   clearActiveSession,
   formatClock,
   loadActiveSession,
@@ -16,24 +15,27 @@ import {
   saveActiveSession,
   type FocusSession,
 } from "@/lib/focus-session";
+import { useTrack } from "@/hooks/useTrack";
+import { localizeHead } from "@/lib/tracks";
 
-export const Route = createFileRoute("/focus")({
+export const Route = createFileRoute("/$track/focus")({
   staticData: { sitemap: true },
-  head: () => ({
-    meta: [
-      { title: "Focus Lock — PG Prep NEET PG Sprint" },
-      {
-        name: "description",
-        content:
-          "Lock yourself into a timed NEET PG revision session. Try to escape and the PG Prep focus video plays at full volume.",
-      },
-      { property: "og:title", content: "Focus Lock — PG Prep" },
-      {
-        property: "og:description",
-        content: "Hard-lockout study timer for the NEET PG final sprint. No excuses.",
-      },
-    ],
-  }),
+  head: ({ params }) =>
+    localizeHead(params.track, {
+      meta: [
+        { title: "Focus Lock — PG Prep NEET PG Sprint" },
+        {
+          name: "description",
+          content:
+            "Lock yourself into a timed NEET PG revision session. Try to escape and the PG Prep focus video plays at full volume.",
+        },
+        { property: "og:title", content: "Focus Lock — PG Prep" },
+        {
+          property: "og:description",
+          content: "Hard-lockout study timer for the NEET PG final sprint. No excuses.",
+        },
+      ],
+    }),
   component: FocusPage,
 });
 
@@ -41,6 +43,7 @@ const PRESETS = [15, 25, 45, 60];
 const GRACE_MS = 5000;
 
 function FocusPage() {
+  const track = useTrack();
   const navigate = useNavigate();
   const [session, setSession] = useState<FocusSession | null>(null);
   const [remaining, setRemaining] = useState(0);
@@ -54,7 +57,6 @@ function FocusPage() {
   const lastNagRef = useRef(0);
   const hiddenTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-
   // Rehydrate an in-flight lock so a refresh can't dodge it.
   useEffect(() => {
     const active = loadActiveSession();
@@ -67,7 +69,6 @@ function FocusPage() {
       }
     }
   }, []);
-
 
   const triggerNag = useCallback(() => {
     setSession((prev) => {
@@ -92,44 +93,39 @@ function FocusPage() {
     withResolver: false,
   });
 
-
-
-  const finish = useCallback(
-    (completed: boolean) => {
-      setSession((prev) => {
-        if (prev) {
-          logSession({
-            startedAt: prev.startedAt,
-            endedAt: Date.now(),
-            plannedDurationSec: prev.durationSec,
-            actualDurationSec: Math.round((Date.now() - prev.startedAt) / 1000),
-            subject: prev.subject,
-            escapeAttempts: prev.escapeAttempts,
-            completed,
-          });
-          void recordFocusSession({
-            minutes: Math.round((Date.now() - prev.startedAt) / 60000),
-            plannedMinutes: Math.round(prev.durationSec / 60),
-            escapes: prev.escapeAttempts,
-            completed,
-            startedAt: new Date(prev.startedAt).toISOString(),
-          });
-          if (completed) registerFocus((Date.now() - prev.startedAt) / 60000);
-        }
-        return null;
-      });
-      clearActiveSession();
-      setNagOpen(false);
-      setExitOpen(false);
-      setExitText("");
-      if (completed) {
-        playSuccess();
-        setCelebrate(true);
-        setTimeout(() => setCelebrate(false), 6000);
+  const finish = useCallback((completed: boolean) => {
+    setSession((prev) => {
+      if (prev) {
+        logSession({
+          startedAt: prev.startedAt,
+          endedAt: Date.now(),
+          plannedDurationSec: prev.durationSec,
+          actualDurationSec: Math.round((Date.now() - prev.startedAt) / 1000),
+          subject: prev.subject,
+          escapeAttempts: prev.escapeAttempts,
+          completed,
+        });
+        void recordFocusSession({
+          minutes: Math.round((Date.now() - prev.startedAt) / 60000),
+          plannedMinutes: Math.round(prev.durationSec / 60),
+          escapes: prev.escapeAttempts,
+          completed,
+          startedAt: new Date(prev.startedAt).toISOString(),
+        });
+        if (completed) registerFocus((Date.now() - prev.startedAt) / 60000);
       }
-    },
-    [],
-  );
+      return null;
+    });
+    clearActiveSession();
+    setNagOpen(false);
+    setExitOpen(false);
+    setExitText("");
+    if (completed) {
+      playSuccess();
+      setCelebrate(true);
+      setTimeout(() => setCelebrate(false), 6000);
+    }
+  }, []);
 
   // Timer driven off wall clock, immune to tab throttling.
   useEffect(() => {
@@ -197,28 +193,25 @@ function FocusPage() {
     setCelebrate(false);
   };
 
-
   if (session) {
     const progress = 1 - remaining / session.durationSec;
     return (
       <main className="flex min-h-screen flex-col items-center justify-center gap-8 px-4 py-10">
         <div className="text-center">
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary">Locked in 🔒</p>
-          <h1 className="mt-1 text-2xl font-semibold">
-            {session.subject ?? "General revision"}
-          </h1>
+          <h1 className="mt-1 text-2xl font-semibold">{session.subject ?? "General revision"}</h1>
         </div>
 
         <ProgressRing progress={progress} size={280}>
-          <span className="font-mono text-5xl font-bold tabular-nums">{formatClock(remaining)}</span>
+          <span className="font-mono text-5xl font-bold tabular-nums">
+            {formatClock(remaining)}
+          </span>
           <span className="mt-2 text-xs uppercase tracking-widest text-muted-foreground">
             {Math.round(session.durationSec / 60)} min session
           </span>
         </ProgressRing>
 
         <div className="grid w-full max-w-sm grid-cols-3 gap-2 text-center">
-
-
           {[
             ["Escapes", session.escapeAttempts],
             ["Elapsed", formatClock(session.durationSec - remaining)],
@@ -235,8 +228,8 @@ function FocusPage() {
           {exitOpen ? (
             <div className="card-surface space-y-3 p-4">
               <p className="text-sm text-muted-foreground">
-                Real emergency? Type <span className="font-mono text-destructive">I GIVE UP</span> to
-                break the lock.
+                Real emergency? Type <span className="font-mono text-destructive">I GIVE UP</span>{" "}
+                to break the lock.
               </p>
               <input
                 value={exitText}
@@ -290,7 +283,9 @@ function FocusPage() {
 
       <div className="card-surface mt-5 space-y-5 p-4">
         <div>
-          <p className="mb-2 text-[11px] uppercase tracking-widest text-muted-foreground">Duration</p>
+          <p className="mb-2 text-[11px] uppercase tracking-widest text-muted-foreground">
+            Duration
+          </p>
           <div className="grid grid-cols-4 gap-2">
             {PRESETS.map((m) => (
               <button
@@ -324,7 +319,7 @@ function FocusPage() {
             className="w-full rounded-md border border-input bg-background px-3 py-2.5 text-sm outline-none focus:border-ring"
           >
             <option value="">General revision</option>
-            {SUBJECTS.map((s) => (
+            {track.subjects.map((s) => (
               <option key={s} value={s}>
                 {s}
               </option>
@@ -336,7 +331,7 @@ function FocusPage() {
           Lock in — 30 days la neeye than paakanum 🔒
         </button>
         <p className="text-center text-xs text-muted-foreground">
-          Escape attempt = PG Prep video, full volume. You've been warned.
+          Escape attempt = {track.brand.a} Prep video, full volume. You've been warned.
         </p>
       </div>
 

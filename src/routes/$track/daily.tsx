@@ -15,26 +15,28 @@ import {
   type DailyResult,
 } from "@/lib/quiz";
 import type { Question } from "@/lib/questions";
+import { localizeHead } from "@/lib/tracks";
 
-export const Route = createFileRoute("/daily")({
+export const Route = createFileRoute("/$track/daily")({
   staticData: { sitemap: true },
-  head: () => ({
-    meta: [
-      { title: "Daily Challenge — PG Prep" },
-      {
-        name: "description",
-        content:
-          "Ten fresh NEET PG questions every day with instant explanations, a streak counter and a week-long history of your daily scores.",
-      },
-      { property: "og:title", content: "Daily Challenge — PG Prep" },
-      {
-        property: "og:description",
-        content: "Ten questions a day, instant explanations, streaks that keep you honest.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: ({ params }) =>
+    localizeHead(params.track, {
+      meta: [
+        { title: "Daily Challenge — PG Prep" },
+        {
+          name: "description",
+          content:
+            "Ten fresh NEET PG questions every day with instant explanations, a streak counter and a week-long history of your daily scores.",
+        },
+        { property: "og:title", content: "Daily Challenge — PG Prep" },
+        {
+          property: "og:description",
+          content: "Ten questions a day, instant explanations, streaks that keep you honest.",
+        },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+    }),
   component: DailyPage,
 });
 

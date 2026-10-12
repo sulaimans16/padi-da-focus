@@ -8,16 +8,18 @@ import { useLearned } from "@/hooks/useLearned";
 import { emitGameEvent } from "@/lib/gamification";
 import { playCorrect } from "@/lib/sfx";
 import { cn } from "@/lib/utils";
-import { getModule, LEARN_MODULES } from "@/lib/learn";
+import { getTrackModule, trackBySlug } from "@/lib/tracks";
 import { ModuleCover } from "@/components/learn/ModuleCover";
 import { ConceptBody } from "@/components/learn/ConceptBody";
+import { useTrack } from "@/hooks/useTrack";
 
-export const Route = createFileRoute("/learn/$subject")({
+export const Route = createFileRoute("/$track/learn/$subject")({
   staticData: { sitemap: true },
   loader: ({ params }) => {
-    const mod = getModule(params.subject);
-    if (!mod) throw notFound();
-    return { subject: mod.subject, blurb: mod.blurb };
+    const track = trackBySlug(params.track);
+    const mod = track && getTrackModule(track, params.subject);
+    if (!track || !mod) throw notFound();
+    return { subject: mod.subject, blurb: mod.blurb, brand: `${track.brand.a} Prep` };
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
@@ -25,7 +27,7 @@ export const Route = createFileRoute("/learn/$subject")({
         meta: [{ title: "Module not found — PG Prep" }, { name: "robots", content: "noindex" }],
       };
     }
-    const title = `${loaderData.subject} Concepts — PG Prep`;
+    const title = `${loaderData.subject} Concepts — ${loaderData.brand}`;
     return {
       meta: [
         { title },
@@ -42,10 +44,15 @@ export const Route = createFileRoute("/learn/$subject")({
 });
 
 function ModuleNotFound() {
+  const track = useTrack();
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-10 text-center">
       <h1 className="text-2xl">Module not available yet</h1>
-      <Link to="/learn" className="btn-base btn-primary mt-4 text-sm">
+      <Link
+        to="/$track/learn"
+        params={{ track: track.slug }}
+        className="btn-base btn-primary mt-4 text-sm"
+      >
         Back to subject modules
       </Link>
     </div>
@@ -132,8 +139,9 @@ function PathNode({
 }
 
 function LearnSubject() {
+  const track = useTrack();
   const { subject } = Route.useParams();
-  const mod = getModule(subject)!;
+  const mod = getTrackModule(track, subject)!;
   const { done, markLearned } = useLearned();
   const ref = (id: string) => `${mod.slug}/${id}`;
   const firstOpen =
@@ -211,7 +219,11 @@ function LearnSubject() {
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
-      <Link to="/learn" className="label-eyebrow inline-flex items-center gap-1 text-primary">
+      <Link
+        to="/$track/learn"
+        params={{ track: track.slug }}
+        className="label-eyebrow inline-flex items-center gap-1 text-primary"
+      >
         <Icon name="arrow_back" className="text-[16px]" />
         All modules
       </Link>
@@ -260,14 +272,18 @@ function LearnSubject() {
             </ul>
             <div className="mt-5 flex flex-wrap gap-2">
               <Link
-                to="/bank/$subject"
-                params={{ subject: mod.subject }}
+                to="/$track/bank/$subject"
+                params={{ track: track.slug, subject: mod.subject }}
                 className="btn-base btn-primary text-xs"
               >
                 <Icon name="quiz" className="text-[16px]" />
                 Practise {mod.subject} questions
               </Link>
-              <Link to="/focus" className="btn-base btn-ghost text-xs">
+              <Link
+                to="/$track/focus"
+                params={{ track: track.slug }}
+                className="btn-base btn-ghost text-xs"
+              >
                 <Icon name="lock" className="text-[16px]" />
                 Lock in and study
               </Link>
@@ -388,16 +404,18 @@ function LearnSubject() {
       <section className="mt-8">
         <p className="label-eyebrow">Other modules</p>
         <div className="mt-2 flex flex-wrap gap-2">
-          {LEARN_MODULES.filter((m) => m.slug !== mod.slug).map((m) => (
-            <Link
-              key={m.slug}
-              to="/learn/$subject"
-              params={{ subject: m.slug }}
-              className="chip hover:text-primary"
-            >
-              {m.subject}
-            </Link>
-          ))}
+          {track.learn
+            .filter((m) => m.slug !== mod.slug)
+            .map((m) => (
+              <Link
+                key={m.slug}
+                to="/$track/learn/$subject"
+                params={{ track: track.slug, subject: m.slug }}
+                className="chip hover:text-primary"
+              >
+                {m.subject}
+              </Link>
+            ))}
         </div>
       </section>
     </div>

@@ -1,47 +1,45 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { LEARN_MODULES, conceptCount, type LearnModule, type SubjectGroup } from "@/lib/learn";
+import type { LearnModule } from "@/lib/learn";
 import { Icon } from "@/components/Primitives";
 import { Reveal } from "@/components/motion/Reveal";
 import { MascotSays } from "@/components/mascot/Mascot";
 import { ModuleCover } from "@/components/learn/ModuleCover";
 import { ProgressBar } from "@/components/game/Widgets";
 import { useLearned } from "@/hooks/useLearned";
+import { useTrack } from "@/hooks/useTrack";
+import { localizeHead } from "@/lib/tracks";
 
-export const Route = createFileRoute("/learn/")({
+export const Route = createFileRoute("/$track/learn/")({
   staticData: { sitemap: true },
-  head: () => ({
-    meta: [
-      { title: "Subject Modules — Concept Lessons | PG Prep" },
-      {
-        name: "description",
-        content:
-          "Illustrated NEET PG concept lessons for all 19 subjects: real reference figures, flowcharts, comparison tables, exam traps, mnemonics and high-yield takeaways.",
-      },
-      { property: "og:title", content: "Subject Modules — PG Prep" },
-      {
-        property: "og:description",
-        content: "Concept lessons with real medical reference figures for NEET PG 2026.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: ({ params }) =>
+    localizeHead(params.track, {
+      meta: [
+        { title: "Subject Modules — Concept Lessons | PG Prep" },
+        {
+          name: "description",
+          content:
+            "Illustrated NEET PG concept lessons for all 19 subjects: real reference figures, flowcharts, comparison tables, exam traps, mnemonics and high-yield takeaways.",
+        },
+        { property: "og:title", content: "Subject Modules — PG Prep" },
+        {
+          property: "og:description",
+          content: "Concept lessons with real medical reference figures for NEET PG 2026.",
+        },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+    }),
   component: LearnIndex,
 });
 
-const GROUPS: { id: SubjectGroup; note: string }[] = [
-  { id: "Pre-clinical", note: "The foundations everything else is built on" },
-  { id: "Para-clinical", note: "Mechanisms of disease and treatment" },
-  { id: "Clinical", note: "Where most exam questions come from" },
-];
-
 function ModuleTile({ m, learned }: { m: LearnModule; learned: number }) {
+  const track = useTrack();
   const total = m.concepts.length;
   return (
     <Link
-      to="/learn/$subject"
-      params={{ subject: m.slug }}
+      to="/$track/learn/$subject"
+      params={{ track: track.slug, subject: m.slug }}
       className="card-pop card-pop-hover group flex h-full flex-col overflow-hidden"
     >
       <ModuleCover mod={m} className="h-24 w-full sm:h-32" />
@@ -79,10 +77,11 @@ function ModuleTile({ m, learned }: { m: LearnModule; learned: number }) {
 }
 
 function LearnIndex() {
+  const track = useTrack();
   const { done } = useLearned();
   const [query, setQuery] = useState("");
-  const total = conceptCount();
-  const learnedTotal = LEARN_MODULES.reduce(
+  const total = track.learn.reduce((n, m) => n + m.concepts.length, 0);
+  const learnedTotal = track.learn.reduce(
     (n, m) => n + m.concepts.filter((c) => done.has(`${m.slug}/${c.id}`)).length,
     0,
   );
@@ -90,11 +89,13 @@ function LearnIndex() {
   const q = query.trim().toLowerCase();
   const hits = useMemo(() => {
     if (!q) return [];
-    return LEARN_MODULES.flatMap((m) =>
-      m.concepts
-        .filter((c) => `${c.title} ${c.summary} ${c.highYield}`.toLowerCase().includes(q))
-        .map((c) => ({ m, c })),
-    ).slice(0, 30);
+    return track.learn
+      .flatMap((m) =>
+        m.concepts
+          .filter((c) => `${c.title} ${c.summary} ${c.highYield}`.toLowerCase().includes(q))
+          .map((c) => ({ m, c })),
+      )
+      .slice(0, 30);
   }, [q]);
 
   return (
@@ -103,8 +104,8 @@ function LearnIndex() {
       <h1 className="text-3xl sm:text-4xl">Subject modules</h1>
       <MascotSays mood={learnedTotal ? "happy" : "idle"} size={76} className="mt-4 max-w-2xl">
         {learnedTotal
-          ? `${learnedTotal} of ${total} concepts learned across ${LEARN_MODULES.length} subjects. Pick up where you left off!`
-          : `${total} concepts across ${LEARN_MODULES.length} NEET PG subjects. Each one teaches the why, then the line the exam tests.`}
+          ? `${learnedTotal} of ${total} concepts learned across ${track.learn.length} subjects. Pick up where you left off!`
+          : `${total} concepts across ${track.learn.length} ${track.name} subjects. Each one teaches the why, then the line the exam tests.`}
       </MascotSays>
 
       <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -123,7 +124,11 @@ function LearnIndex() {
             </button>
           ) : null}
         </label>
-        <Link to="/videos" className="btn-base btn-ghost h-11 text-sm">
+        <Link
+          to="/$track/videos"
+          params={{ track: track.slug }}
+          className="btn-base btn-ghost h-11 text-sm"
+        >
           <Icon name="play_circle" filled className="text-[18px]" />
           Video modules
         </Link>
@@ -138,8 +143,8 @@ function LearnIndex() {
             {hits.map(({ m, c }) => (
               <li key={`${m.slug}/${c.id}`}>
                 <Link
-                  to="/learn/$subject"
-                  params={{ subject: m.slug }}
+                  to="/$track/learn/$subject"
+                  params={{ track: track.slug, subject: m.slug }}
                   hash={c.id}
                   className="card-pop card-pop-hover flex items-center gap-3 p-3"
                 >
@@ -157,8 +162,8 @@ function LearnIndex() {
           </ul>
         </section>
       ) : (
-        GROUPS.map((g) => {
-          const mods = LEARN_MODULES.filter((m) => m.group === g.id);
+        track.learnGroups.map((g) => {
+          const mods = track.learn.filter((m) => m.group === g.id);
           if (!mods.length) return null;
           return (
             <Reveal key={g.id} className="mt-8">

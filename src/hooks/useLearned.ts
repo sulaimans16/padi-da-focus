@@ -3,13 +3,14 @@ import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { XP, claimXp } from "@/lib/gamification";
+import { trackKey } from "@/lib/track-state";
 
-const KEY = "padida.learn.done";
+const KEY = () => trackKey("learn.done");
 
 function readLocal(): string[] {
   if (typeof window === "undefined") return [];
   try {
-    return JSON.parse(window.localStorage.getItem(KEY) ?? "[]") as string[];
+    return JSON.parse(window.localStorage.getItem(KEY()) ?? "[]") as string[];
   } catch {
     return [];
   }
@@ -17,7 +18,7 @@ function readLocal(): string[] {
 
 function writeLocal(ids: string[]) {
   try {
-    window.localStorage.setItem(KEY, JSON.stringify(ids));
+    window.localStorage.setItem(KEY(), JSON.stringify(ids));
   } catch {
     /* ignore */
   }

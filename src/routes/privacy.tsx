@@ -29,7 +29,7 @@ const SECTIONS: { title: string; body: string[] }[] = [
   {
     title: "Who we are",
     body: [
-      "PG Prep is a NEET PG preparation app operated by Learners Studio (\u201cwe\u201d, \u201cus\u201d). This policy explains what information we collect when you use pg-pre.learners-studio.com and the PG Prep Android app, and how we use it.",
+      "PG Prep is a NEET UG and NEET PG preparation app operated by Learners Studio (\u201cwe\u201d, \u201cus\u201d). This policy explains what information we collect when you use pg-pre.learners-studio.com and the PG Prep Android app, and how we use it.",
       "If you have questions about this policy, contact us at support@learners-studio.com.",
     ],
   },
@@ -87,7 +87,7 @@ const SECTIONS: { title: string; body: string[] }[] = [
   {
     title: "Children",
     body: [
-      "PG Prep is intended for medical graduates preparing for NEET PG and is not directed at children under 13. We do not knowingly collect data from children.",
+      "PG Prep is intended for students preparing for medical entrance exams (NEET UG and NEET PG) and is not directed at children under 13. We do not knowingly collect data from children.",
     ],
   },
   {
@@ -111,9 +111,7 @@ function Privacy() {
             </h1>
           </div>
         </div>
-        <p className="mt-3 text-sm text-muted-foreground">
-          Last updated: 24 September 2026
-        </p>
+        <p className="mt-3 text-sm text-muted-foreground">Last updated: 24 September 2026</p>
       </Reveal>
 
       <div className="mt-10 flex flex-col gap-8">

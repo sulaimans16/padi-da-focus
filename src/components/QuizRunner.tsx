@@ -12,6 +12,7 @@ import { emitGameEvent } from "@/lib/gamification";
 import { recordAttempt } from "@/lib/tracker";
 import { subjectColor, type Question } from "@/lib/questions";
 import { cn } from "@/lib/utils";
+import { useTrack } from "@/hooks/useTrack";
 
 export type QuizSummary = {
   total: number;
@@ -468,6 +469,7 @@ function ResultReview({
   xp: number;
   bestCombo: number;
 }) {
+  const track = useTrack();
   const { user } = useAuth();
   const pct = summary.total ? Math.round((summary.correct / summary.total) * 100) : 0;
   const wrong = questions.filter((q) => answers[q.id] && answers[q.id] !== q.correctOptionId);
@@ -564,7 +566,11 @@ function ResultReview({
               <span className="font-bold text-xp">+15 XP</span>.
             </p>
             {user ? (
-              <Link to="/review" className="btn-base btn-danger text-sm">
+              <Link
+                to="/$track/review"
+                params={{ track: track.slug }}
+                className="btn-base btn-danger text-sm"
+              >
                 <Icon name="healing" className="text-[18px]" />
                 Fix mistakes
               </Link>

@@ -86,9 +86,18 @@ export type Concept = {
   figure?: Figure;
   /** Up to two quick self-checks shown after the teaching. */
   checks?: Check[];
+  /** Key formulae / equations (Physics and Chemistry). */
+  formulae?: Formula[];
 };
 
-export type SubjectGroup = "Pre-clinical" | "Para-clinical" | "Clinical";
+export type Formula = {
+  label: string;
+  expr: string;
+  note?: string;
+};
+
+/** Section a module is listed under (per track, e.g. "Clinical" or "Physics"). */
+export type SubjectGroup = string;
 
 export type LearnModule = {
   slug: string;

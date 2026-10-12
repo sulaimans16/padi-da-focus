@@ -4,28 +4,31 @@ import { QuizRunner, type QuizSummary } from "@/components/QuizRunner";
 import { GlassCard, Icon, Pill, Badge } from "@/components/Primitives";
 import { Reveal } from "@/components/motion/Reveal";
 import { fetchMockQuestions } from "@/lib/quiz";
-import { SUBJECT_HUE, type Question } from "@/lib/questions";
+import type { Question } from "@/lib/questions";
 import { cn } from "@/lib/utils";
+import { useTrack } from "@/hooks/useTrack";
+import { localizeHead } from "@/lib/tracks";
 
-export const Route = createFileRoute("/mock")({
+export const Route = createFileRoute("/$track/mock")({
   staticData: { sitemap: true },
-  head: () => ({
-    meta: [
-      { title: "Timed Mock Tests — PG Prep" },
-      {
-        name: "description",
-        content:
-          "Sit full-length timed NEET PG mock tests with exam-style timing, a question palette, flagging and a detailed answer review at the end.",
-      },
-      { property: "og:title", content: "Timed Mock Tests — PG Prep" },
-      {
-        property: "og:description",
-        content: "Exam-clock mock tests with palette navigation and full answer review.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: ({ params }) =>
+    localizeHead(params.track, {
+      meta: [
+        { title: "Timed Mock Tests — PG Prep" },
+        {
+          name: "description",
+          content:
+            "Sit full-length timed NEET PG mock tests with exam-style timing, a question palette, flagging and a detailed answer review at the end.",
+        },
+        { property: "og:title", content: "Timed Mock Tests — PG Prep" },
+        {
+          property: "og:description",
+          content: "Exam-clock mock tests with palette navigation and full answer review.",
+        },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+    }),
   component: MockPage,
 });
 
@@ -37,6 +40,7 @@ const PRESETS = [
 ] as const;
 
 function MockPage() {
+  const track = useTrack();
   const [preset, setPreset] = useState<(typeof PRESETS)[number]>(PRESETS[1]);
   const [subject, setSubject] = useState("all");
   const [questions, setQuestions] = useState<Question[] | null>(null);
@@ -47,10 +51,7 @@ function MockPage() {
     setLoading(true);
     setLast(null);
     try {
-      const qs = await fetchMockQuestions(
-        preset.count,
-        subject === "all" ? undefined : subject,
-      );
+      const qs = await fetchMockQuestions(preset.count, subject === "all" ? undefined : subject);
       setQuestions(qs);
     } finally {
       setLoading(false);
@@ -132,19 +133,14 @@ function MockPage() {
             <button type="button" onClick={() => setSubject("all")}>
               <Badge tone={subject === "all" ? "primary" : "muted"}>Mixed bag</Badge>
             </button>
-            {Object.keys(SUBJECT_HUE).map((s) => (
+            {track.subjects.map((s) => (
               <button key={s} type="button" onClick={() => setSubject(s)}>
                 <Badge tone={subject === s ? "primary" : "muted"}>{s}</Badge>
               </button>
             ))}
           </div>
 
-          <Pill
-            variant="primary"
-            className="mt-6"
-            disabled={loading}
-            onClick={() => void start()}
-          >
+          <Pill variant="primary" className="mt-6" disabled={loading} onClick={() => void start()}>
             <Icon name={loading ? "hourglass_top" : "timer"} className="text-[18px]" />
             {loading ? "Building your paper…" : `Start ${preset.count}-question test`}
           </Pill>

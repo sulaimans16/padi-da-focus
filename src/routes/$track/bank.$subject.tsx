@@ -7,27 +7,31 @@ import { Pagination, usePagination } from "@/components/Pagination";
 
 import { fetchRemoteQuestions } from "@/lib/remote-questions";
 import { allQuestions, subjectColor, type Question } from "@/lib/questions";
+import { useTrack } from "@/hooks/useTrack";
+import { localizeHead } from "@/lib/tracks";
 
-export const Route = createFileRoute("/bank/$subject")({
+export const Route = createFileRoute("/$track/bank/$subject")({
   staticData: { sitemap: true },
-  head: ({ params }) => ({
-    meta: [
-      { title: `${params.subject} Questions — PG Prep NEET PG` },
-      {
-        name: "description",
-        content: `Practice NBE-style ${params.subject} questions for NEET PG with detailed explanations and high-yield facts.`,
-      },
-      { property: "og:title", content: `${params.subject} Questions — PG Prep` },
-      {
-        property: "og:description",
-        content: `Topic-wise ${params.subject} drilling for the NEET PG sprint.`,
-      },
-    ],
-  }),
+  head: ({ params }) =>
+    localizeHead(params.track, {
+      meta: [
+        { title: `${params.subject} Questions — PG Prep NEET PG` },
+        {
+          name: "description",
+          content: `Practice NBE-style ${params.subject} questions for NEET PG with detailed explanations and high-yield facts.`,
+        },
+        { property: "og:title", content: `${params.subject} Questions — PG Prep` },
+        {
+          property: "og:description",
+          content: `Topic-wise ${params.subject} drilling for the NEET PG sprint.`,
+        },
+      ],
+    }),
   component: SubjectPractice,
 });
 
 function SubjectPractice() {
+  const track = useTrack();
   const { subject } = Route.useParams();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [topic, setTopic] = useState("all");
@@ -53,11 +57,11 @@ function SubjectPractice() {
   const shown = topic === "all" ? questions : questions.filter((q) => q.topic === topic);
   const { page, setPage, totalPages, pageItems, offset } = usePagination(shown);
 
-
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
       <Link
-        to="/bank"
+        to="/$track/bank"
+        params={{ track: track.slug }}
         className="label-eyebrow inline-flex items-center gap-1 text-muted-foreground hover:text-primary"
       >
         <span aria-hidden className="material-symbols-outlined text-[16px]">
@@ -100,7 +104,6 @@ function SubjectPractice() {
         />
       </ProGate>
 
-
       <div className="mt-4 space-y-4">
         {pageItems.map((q, i) => (
           <QuestionCard
@@ -128,4 +131,3 @@ function SubjectPractice() {
     </div>
   );
 }
-

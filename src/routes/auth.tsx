@@ -15,16 +15,17 @@ export const Route = createFileRoute("/auth")({
   staticData: { sitemap: false },
   head: () => ({
     meta: [
-      { title: "Sign in — PG Prep NEET PG Tracker" },
+      { title: "Sign in — NEET UG & NEET PG Prep" },
       {
         name: "description",
         content:
-          "Sign in to PG Prep to sync your NEET PG question attempts, accuracy trackers and focus sessions across devices.",
+          "Sign in to sync your NEET UG or NEET PG question attempts, accuracy trackers and focus sessions across devices.",
       },
-      { property: "og:title", content: "Sign in — PG Prep" },
+      { property: "og:title", content: "Sign in — Learners Studio Prep" },
       {
         property: "og:description",
-        content: "Your NEET PG progress, accuracy and focus streak — saved to your account.",
+        content:
+          "Your NEET UG and NEET PG progress, accuracy and focus streak — saved to your account.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -82,7 +83,6 @@ function AuthPage() {
             .upsert({ id: data.user.id, display_name: username }, { onConflict: "id" });
         }
       } else {
-
         const { error: err } = await supabase.auth.signInWithPassword({
           email: resolvedEmail(),
           password,
@@ -202,7 +202,9 @@ function AuthPage() {
               onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
               className="w-full pt-2 text-center text-xs text-muted-foreground transition-colors duration-300 hover:text-primary"
             >
-              {mode === "signin" ? "New here? Create an account" : "Already have an account? Sign in"}
+              {mode === "signin"
+                ? "New here? Create an account"
+                : "Already have an account? Sign in"}
             </button>
 
             <button

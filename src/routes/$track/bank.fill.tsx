@@ -1,36 +1,40 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { SUBJECTS } from "@/lib/focus-session";
 import { subjectColor } from "@/lib/questions";
 import { fetchRemoteCounts } from "@/lib/remote-questions";
 import { generateQuestionBatch } from "@/lib/questions-ai.functions";
 import { useAccess } from "@/hooks/useAccess";
 import { ProGate } from "@/components/ProGate";
+import { useTrack } from "@/hooks/useTrack";
+import { localizeHead } from "@/lib/tracks";
 
-export const Route = createFileRoute("/bank/fill")({
+export const Route = createFileRoute("/$track/bank/fill")({
   staticData: { sitemap: false },
-  head: () => ({
-    meta: [
-      { title: "Fill the Bank — PG Prep NEET PG" },
-      {
-        name: "description",
-        content:
-          "Auto-fill every NEET PG subject with web-researched, NBE-style questions until each subject hits your target count.",
-      },
-      { property: "og:title", content: "Fill the Bank — PG Prep" },
-      {
-        property: "og:description",
-        content: "Grow every subject to 50 or 100 questions in one run, grounded in web research.",
-      },
-    ],
-  }),
+  head: ({ params }) =>
+    localizeHead(params.track, {
+      meta: [
+        { title: "Fill the Bank — PG Prep NEET PG" },
+        {
+          name: "description",
+          content:
+            "Auto-fill every NEET PG subject with web-researched, NBE-style questions until each subject hits your target count.",
+        },
+        { property: "og:title", content: "Fill the Bank — PG Prep" },
+        {
+          property: "og:description",
+          content:
+            "Grow every subject to 50 or 100 questions in one run, grounded in web research.",
+        },
+      ],
+    }),
   component: FillBank,
 });
 
 const BATCH = 10;
 
 function FillBank() {
+  const track = useTrack();
   const { loading: accessLoading, isPro } = useAccess();
   const generate = useServerFn(generateQuestionBatch);
   const [counts, setCounts] = useState<Map<string, number>>(new Map());
@@ -57,7 +61,7 @@ function FillBank() {
     setRunning(true);
     setLog([]);
     try {
-      for (const subject of SUBJECTS) {
+      for (const subject of track.subjects) {
         if (stop.current) break;
         setActive(subject);
         let have = counts.get(subject) ?? 0;
@@ -77,10 +81,7 @@ function FillBank() {
             have += res.inserted;
             setCounts((prev) => new Map(prev).set(subject, have));
           } catch (e) {
-            setLog((l) => [
-              `${subject}: ${e instanceof Error ? e.message : "failed"}`,
-              ...l,
-            ]);
+            setLog((l) => [`${subject}: ${e instanceof Error ? e.message : "failed"}`, ...l]);
             break;
           }
         }
@@ -94,19 +95,23 @@ function FillBank() {
   };
 
   const total = Array.from(counts.values()).reduce((a, b) => a + b, 0);
-  const done = SUBJECTS.filter((s) => (counts.get(s) ?? 0) >= target).length;
+  const done = track.subjects.filter((s) => (counts.get(s) ?? 0) >= target).length;
 
   if (accessLoading) return null;
 
   if (!isPro) {
     return (
       <main className="mx-auto w-full max-w-2xl px-4 py-6">
-        <Link to="/bank" className="text-xs text-muted-foreground underline underline-offset-4">
+        <Link
+          to="/$track/bank"
+          params={{ track: track.slug }}
+          className="text-xs text-muted-foreground underline underline-offset-4"
+        >
           ← Question Bank
         </Link>
         <h1 className="mt-2 text-3xl font-bold tracking-tight">Fill every topic</h1>
         <p className="mb-4 text-sm text-muted-foreground">
-          Bulk-building the bank runs on paid compute, so it lives in PG Prep Pro.
+          Bulk-building the bank runs on paid compute, so it lives in {track.brand.a} Prep Pro.
         </p>
         <ProGate feature="Bulk bank filling">{null}</ProGate>
       </main>
@@ -115,14 +120,18 @@ function FillBank() {
 
   return (
     <main className="mx-auto w-full max-w-2xl px-4 py-6">
-      <Link to="/bank" className="text-xs text-muted-foreground underline underline-offset-4">
+      <Link
+        to="/$track/bank"
+        params={{ track: track.slug }}
+        className="text-xs text-muted-foreground underline underline-offset-4"
+      >
         ← Question Bank
       </Link>
       <h1 className="mt-2 text-3xl font-bold tracking-tight">Fill every topic</h1>
       <p className="text-sm text-muted-foreground">
-        Scouts the web for current NEET PG material per subject, then writes NBE-style questions with
-        explanations into your cloud bank. {total} questions stored · {done}/{SUBJECTS.length}{" "}
-        subjects at target.
+        Scouts the web for current {track.name} material per subject, then writes NBE-style
+        questions with explanations into your cloud bank. {total} questions stored · {done}/
+        {track.subjects.length} subjects at target.
       </p>
 
       <div className="card-surface mt-4 space-y-3 p-4">
@@ -149,7 +158,7 @@ function FillBank() {
           </button>
         ) : (
           <button onClick={run} className="btn-base btn-primary w-full text-sm">
-            Start filling all {SUBJECTS.length} subjects
+            Start filling all {track.subjects.length} subjects
           </button>
         )}
         <p className="text-[11px] leading-snug text-muted-foreground">
@@ -160,7 +169,7 @@ function FillBank() {
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
-        {SUBJECTS.map((s) => {
+        {track.subjects.map((s) => {
           const have = counts.get(s) ?? 0;
           return (
             <div

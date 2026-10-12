@@ -10,24 +10,27 @@ import {
   streakDays,
   subjectStats,
 } from "@/lib/tracker";
+import { useTrack } from "@/hooks/useTrack";
+import { localizeHead } from "@/lib/tracks";
 
-export const Route = createFileRoute("/_authenticated/tracker")({
+export const Route = createFileRoute("/$track/_authenticated/tracker")({
   staticData: { sitemap: false },
-  head: () => ({
-    meta: [
-      { title: "My Tracker — PG Prep NEET PG Progress" },
-      {
-        name: "description",
-        content:
-          "Your personal NEET PG tracker: accuracy per subject, weakest topics, questions attempted today and total focus-lock minutes.",
-      },
-      { property: "og:title", content: "My Tracker — PG Prep" },
-      {
-        property: "og:description",
-        content: "Subject-wise accuracy, weak areas and focus streak for your NEET PG prep.",
-      },
-    ],
-  }),
+  head: ({ params }) =>
+    localizeHead(params.track, {
+      meta: [
+        { title: "My Tracker — PG Prep NEET PG Progress" },
+        {
+          name: "description",
+          content:
+            "Your personal NEET PG tracker: accuracy per subject, weakest topics, questions attempted today and total focus-lock minutes.",
+        },
+        { property: "og:title", content: "My Tracker — PG Prep" },
+        {
+          property: "og:description",
+          content: "Subject-wise accuracy, weak areas and focus streak for your NEET PG prep.",
+        },
+      ],
+    }),
   component: Tracker,
 });
 
@@ -71,6 +74,7 @@ function band(accuracy: number) {
 }
 
 function Tracker() {
+  const track = useTrack();
   const { displayName, user } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -136,7 +140,11 @@ function Tracker() {
         <section className="card-surface overflow-hidden lg:col-span-7">
           <div className="card-head">
             <span className="label-eyebrow">Subject performance · weakest first</span>
-            <Link to="/weak-spots" className="text-xs font-bold text-primary">
+            <Link
+              to="/$track/weak-spots"
+              params={{ track: track.slug }}
+              className="text-xs font-bold text-primary"
+            >
               Weak spots →
             </Link>
           </div>
@@ -146,7 +154,11 @@ function Tracker() {
           {!attempts.isLoading && stats.length === 0 && (
             <p className="p-8 text-center text-sm text-muted-foreground">
               No attempts yet. Answer a few questions in the{" "}
-              <Link to="/bank" className="font-bold text-primary">
+              <Link
+                to="/$track/bank"
+                params={{ track: track.slug }}
+                className="font-bold text-primary"
+              >
                 Question Bank
               </Link>{" "}
               and this fills up.
@@ -206,7 +218,11 @@ function Tracker() {
               <p className="text-sm font-bold">{(bookmarks.data ?? []).length} bookmarked</p>
               <p className="text-xs text-muted-foreground">Questions saved for revision.</p>
             </div>
-            <Link to="/focus" className="btn-base btn-primary w-full text-sm">
+            <Link
+              to="/$track/focus"
+              params={{ track: track.slug }}
+              className="btn-base btn-primary w-full text-sm"
+            >
               <Icon name="lock" className="text-[18px]" />
               Lock in now
             </Link>

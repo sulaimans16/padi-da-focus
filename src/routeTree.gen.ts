@@ -10,36 +10,45 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TrackRouteImport } from './routes/$track'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
-import { Route as DailyRouteImport } from './routes/daily'
-import { Route as FlashcardsRouteImport } from './routes/flashcards'
-import { Route as FocusRouteImport } from './routes/focus'
-import { Route as MockRouteImport } from './routes/mock'
-import { Route as PapersRouteImport } from './routes/papers'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PrivacyRouteImport } from './routes/privacy'
-import { Route as PyqRouteImport } from './routes/pyq'
-import { Route as RoadmapRouteImport } from './routes/roadmap'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as VideosRouteImport } from './routes/videos'
 import { Route as WelcomeRouteImport } from './routes/welcome'
+import { Route as TrackIndexRouteImport } from './routes/$track/index'
+import { Route as TrackSplatRouteImport } from './routes/$track/$'
+import { Route as TrackAuthenticatedRouteRouteImport } from './routes/$track/_authenticated/route'
+import { Route as TrackDailyRouteImport } from './routes/$track/daily'
+import { Route as TrackFlashcardsRouteImport } from './routes/$track/flashcards'
+import { Route as TrackFocusRouteImport } from './routes/$track/focus'
+import { Route as TrackMockRouteImport } from './routes/$track/mock'
+import { Route as TrackPapersRouteImport } from './routes/$track/papers'
+import { Route as TrackPyqRouteImport } from './routes/$track/pyq'
+import { Route as TrackRoadmapRouteImport } from './routes/$track/roadmap'
+import { Route as TrackVideosRouteImport } from './routes/$track/videos'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
-import { Route as AuthenticatedLeaguesRouteImport } from './routes/_authenticated/leagues'
-import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
-import { Route as AuthenticatedReviewRouteImport } from './routes/_authenticated/review'
-import { Route as AuthenticatedTrackerRouteImport } from './routes/_authenticated/tracker'
-import { Route as AuthenticatedWeakSpotsRouteImport } from './routes/_authenticated/weak-spots'
-import { Route as BankIndexRouteImport } from './routes/bank.index'
-import { Route as BankSubjectRouteImport } from './routes/bank.$subject'
-import { Route as BankFillRouteImport } from './routes/bank.fill'
-import { Route as LearnIndexRouteImport } from './routes/learn.index'
-import { Route as LearnSubjectRouteImport } from './routes/learn.$subject'
+import { Route as TrackAuthenticatedLeaguesRouteImport } from './routes/$track/_authenticated/leagues'
+import { Route as TrackAuthenticatedProfileRouteImport } from './routes/$track/_authenticated/profile'
+import { Route as TrackAuthenticatedReviewRouteImport } from './routes/$track/_authenticated/review'
+import { Route as TrackAuthenticatedTrackerRouteImport } from './routes/$track/_authenticated/tracker'
+import { Route as TrackAuthenticatedWeakSpotsRouteImport } from './routes/$track/_authenticated/weak-spots'
+import { Route as TrackBankIndexRouteImport } from './routes/$track/bank.index'
+import { Route as TrackBankSubjectRouteImport } from './routes/$track/bank.$subject'
+import { Route as TrackBankFillRouteImport } from './routes/$track/bank.fill'
+import { Route as TrackLearnIndexRouteImport } from './routes/$track/learn.index'
+import { Route as TrackLearnSubjectRouteImport } from './routes/$track/learn.$subject'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TrackRoute = TrackRouteImport.update({
+  id: '/$track',
+  path: '/$track',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
@@ -49,31 +58,6 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DailyRoute = DailyRouteImport.update({
-  id: '/daily',
-  path: '/daily',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FlashcardsRoute = FlashcardsRouteImport.update({
-  id: '/flashcards',
-  path: '/flashcards',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FocusRoute = FocusRouteImport.update({
-  id: '/focus',
-  path: '/focus',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MockRoute = MockRouteImport.update({
-  id: '/mock',
-  path: '/mock',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PapersRoute = PapersRouteImport.update({
-  id: '/papers',
-  path: '/papers',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PricingRoute = PricingRouteImport.update({
@@ -86,24 +70,9 @@ const PrivacyRoute = PrivacyRouteImport.update({
   path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PyqRoute = PyqRouteImport.update({
-  id: '/pyq',
-  path: '/pyq',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RoadmapRoute = RoadmapRouteImport.update({
-  id: '/roadmap',
-  path: '/roadmap',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const VideosRoute = VideosRouteImport.update({
-  id: '/videos',
-  path: '/videos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WelcomeRoute = WelcomeRouteImport.update({
@@ -111,60 +80,119 @@ const WelcomeRoute = WelcomeRouteImport.update({
   path: '/welcome',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TrackIndexRoute = TrackIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => TrackRoute,
+} as any)
+const TrackSplatRoute = TrackSplatRouteImport.update({
+  id: '/$',
+  path: '/$',
+  getParentRoute: () => TrackRoute,
+} as any)
+const TrackAuthenticatedRouteRoute = TrackAuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => TrackRoute,
+} as any)
+const TrackDailyRoute = TrackDailyRouteImport.update({
+  id: '/daily',
+  path: '/daily',
+  getParentRoute: () => TrackRoute,
+} as any)
+const TrackFlashcardsRoute = TrackFlashcardsRouteImport.update({
+  id: '/flashcards',
+  path: '/flashcards',
+  getParentRoute: () => TrackRoute,
+} as any)
+const TrackFocusRoute = TrackFocusRouteImport.update({
+  id: '/focus',
+  path: '/focus',
+  getParentRoute: () => TrackRoute,
+} as any)
+const TrackMockRoute = TrackMockRouteImport.update({
+  id: '/mock',
+  path: '/mock',
+  getParentRoute: () => TrackRoute,
+} as any)
+const TrackPapersRoute = TrackPapersRouteImport.update({
+  id: '/papers',
+  path: '/papers',
+  getParentRoute: () => TrackRoute,
+} as any)
+const TrackPyqRoute = TrackPyqRouteImport.update({
+  id: '/pyq',
+  path: '/pyq',
+  getParentRoute: () => TrackRoute,
+} as any)
+const TrackRoadmapRoute = TrackRoadmapRouteImport.update({
+  id: '/roadmap',
+  path: '/roadmap',
+  getParentRoute: () => TrackRoute,
+} as any)
+const TrackVideosRoute = TrackVideosRouteImport.update({
+  id: '/videos',
+  path: '/videos',
+  getParentRoute: () => TrackRoute,
+} as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedLeaguesRoute = AuthenticatedLeaguesRouteImport.update({
-  id: '/leagues',
-  path: '/leagues',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedReviewRoute = AuthenticatedReviewRouteImport.update({
-  id: '/review',
-  path: '/review',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedTrackerRoute = AuthenticatedTrackerRouteImport.update({
-  id: '/tracker',
-  path: '/tracker',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedWeakSpotsRoute = AuthenticatedWeakSpotsRouteImport.update({
-  id: '/weak-spots',
-  path: '/weak-spots',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const BankIndexRoute = BankIndexRouteImport.update({
+const TrackAuthenticatedLeaguesRoute =
+  TrackAuthenticatedLeaguesRouteImport.update({
+    id: '/leagues',
+    path: '/leagues',
+    getParentRoute: () => TrackAuthenticatedRouteRoute,
+  } as any)
+const TrackAuthenticatedProfileRoute =
+  TrackAuthenticatedProfileRouteImport.update({
+    id: '/profile',
+    path: '/profile',
+    getParentRoute: () => TrackAuthenticatedRouteRoute,
+  } as any)
+const TrackAuthenticatedReviewRoute =
+  TrackAuthenticatedReviewRouteImport.update({
+    id: '/review',
+    path: '/review',
+    getParentRoute: () => TrackAuthenticatedRouteRoute,
+  } as any)
+const TrackAuthenticatedTrackerRoute =
+  TrackAuthenticatedTrackerRouteImport.update({
+    id: '/tracker',
+    path: '/tracker',
+    getParentRoute: () => TrackAuthenticatedRouteRoute,
+  } as any)
+const TrackAuthenticatedWeakSpotsRoute =
+  TrackAuthenticatedWeakSpotsRouteImport.update({
+    id: '/weak-spots',
+    path: '/weak-spots',
+    getParentRoute: () => TrackAuthenticatedRouteRoute,
+  } as any)
+const TrackBankIndexRoute = TrackBankIndexRouteImport.update({
   id: '/bank/',
   path: '/bank/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => TrackRoute,
 } as any)
-const BankSubjectRoute = BankSubjectRouteImport.update({
+const TrackBankSubjectRoute = TrackBankSubjectRouteImport.update({
   id: '/bank/$subject',
   path: '/bank/$subject',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => TrackRoute,
 } as any)
-const BankFillRoute = BankFillRouteImport.update({
+const TrackBankFillRoute = TrackBankFillRouteImport.update({
   id: '/bank/fill',
   path: '/bank/fill',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => TrackRoute,
 } as any)
-const LearnIndexRoute = LearnIndexRouteImport.update({
+const TrackLearnIndexRoute = TrackLearnIndexRouteImport.update({
   id: '/learn/',
   path: '/learn/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => TrackRoute,
 } as any)
-const LearnSubjectRoute = LearnSubjectRouteImport.update({
+const TrackLearnSubjectRoute = TrackLearnSubjectRouteImport.update({
   id: '/learn/$subject',
   path: '/learn/$subject',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => TrackRoute,
 } as any)
 const ApiPublicPaymentsWebhookRoute =
   ApiPublicPaymentsWebhookRouteImport.update({
@@ -175,199 +203,205 @@ const ApiPublicPaymentsWebhookRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/$track': typeof TrackRouteWithChildren
   '/auth': typeof AuthRoute
-  '/daily': typeof DailyRoute
-  '/flashcards': typeof FlashcardsRoute
-  '/focus': typeof FocusRoute
-  '/mock': typeof MockRoute
-  '/papers': typeof PapersRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
-  '/pyq': typeof PyqRoute
-  '/roadmap': typeof RoadmapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/videos': typeof VideosRoute
   '/welcome': typeof WelcomeRoute
+  '/$track/$': typeof TrackSplatRoute
+  '/$track/daily': typeof TrackDailyRoute
+  '/$track/flashcards': typeof TrackFlashcardsRoute
+  '/$track/focus': typeof TrackFocusRoute
+  '/$track/mock': typeof TrackMockRoute
+  '/$track/papers': typeof TrackPapersRoute
+  '/$track/pyq': typeof TrackPyqRoute
+  '/$track/roadmap': typeof TrackRoadmapRoute
+  '/$track/videos': typeof TrackVideosRoute
   '/admin': typeof AuthenticatedAdminRoute
-  '/leagues': typeof AuthenticatedLeaguesRoute
-  '/profile': typeof AuthenticatedProfileRoute
-  '/review': typeof AuthenticatedReviewRoute
-  '/tracker': typeof AuthenticatedTrackerRoute
-  '/weak-spots': typeof AuthenticatedWeakSpotsRoute
-  '/bank/$subject': typeof BankSubjectRoute
-  '/bank/fill': typeof BankFillRoute
-  '/learn/$subject': typeof LearnSubjectRoute
-  '/bank/': typeof BankIndexRoute
-  '/learn/': typeof LearnIndexRoute
+  '/$track/': typeof TrackIndexRoute
+  '/$track/leagues': typeof TrackAuthenticatedLeaguesRoute
+  '/$track/profile': typeof TrackAuthenticatedProfileRoute
+  '/$track/review': typeof TrackAuthenticatedReviewRoute
+  '/$track/tracker': typeof TrackAuthenticatedTrackerRoute
+  '/$track/weak-spots': typeof TrackAuthenticatedWeakSpotsRoute
+  '/$track/bank/$subject': typeof TrackBankSubjectRoute
+  '/$track/bank/fill': typeof TrackBankFillRoute
+  '/$track/learn/$subject': typeof TrackLearnSubjectRoute
+  '/$track/bank/': typeof TrackBankIndexRoute
+  '/$track/learn/': typeof TrackLearnIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/daily': typeof DailyRoute
-  '/flashcards': typeof FlashcardsRoute
-  '/focus': typeof FocusRoute
-  '/mock': typeof MockRoute
-  '/papers': typeof PapersRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
-  '/pyq': typeof PyqRoute
-  '/roadmap': typeof RoadmapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/videos': typeof VideosRoute
   '/welcome': typeof WelcomeRoute
+  '/$track': typeof TrackIndexRoute
+  '/$track/$': typeof TrackSplatRoute
+  '/$track/daily': typeof TrackDailyRoute
+  '/$track/flashcards': typeof TrackFlashcardsRoute
+  '/$track/focus': typeof TrackFocusRoute
+  '/$track/mock': typeof TrackMockRoute
+  '/$track/papers': typeof TrackPapersRoute
+  '/$track/pyq': typeof TrackPyqRoute
+  '/$track/roadmap': typeof TrackRoadmapRoute
+  '/$track/videos': typeof TrackVideosRoute
   '/admin': typeof AuthenticatedAdminRoute
-  '/leagues': typeof AuthenticatedLeaguesRoute
-  '/profile': typeof AuthenticatedProfileRoute
-  '/review': typeof AuthenticatedReviewRoute
-  '/tracker': typeof AuthenticatedTrackerRoute
-  '/weak-spots': typeof AuthenticatedWeakSpotsRoute
-  '/bank/$subject': typeof BankSubjectRoute
-  '/bank/fill': typeof BankFillRoute
-  '/learn/$subject': typeof LearnSubjectRoute
-  '/bank': typeof BankIndexRoute
-  '/learn': typeof LearnIndexRoute
+  '/$track/leagues': typeof TrackAuthenticatedLeaguesRoute
+  '/$track/profile': typeof TrackAuthenticatedProfileRoute
+  '/$track/review': typeof TrackAuthenticatedReviewRoute
+  '/$track/tracker': typeof TrackAuthenticatedTrackerRoute
+  '/$track/weak-spots': typeof TrackAuthenticatedWeakSpotsRoute
+  '/$track/bank/$subject': typeof TrackBankSubjectRoute
+  '/$track/bank/fill': typeof TrackBankFillRoute
+  '/$track/learn/$subject': typeof TrackLearnSubjectRoute
+  '/$track/bank': typeof TrackBankIndexRoute
+  '/$track/learn': typeof TrackLearnIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/$track': typeof TrackRouteWithChildren
   '/auth': typeof AuthRoute
-  '/daily': typeof DailyRoute
-  '/flashcards': typeof FlashcardsRoute
-  '/focus': typeof FocusRoute
-  '/mock': typeof MockRoute
-  '/papers': typeof PapersRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
-  '/pyq': typeof PyqRoute
-  '/roadmap': typeof RoadmapRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/videos': typeof VideosRoute
   '/welcome': typeof WelcomeRoute
+  '/$track/_authenticated': typeof TrackAuthenticatedRouteRouteWithChildren
+  '/$track/$': typeof TrackSplatRoute
+  '/$track/daily': typeof TrackDailyRoute
+  '/$track/flashcards': typeof TrackFlashcardsRoute
+  '/$track/focus': typeof TrackFocusRoute
+  '/$track/mock': typeof TrackMockRoute
+  '/$track/papers': typeof TrackPapersRoute
+  '/$track/pyq': typeof TrackPyqRoute
+  '/$track/roadmap': typeof TrackRoadmapRoute
+  '/$track/videos': typeof TrackVideosRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
-  '/_authenticated/leagues': typeof AuthenticatedLeaguesRoute
-  '/_authenticated/profile': typeof AuthenticatedProfileRoute
-  '/_authenticated/review': typeof AuthenticatedReviewRoute
-  '/_authenticated/tracker': typeof AuthenticatedTrackerRoute
-  '/_authenticated/weak-spots': typeof AuthenticatedWeakSpotsRoute
-  '/bank/$subject': typeof BankSubjectRoute
-  '/bank/fill': typeof BankFillRoute
-  '/learn/$subject': typeof LearnSubjectRoute
-  '/bank/': typeof BankIndexRoute
-  '/learn/': typeof LearnIndexRoute
+  '/$track/': typeof TrackIndexRoute
+  '/$track/_authenticated/leagues': typeof TrackAuthenticatedLeaguesRoute
+  '/$track/_authenticated/profile': typeof TrackAuthenticatedProfileRoute
+  '/$track/_authenticated/review': typeof TrackAuthenticatedReviewRoute
+  '/$track/_authenticated/tracker': typeof TrackAuthenticatedTrackerRoute
+  '/$track/_authenticated/weak-spots': typeof TrackAuthenticatedWeakSpotsRoute
+  '/$track/bank/$subject': typeof TrackBankSubjectRoute
+  '/$track/bank/fill': typeof TrackBankFillRoute
+  '/$track/learn/$subject': typeof TrackLearnSubjectRoute
+  '/$track/bank/': typeof TrackBankIndexRoute
+  '/$track/learn/': typeof TrackLearnIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/$track'
     | '/auth'
-    | '/daily'
-    | '/flashcards'
-    | '/focus'
-    | '/mock'
-    | '/papers'
     | '/pricing'
     | '/privacy'
-    | '/pyq'
-    | '/roadmap'
     | '/sitemap.xml'
-    | '/videos'
     | '/welcome'
+    | '/$track/$'
+    | '/$track/daily'
+    | '/$track/flashcards'
+    | '/$track/focus'
+    | '/$track/mock'
+    | '/$track/papers'
+    | '/$track/pyq'
+    | '/$track/roadmap'
+    | '/$track/videos'
     | '/admin'
-    | '/leagues'
-    | '/profile'
-    | '/review'
-    | '/tracker'
-    | '/weak-spots'
-    | '/bank/$subject'
-    | '/bank/fill'
-    | '/learn/$subject'
-    | '/bank/'
-    | '/learn/'
+    | '/$track/'
+    | '/$track/leagues'
+    | '/$track/profile'
+    | '/$track/review'
+    | '/$track/tracker'
+    | '/$track/weak-spots'
+    | '/$track/bank/$subject'
+    | '/$track/bank/fill'
+    | '/$track/learn/$subject'
+    | '/$track/bank/'
+    | '/$track/learn/'
     | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
-    | '/daily'
-    | '/flashcards'
-    | '/focus'
-    | '/mock'
-    | '/papers'
     | '/pricing'
     | '/privacy'
-    | '/pyq'
-    | '/roadmap'
     | '/sitemap.xml'
-    | '/videos'
     | '/welcome'
+    | '/$track'
+    | '/$track/$'
+    | '/$track/daily'
+    | '/$track/flashcards'
+    | '/$track/focus'
+    | '/$track/mock'
+    | '/$track/papers'
+    | '/$track/pyq'
+    | '/$track/roadmap'
+    | '/$track/videos'
     | '/admin'
-    | '/leagues'
-    | '/profile'
-    | '/review'
-    | '/tracker'
-    | '/weak-spots'
-    | '/bank/$subject'
-    | '/bank/fill'
-    | '/learn/$subject'
-    | '/bank'
-    | '/learn'
+    | '/$track/leagues'
+    | '/$track/profile'
+    | '/$track/review'
+    | '/$track/tracker'
+    | '/$track/weak-spots'
+    | '/$track/bank/$subject'
+    | '/$track/bank/fill'
+    | '/$track/learn/$subject'
+    | '/$track/bank'
+    | '/$track/learn'
     | '/api/public/payments/webhook'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/$track'
     | '/auth'
-    | '/daily'
-    | '/flashcards'
-    | '/focus'
-    | '/mock'
-    | '/papers'
     | '/pricing'
     | '/privacy'
-    | '/pyq'
-    | '/roadmap'
     | '/sitemap.xml'
-    | '/videos'
     | '/welcome'
+    | '/$track/_authenticated'
+    | '/$track/$'
+    | '/$track/daily'
+    | '/$track/flashcards'
+    | '/$track/focus'
+    | '/$track/mock'
+    | '/$track/papers'
+    | '/$track/pyq'
+    | '/$track/roadmap'
+    | '/$track/videos'
     | '/_authenticated/admin'
-    | '/_authenticated/leagues'
-    | '/_authenticated/profile'
-    | '/_authenticated/review'
-    | '/_authenticated/tracker'
-    | '/_authenticated/weak-spots'
-    | '/bank/$subject'
-    | '/bank/fill'
-    | '/learn/$subject'
-    | '/bank/'
-    | '/learn/'
+    | '/$track/'
+    | '/$track/_authenticated/leagues'
+    | '/$track/_authenticated/profile'
+    | '/$track/_authenticated/review'
+    | '/$track/_authenticated/tracker'
+    | '/$track/_authenticated/weak-spots'
+    | '/$track/bank/$subject'
+    | '/$track/bank/fill'
+    | '/$track/learn/$subject'
+    | '/$track/bank/'
+    | '/$track/learn/'
     | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  TrackRoute: typeof TrackRouteWithChildren
   AuthRoute: typeof AuthRoute
-  DailyRoute: typeof DailyRoute
-  FlashcardsRoute: typeof FlashcardsRoute
-  FocusRoute: typeof FocusRoute
-  MockRoute: typeof MockRoute
-  PapersRoute: typeof PapersRoute
   PricingRoute: typeof PricingRoute
   PrivacyRoute: typeof PrivacyRoute
-  PyqRoute: typeof PyqRoute
-  RoadmapRoute: typeof RoadmapRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
-  VideosRoute: typeof VideosRoute
   WelcomeRoute: typeof WelcomeRoute
-  BankSubjectRoute: typeof BankSubjectRoute
-  BankFillRoute: typeof BankFillRoute
-  LearnSubjectRoute: typeof LearnSubjectRoute
-  BankIndexRoute: typeof BankIndexRoute
-  LearnIndexRoute: typeof LearnIndexRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
 
@@ -378,6 +412,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$track': {
+      id: '/$track'
+      path: '/$track'
+      fullPath: '/$track'
+      preLoaderRoute: typeof TrackRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -394,41 +435,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/daily': {
-      id: '/daily'
-      path: '/daily'
-      fullPath: '/daily'
-      preLoaderRoute: typeof DailyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/flashcards': {
-      id: '/flashcards'
-      path: '/flashcards'
-      fullPath: '/flashcards'
-      preLoaderRoute: typeof FlashcardsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/focus': {
-      id: '/focus'
-      path: '/focus'
-      fullPath: '/focus'
-      preLoaderRoute: typeof FocusRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mock': {
-      id: '/mock'
-      path: '/mock'
-      fullPath: '/mock'
-      preLoaderRoute: typeof MockRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/papers': {
-      id: '/papers'
-      path: '/papers'
-      fullPath: '/papers'
-      preLoaderRoute: typeof PapersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/pricing': {
       id: '/pricing'
       path: '/pricing'
@@ -443,32 +449,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pyq': {
-      id: '/pyq'
-      path: '/pyq'
-      fullPath: '/pyq'
-      preLoaderRoute: typeof PyqRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/roadmap': {
-      id: '/roadmap'
-      path: '/roadmap'
-      fullPath: '/roadmap'
-      preLoaderRoute: typeof RoadmapRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/videos': {
-      id: '/videos'
-      path: '/videos'
-      fullPath: '/videos'
-      preLoaderRoute: typeof VideosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/welcome': {
@@ -478,6 +463,83 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WelcomeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/$track/': {
+      id: '/$track/'
+      path: '/'
+      fullPath: '/$track/'
+      preLoaderRoute: typeof TrackIndexRouteImport
+      parentRoute: typeof TrackRoute
+    }
+    '/$track/$': {
+      id: '/$track/$'
+      path: '/$'
+      fullPath: '/$track/$'
+      preLoaderRoute: typeof TrackSplatRouteImport
+      parentRoute: typeof TrackRoute
+    }
+    '/$track/_authenticated': {
+      id: '/$track/_authenticated'
+      path: ''
+      fullPath: '/$track'
+      preLoaderRoute: typeof TrackAuthenticatedRouteRouteImport
+      parentRoute: typeof TrackRoute
+    }
+    '/$track/daily': {
+      id: '/$track/daily'
+      path: '/daily'
+      fullPath: '/$track/daily'
+      preLoaderRoute: typeof TrackDailyRouteImport
+      parentRoute: typeof TrackRoute
+    }
+    '/$track/flashcards': {
+      id: '/$track/flashcards'
+      path: '/flashcards'
+      fullPath: '/$track/flashcards'
+      preLoaderRoute: typeof TrackFlashcardsRouteImport
+      parentRoute: typeof TrackRoute
+    }
+    '/$track/focus': {
+      id: '/$track/focus'
+      path: '/focus'
+      fullPath: '/$track/focus'
+      preLoaderRoute: typeof TrackFocusRouteImport
+      parentRoute: typeof TrackRoute
+    }
+    '/$track/mock': {
+      id: '/$track/mock'
+      path: '/mock'
+      fullPath: '/$track/mock'
+      preLoaderRoute: typeof TrackMockRouteImport
+      parentRoute: typeof TrackRoute
+    }
+    '/$track/papers': {
+      id: '/$track/papers'
+      path: '/papers'
+      fullPath: '/$track/papers'
+      preLoaderRoute: typeof TrackPapersRouteImport
+      parentRoute: typeof TrackRoute
+    }
+    '/$track/pyq': {
+      id: '/$track/pyq'
+      path: '/pyq'
+      fullPath: '/$track/pyq'
+      preLoaderRoute: typeof TrackPyqRouteImport
+      parentRoute: typeof TrackRoute
+    }
+    '/$track/roadmap': {
+      id: '/$track/roadmap'
+      path: '/roadmap'
+      fullPath: '/$track/roadmap'
+      preLoaderRoute: typeof TrackRoadmapRouteImport
+      parentRoute: typeof TrackRoute
+    }
+    '/$track/videos': {
+      id: '/$track/videos'
+      path: '/videos'
+      fullPath: '/$track/videos'
+      preLoaderRoute: typeof TrackVideosRouteImport
+      parentRoute: typeof TrackRoute
+    }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
       path: '/admin'
@@ -485,75 +547,75 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/leagues': {
-      id: '/_authenticated/leagues'
+    '/$track/_authenticated/leagues': {
+      id: '/$track/_authenticated/leagues'
       path: '/leagues'
-      fullPath: '/leagues'
-      preLoaderRoute: typeof AuthenticatedLeaguesRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      fullPath: '/$track/leagues'
+      preLoaderRoute: typeof TrackAuthenticatedLeaguesRouteImport
+      parentRoute: typeof TrackAuthenticatedRouteRoute
     }
-    '/_authenticated/profile': {
-      id: '/_authenticated/profile'
+    '/$track/_authenticated/profile': {
+      id: '/$track/_authenticated/profile'
       path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof AuthenticatedProfileRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      fullPath: '/$track/profile'
+      preLoaderRoute: typeof TrackAuthenticatedProfileRouteImport
+      parentRoute: typeof TrackAuthenticatedRouteRoute
     }
-    '/_authenticated/review': {
-      id: '/_authenticated/review'
+    '/$track/_authenticated/review': {
+      id: '/$track/_authenticated/review'
       path: '/review'
-      fullPath: '/review'
-      preLoaderRoute: typeof AuthenticatedReviewRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      fullPath: '/$track/review'
+      preLoaderRoute: typeof TrackAuthenticatedReviewRouteImport
+      parentRoute: typeof TrackAuthenticatedRouteRoute
     }
-    '/_authenticated/tracker': {
-      id: '/_authenticated/tracker'
+    '/$track/_authenticated/tracker': {
+      id: '/$track/_authenticated/tracker'
       path: '/tracker'
-      fullPath: '/tracker'
-      preLoaderRoute: typeof AuthenticatedTrackerRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      fullPath: '/$track/tracker'
+      preLoaderRoute: typeof TrackAuthenticatedTrackerRouteImport
+      parentRoute: typeof TrackAuthenticatedRouteRoute
     }
-    '/_authenticated/weak-spots': {
-      id: '/_authenticated/weak-spots'
+    '/$track/_authenticated/weak-spots': {
+      id: '/$track/_authenticated/weak-spots'
       path: '/weak-spots'
-      fullPath: '/weak-spots'
-      preLoaderRoute: typeof AuthenticatedWeakSpotsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+      fullPath: '/$track/weak-spots'
+      preLoaderRoute: typeof TrackAuthenticatedWeakSpotsRouteImport
+      parentRoute: typeof TrackAuthenticatedRouteRoute
     }
-    '/bank/': {
-      id: '/bank/'
+    '/$track/bank/': {
+      id: '/$track/bank/'
       path: '/bank'
-      fullPath: '/bank/'
-      preLoaderRoute: typeof BankIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/$track/bank/'
+      preLoaderRoute: typeof TrackBankIndexRouteImport
+      parentRoute: typeof TrackRoute
     }
-    '/bank/$subject': {
-      id: '/bank/$subject'
+    '/$track/bank/$subject': {
+      id: '/$track/bank/$subject'
       path: '/bank/$subject'
-      fullPath: '/bank/$subject'
-      preLoaderRoute: typeof BankSubjectRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/$track/bank/$subject'
+      preLoaderRoute: typeof TrackBankSubjectRouteImport
+      parentRoute: typeof TrackRoute
     }
-    '/bank/fill': {
-      id: '/bank/fill'
+    '/$track/bank/fill': {
+      id: '/$track/bank/fill'
       path: '/bank/fill'
-      fullPath: '/bank/fill'
-      preLoaderRoute: typeof BankFillRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/$track/bank/fill'
+      preLoaderRoute: typeof TrackBankFillRouteImport
+      parentRoute: typeof TrackRoute
     }
-    '/learn/': {
-      id: '/learn/'
+    '/$track/learn/': {
+      id: '/$track/learn/'
       path: '/learn'
-      fullPath: '/learn/'
-      preLoaderRoute: typeof LearnIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/$track/learn/'
+      preLoaderRoute: typeof TrackLearnIndexRouteImport
+      parentRoute: typeof TrackRoute
     }
-    '/learn/$subject': {
-      id: '/learn/$subject'
+    '/$track/learn/$subject': {
+      id: '/$track/learn/$subject'
       path: '/learn/$subject'
-      fullPath: '/learn/$subject'
-      preLoaderRoute: typeof LearnSubjectRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/$track/learn/$subject'
+      preLoaderRoute: typeof TrackLearnSubjectRouteImport
+      parentRoute: typeof TrackRoute
     }
     '/api/public/payments/webhook': {
       id: '/api/public/payments/webhook'
@@ -567,46 +629,86 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
-  AuthenticatedLeaguesRoute: typeof AuthenticatedLeaguesRoute
-  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
-  AuthenticatedReviewRoute: typeof AuthenticatedReviewRoute
-  AuthenticatedTrackerRoute: typeof AuthenticatedTrackerRoute
-  AuthenticatedWeakSpotsRoute: typeof AuthenticatedWeakSpotsRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
-  AuthenticatedLeaguesRoute: AuthenticatedLeaguesRoute,
-  AuthenticatedProfileRoute: AuthenticatedProfileRoute,
-  AuthenticatedReviewRoute: AuthenticatedReviewRoute,
-  AuthenticatedTrackerRoute: AuthenticatedTrackerRoute,
-  AuthenticatedWeakSpotsRoute: AuthenticatedWeakSpotsRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface TrackAuthenticatedRouteRouteChildren {
+  TrackAuthenticatedLeaguesRoute: typeof TrackAuthenticatedLeaguesRoute
+  TrackAuthenticatedProfileRoute: typeof TrackAuthenticatedProfileRoute
+  TrackAuthenticatedReviewRoute: typeof TrackAuthenticatedReviewRoute
+  TrackAuthenticatedTrackerRoute: typeof TrackAuthenticatedTrackerRoute
+  TrackAuthenticatedWeakSpotsRoute: typeof TrackAuthenticatedWeakSpotsRoute
+}
+
+const TrackAuthenticatedRouteRouteChildren: TrackAuthenticatedRouteRouteChildren =
+  {
+    TrackAuthenticatedLeaguesRoute: TrackAuthenticatedLeaguesRoute,
+    TrackAuthenticatedProfileRoute: TrackAuthenticatedProfileRoute,
+    TrackAuthenticatedReviewRoute: TrackAuthenticatedReviewRoute,
+    TrackAuthenticatedTrackerRoute: TrackAuthenticatedTrackerRoute,
+    TrackAuthenticatedWeakSpotsRoute: TrackAuthenticatedWeakSpotsRoute,
+  }
+
+const TrackAuthenticatedRouteRouteWithChildren =
+  TrackAuthenticatedRouteRoute._addFileChildren(
+    TrackAuthenticatedRouteRouteChildren,
+  )
+
+interface TrackRouteChildren {
+  TrackAuthenticatedRouteRoute: typeof TrackAuthenticatedRouteRouteWithChildren
+  TrackSplatRoute: typeof TrackSplatRoute
+  TrackDailyRoute: typeof TrackDailyRoute
+  TrackFlashcardsRoute: typeof TrackFlashcardsRoute
+  TrackFocusRoute: typeof TrackFocusRoute
+  TrackMockRoute: typeof TrackMockRoute
+  TrackPapersRoute: typeof TrackPapersRoute
+  TrackPyqRoute: typeof TrackPyqRoute
+  TrackRoadmapRoute: typeof TrackRoadmapRoute
+  TrackVideosRoute: typeof TrackVideosRoute
+  TrackIndexRoute: typeof TrackIndexRoute
+  TrackBankSubjectRoute: typeof TrackBankSubjectRoute
+  TrackBankFillRoute: typeof TrackBankFillRoute
+  TrackLearnSubjectRoute: typeof TrackLearnSubjectRoute
+  TrackBankIndexRoute: typeof TrackBankIndexRoute
+  TrackLearnIndexRoute: typeof TrackLearnIndexRoute
+}
+
+const TrackRouteChildren: TrackRouteChildren = {
+  TrackAuthenticatedRouteRoute: TrackAuthenticatedRouteRouteWithChildren,
+  TrackSplatRoute: TrackSplatRoute,
+  TrackDailyRoute: TrackDailyRoute,
+  TrackFlashcardsRoute: TrackFlashcardsRoute,
+  TrackFocusRoute: TrackFocusRoute,
+  TrackMockRoute: TrackMockRoute,
+  TrackPapersRoute: TrackPapersRoute,
+  TrackPyqRoute: TrackPyqRoute,
+  TrackRoadmapRoute: TrackRoadmapRoute,
+  TrackVideosRoute: TrackVideosRoute,
+  TrackIndexRoute: TrackIndexRoute,
+  TrackBankSubjectRoute: TrackBankSubjectRoute,
+  TrackBankFillRoute: TrackBankFillRoute,
+  TrackLearnSubjectRoute: TrackLearnSubjectRoute,
+  TrackBankIndexRoute: TrackBankIndexRoute,
+  TrackLearnIndexRoute: TrackLearnIndexRoute,
+}
+
+const TrackRouteWithChildren = TrackRoute._addFileChildren(TrackRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  TrackRoute: TrackRouteWithChildren,
   AuthRoute: AuthRoute,
-  DailyRoute: DailyRoute,
-  FlashcardsRoute: FlashcardsRoute,
-  FocusRoute: FocusRoute,
-  MockRoute: MockRoute,
-  PapersRoute: PapersRoute,
   PricingRoute: PricingRoute,
   PrivacyRoute: PrivacyRoute,
-  PyqRoute: PyqRoute,
-  RoadmapRoute: RoadmapRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
-  VideosRoute: VideosRoute,
   WelcomeRoute: WelcomeRoute,
-  BankSubjectRoute: BankSubjectRoute,
-  BankFillRoute: BankFillRoute,
-  LearnSubjectRoute: LearnSubjectRoute,
-  BankIndexRoute: BankIndexRoute,
-  LearnIndexRoute: LearnIndexRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport

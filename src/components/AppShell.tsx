@@ -16,74 +16,81 @@ import { GameLayer } from "@/components/game/GameLayer";
 import { DailyGoalRing, ProgressBar, StreakFlame } from "@/components/game/Widgets";
 import { cn } from "@/lib/utils";
 import { SignOutButton } from "@/components/SignOutButton";
+import { useTrack } from "@/hooks/useTrack";
+
+type TrackPath =
+  | "/$track"
+  | "/$track/bank"
+  | "/$track/roadmap"
+  | "/$track/pyq"
+  | "/$track/mock"
+  | "/$track/daily"
+  | "/$track/papers"
+  | "/$track/tracker"
+  | "/$track/weak-spots"
+  | "/$track/bank/fill"
+  | "/$track/focus"
+  | "/$track/learn"
+  | "/$track/videos"
+  | "/$track/review"
+  | "/$track/flashcards"
+  | "/$track/leagues"
+  | "/$track/profile";
 
 type NavLink = {
   label: string;
   icon: string;
-  to:
-    | "/"
-    | "/bank"
-    | "/roadmap"
-    | "/pyq"
-    | "/mock"
-    | "/daily"
-    | "/papers"
-    | "/tracker"
-    | "/weak-spots"
-    | "/bank/fill"
-    | "/focus"
-    | "/learn"
-    | "/videos"
-    | "/pricing"
-    | "/admin"
-    | "/review"
-    | "/flashcards"
-    | "/leagues"
-    | "/profile";
+  to: TrackPath | "/pricing" | "/admin";
   badge?: number;
 };
 
 const PLAY: NavLink[] = [
-  { label: "Home", icon: "home", to: "/" },
-  { label: "Learn", icon: "menu_book", to: "/learn" },
-  { label: "Daily Challenge", icon: "bolt", to: "/daily" },
-  { label: "Flashcards", icon: "style", to: "/flashcards" },
-  { label: "Fix Mistakes", icon: "healing", to: "/review" },
-  { label: "Leagues", icon: "trophy", to: "/leagues" },
+  { label: "Home", icon: "home", to: "/$track" },
+  { label: "Learn", icon: "menu_book", to: "/$track/learn" },
+  { label: "Daily Challenge", icon: "bolt", to: "/$track/daily" },
+  { label: "Flashcards", icon: "style", to: "/$track/flashcards" },
+  { label: "Fix Mistakes", icon: "healing", to: "/$track/review" },
+  { label: "Leagues", icon: "trophy", to: "/$track/leagues" },
 ];
 
 const PRIMARY: NavLink[] = [
-  { label: "QBank", icon: "quiz", to: "/bank" },
-  { label: "Mock Tests", icon: "timer", to: "/mock" },
-  { label: "PYQ Vault", icon: "history_edu", to: "/pyq" },
-  { label: "Roadmap", icon: "route", to: "/roadmap" },
-  { label: "Videos", icon: "play_circle", to: "/videos" },
-  { label: "Papers", icon: "description", to: "/papers" },
-  { label: "Analytics", icon: "monitoring", to: "/tracker" },
-  { label: "Weak Spots", icon: "crisis_alert", to: "/weak-spots" },
+  { label: "QBank", icon: "quiz", to: "/$track/bank" },
+  { label: "Mock Tests", icon: "timer", to: "/$track/mock" },
+  { label: "PYQ Vault", icon: "history_edu", to: "/$track/pyq" },
+  { label: "Roadmap", icon: "route", to: "/$track/roadmap" },
+  { label: "Videos", icon: "play_circle", to: "/$track/videos" },
+  { label: "Papers", icon: "description", to: "/$track/papers" },
+  { label: "Analytics", icon: "monitoring", to: "/$track/tracker" },
+  { label: "Weak Spots", icon: "crisis_alert", to: "/$track/weak-spots" },
 ];
 
 const MOBILE: NavLink[] = [
-  { label: "Home", icon: "home", to: "/" },
-  { label: "Learn", icon: "menu_book", to: "/learn" },
-  { label: "Practice", icon: "bolt", to: "/daily" },
-  { label: "Leagues", icon: "trophy", to: "/leagues" },
-  { label: "Profile", icon: "person", to: "/profile" },
+  { label: "Home", icon: "home", to: "/$track" },
+  { label: "Learn", icon: "menu_book", to: "/$track/learn" },
+  { label: "Practice", icon: "bolt", to: "/$track/daily" },
+  { label: "Leagues", icon: "trophy", to: "/$track/leagues" },
+  { label: "Profile", icon: "person", to: "/$track/profile" },
 ];
 
-function isActive(to: string, pathname: string) {
-  return to === "/" ? pathname === "/" : pathname === to || pathname.startsWith(`${to}/`);
+/** Concrete URL of a nav target inside the given track. */
+const hrefOf = (to: string, slug: string) => to.replace("$track", slug);
+
+function isActive(href: string, pathname: string) {
+  return /^\/neet-(pg|ug)$/.test(href)
+    ? pathname === href || pathname === `${href}/`
+    : pathname === href || pathname.startsWith(`${href}/`);
 }
 
 /** Streak, today's XP vs goal, and level — the always-visible game HUD. */
 function GameHud({ compact = false }: { compact?: boolean }) {
   const { state, level, signedIn } = useGameState();
+  const track = useTrack();
   const streak = state?.streak ?? 0;
   const lit = Boolean(state?.streakExtendedToday);
-  const to = signedIn ? "/profile" : "/auth";
   return (
     <Link
-      to={to}
+      to={signedIn ? "/$track/profile" : "/auth"}
+      params={{ track: track.slug }}
       className="flex items-center gap-1 rounded-full border-2 border-glass-line bg-surface-2/50 py-1 pl-2 pr-1 transition-colors duration-300 hover:border-primary/40"
       title="Your streak, daily goal and level"
     >
@@ -109,18 +116,26 @@ function GameHud({ compact = false }: { compact?: boolean }) {
   );
 }
 
-const FOCUS_LINK: NavLink = { label: "Focus Lock", icon: "lock_clock", to: "/focus" };
-const FILL_LINK: NavLink = { label: "Fill Bank", icon: "cloud_download", to: "/bank/fill" };
+const FOCUS_LINK: NavLink = { label: "Focus Lock", icon: "lock_clock", to: "/$track/focus" };
+const FILL_LINK: NavLink = { label: "Fill Bank", icon: "cloud_download", to: "/$track/bank/fill" };
 const PRICING_LINK: NavLink = { label: "Go Pro", icon: "workspace_premium", to: "/pricing" };
 const ADMIN_LINK: NavLink = { label: "Admin", icon: "admin_panel_settings", to: "/admin" };
 
-const FULL_BLEED = ["/focus", "/auth", "/welcome"];
+/** Screens that draw their own chrome: the exam picker, focus lock, auth, landing. */
+function isFullBleed(pathname: string) {
+  return (
+    pathname === "/" ||
+    /^\/neet-(pg|ug)\/focus\/?$/.test(pathname) ||
+    pathname.startsWith("/auth") ||
+    pathname.startsWith("/welcome")
+  );
+}
 
-function NavList({ items, pathname }: { items: NavLink[]; pathname: string }) {
+function NavList({ items, pathname, slug }: { items: NavLink[]; pathname: string; slug: string }) {
   return (
     <>
       {items.map((item, i) => {
-        const active = isActive(item.to, pathname);
+        const active = isActive(hrefOf(item.to, slug), pathname);
         return (
           <motion.div
             key={item.to}
@@ -128,7 +143,11 @@ function NavList({ items, pathname }: { items: NavLink[]; pathname: string }) {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.35, delay: i * 0.03, ease: [0.22, 1, 0.36, 1] }}
           >
-            <Link to={item.to} className={`nav-item ${active ? "nav-item-active" : ""}`}>
+            <Link
+              to={item.to}
+              params={{ track: slug } as never}
+              className={`nav-item ${active ? "nav-item-active" : ""}`}
+            >
               <Icon name={item.icon} filled={active} className="text-[20px]" />
               {item.label}
               {item.badge ? (
@@ -144,13 +163,31 @@ function NavList({ items, pathname }: { items: NavLink[]; pathname: string }) {
   );
 }
 
+/** Shows the current exam and leads back to the exam picker. */
+function TrackSwitch({ name }: { name: string }) {
+  return (
+    <Link
+      to="/"
+      title="Switch exam"
+      className="flex shrink-0 items-center gap-0.5 rounded-full border-2 border-glass-line bg-surface-2/60 py-0.5 pl-2.5 pr-1.5 font-display text-[11px] font-bold text-primary transition-colors duration-300 hover:border-primary/50"
+    >
+      {name}
+      <Icon name="swap_horiz" className="text-[15px]" />
+    </Link>
+  );
+}
+
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { user, displayName } = useAuth();
   const { theme, toggle } = useTheme();
   const { isPro, isAdmin } = useAccess();
   const { state: game, level, rank } = useGameState();
-  const play = PLAY.map((l) => (l.to === "/review" ? { ...l, badge: game?.mistakesDue ?? 0 } : l));
+  const track = useTrack();
+  const slug = track.slug;
+  const play = PLAY.map((l) =>
+    l.to === "/$track/review" ? { ...l, badge: game?.mistakesDue ?? 0 } : l,
+  );
 
   const SECONDARY: NavLink[] = [
     FOCUS_LINK,
@@ -159,7 +196,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     ...(isAdmin ? [ADMIN_LINK] : []),
   ];
 
-  if (FULL_BLEED.some((p) => pathname.startsWith(p))) {
+  if (isFullBleed(pathname)) {
     return (
       <>
         {children}
@@ -176,27 +213,31 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       {/* Desktop side navigation — dissolves into the background, no column rule */}
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 min-h-0 flex-col overflow-hidden px-4 py-5 md:flex glass-bar">
-        <Link to="/" className="group flex shrink-0 items-center gap-2.5 px-2">
-          <BrandMark className="h-9 w-9 transition-transform duration-300 ease-out group-hover:scale-105" />
-          <span className="text-base font-bold tracking-tight">
-            PG <span className="text-primary">Prep</span>
-          </span>
-        </Link>
+        <div className="flex shrink-0 items-center justify-between gap-2 px-2">
+          <Link to="/$track" params={{ track: slug }} className="group flex items-center gap-2.5">
+            <BrandMark className="h-9 w-9 transition-transform duration-300 ease-out group-hover:scale-105" />
+            <span className="text-base font-bold tracking-tight">
+              {track.brand.a} <span className="text-primary">{track.brand.b}</span>
+            </span>
+          </Link>
+          <TrackSwitch name={track.name} />
+        </div>
 
         <nav
           aria-label="Main navigation"
           className="mt-7 flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto overscroll-contain pb-3"
         >
           <p className="label-eyebrow px-4 pb-1">Play</p>
-          <NavList items={play} pathname={pathname} />
+          <NavList items={play} pathname={pathname} slug={slug} />
           <p className="label-eyebrow px-4 pb-1 pt-4">Prepare</p>
-          <NavList items={PRIMARY} pathname={pathname} />
+          <NavList items={PRIMARY} pathname={pathname} slug={slug} />
           <p className="label-eyebrow px-4 pb-1 pt-4">Discipline</p>
-          <NavList items={SECONDARY} pathname={pathname} />
+          <NavList items={SECONDARY} pathname={pathname} slug={slug} />
         </nav>
 
         <Link
-          to={user ? "/profile" : "/auth"}
+          to={user ? "/$track/profile" : "/auth"}
+          params={{ track: slug }}
           className="card-pop card-pop-hover mt-3 block shrink-0 p-3.5"
         >
           <div className="flex items-center gap-2.5">
@@ -227,12 +268,15 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       {/* Top bar */}
       <header className="fixed inset-x-0 top-0 z-30 flex h-16 items-center gap-3 px-4 glass-bar md:pl-[17rem]">
-        <Link to="/" className="flex items-center gap-2 md:hidden">
-          <BrandMark className="h-8 w-8" />
-          <span className="text-sm font-bold">
-            PG <span className="text-primary">Prep</span>
-          </span>
-        </Link>
+        <div className="flex min-w-0 items-center gap-1.5 md:hidden">
+          <Link to="/$track" params={{ track: slug }} className="flex shrink-0 items-center gap-2">
+            <BrandMark className="h-8 w-8" />
+            <span className="sr-only">
+              {track.brand.a} {track.brand.b}
+            </span>
+          </Link>
+          <TrackSwitch name={track.name} />
+        </div>
 
         <div className="ml-auto flex min-w-0 flex-1 items-center justify-end gap-2 md:justify-between">
           <div className="hidden md:block">
@@ -254,7 +298,8 @@ export function AppShell({ children }: { children: ReactNode }) {
               <Icon name={theme === "dark" ? "light_mode" : "dark_mode"} className="text-[18px]" />
             </motion.button>
             <Link
-              to="/focus"
+              to="/$track/focus"
+              params={{ track: slug }}
               className="btn-base btn-primary hidden h-9 whitespace-nowrap px-4 text-xs sm:inline-flex"
             >
               <Icon name="lock" className="text-[16px]" />
@@ -271,11 +316,16 @@ export function AppShell({ children }: { children: ReactNode }) {
       {/* Mobile bottom navigation — raised centre "Practice" button */}
       <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 items-end glass-bar pb-[env(safe-area-inset-bottom)] md:hidden">
         {MOBILE.map((item) => {
-          const active = isActive(item.to, pathname);
-          const target = item.to === "/profile" && !user ? "/auth" : item.to;
+          const active = isActive(hrefOf(item.to, slug), pathname);
+          const target = item.to === "/$track/profile" && !user ? "/auth" : item.to;
           if (item.label === "Practice") {
             return (
-              <Link key={item.label} to={target} className="flex flex-col items-center pb-2">
+              <Link
+                key={item.label}
+                to={target}
+                params={{ track: slug } as never}
+                className="flex flex-col items-center pb-2"
+              >
                 <span
                   className={cn(
                     "btn-base btn-primary -mt-6 h-14 w-14 rounded-2xl p-0",
@@ -292,6 +342,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <Link
               key={item.label}
               to={target}
+              params={{ track: slug } as never}
               className={`flex flex-col items-center gap-0.5 py-2.5 text-[10px] font-semibold transition-all duration-300 ease-out active:scale-90 ${active ? "text-primary" : "text-muted-foreground"}`}
             >
               <Icon name={item.icon} filled={active} className="text-[24px]" />

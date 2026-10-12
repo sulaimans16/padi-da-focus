@@ -8,6 +8,7 @@ import type { Roadmap } from "@/lib/roadmap.functions";
 import { emitGameEvent } from "@/lib/gamification";
 import { playCorrect, playLevelUp } from "@/lib/sfx";
 import { cn } from "@/lib/utils";
+import { useTrack } from "@/hooks/useTrack";
 
 // Horizontal position of each milestone (percent of the trail width), winding left and right.
 const X = [24, 50, 72, 50];
@@ -164,6 +165,7 @@ export function RoadmapTrail({
   phaseLinks?: (phase: Roadmap["phases"][number]) => TrailLink[];
   interactive?: boolean;
 }) {
+  const track = useTrack();
   const phases = roadmap.phases;
   const phaseDone = (pi: number) => phases[pi]!.steps.every((_, si) => done.has(`${pi}:${si}`));
   const current = phases.findIndex((_, pi) => !phaseDone(pi));
@@ -389,7 +391,11 @@ export function RoadmapTrail({
       {!interactive ? null : (
         <p className="mt-2 text-center text-xs text-muted-foreground">
           Tap a milestone to see its steps. Progress is saved on this device.{" "}
-          <Link to="/bank" className="font-semibold text-primary hover:underline">
+          <Link
+            to="/$track/bank"
+            params={{ track: track.slug }}
+            className="font-semibold text-primary hover:underline"
+          >
             Open the QBank →
           </Link>
         </p>

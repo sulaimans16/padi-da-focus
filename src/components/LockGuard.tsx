@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { loadActiveSession, saveActiveSession } from "@/lib/focus-session";
+import { activeTrackId, slugOf } from "@/lib/track-state";
 
 /**
  * Global backstop: while a Focus Lock session is running, no route other than
@@ -13,13 +14,17 @@ export function LockGuard() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   useEffect(() => {
-    if (pathname === "/focus") return;
+    if (/^\/neet-(pg|ug)\/focus$/.test(pathname)) return;
     const check = () => {
       const active = loadActiveSession();
       if (!active) return;
       saveActiveSession({ ...active, escapeAttempts: active.escapeAttempts + 1 });
       window.sessionStorage.setItem("padida.focus.escaped", "1");
-      navigate({ to: "/focus", replace: true });
+      navigate({
+        to: "/$track/focus",
+        params: { track: slugOf(activeTrackId()) },
+        replace: true,
+      });
     };
     check();
     const id = setInterval(check, 500);

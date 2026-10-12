@@ -14,7 +14,7 @@ export const Route = createFileRoute("/pricing")({
       {
         name: "description",
         content:
-          "Unlock PG Prep Pro AI tools: the doubt solver, AI question generation and the PYQ vault builder. ₹50 for 3 months or ₹100 for a full year.",
+          "Unlock Pro AI tools for NEET UG and NEET PG: the doubt solver, AI question generation and the PYQ vault builder. ₹50 for 3 months or ₹100 for a full year.",
       },
       { property: "og:title", content: "PG Prep Pro pricing" },
       {
@@ -57,7 +57,6 @@ const PRO_FEATURES = [
   "Every AI tool we add later",
 ];
 
-
 const FREE_FEATURES = [
   "Full Learn modules and concept notes",
   "Every question already in the bank and PYQ vault",
@@ -89,10 +88,9 @@ function Pricing() {
       <PaymentTestModeBanner />
       <h1 className="mt-4 text-3xl font-extrabold tracking-tight">PG Prep Pro</h1>
       <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-        Everything you study stays free. The AI tools — doubt solving and question generation —
-        cost real money to run, so they sit behind a small subscription.
+        Everything you study stays free. The AI tools — doubt solving and question generation — cost
+        real money to run, so they sit behind a small subscription.
       </p>
-
 
       {isPro ? (
         <div className="card-surface mt-5 p-4">
@@ -161,10 +159,9 @@ function Pricing() {
       {error ? <p className="mt-3 text-xs font-semibold text-destructive">{error}</p> : null}
 
       <p className="mt-3 text-xs text-muted-foreground">
-        Secure card and wallet checkout — Pro switches on automatically the moment your payment
-        goes through. One-time payment, no auto-renewal.
+        Secure card and wallet checkout — Pro switches on automatically the moment your payment goes
+        through. One-time payment, no auto-renewal.
       </p>
-
 
       <div className="mt-8 grid gap-4 md:grid-cols-2">
         <section className="card-surface p-5">
@@ -185,7 +182,10 @@ function Pricing() {
           <ul className="mt-2 space-y-2 text-sm">
             {FREE_FEATURES.map((f) => (
               <li key={f} className="flex gap-2">
-                <span aria-hidden className="material-symbols-outlined text-[18px] text-muted-foreground">
+                <span
+                  aria-hidden
+                  className="material-symbols-outlined text-[18px] text-muted-foreground"
+                >
                   check
                 </span>
                 {f}

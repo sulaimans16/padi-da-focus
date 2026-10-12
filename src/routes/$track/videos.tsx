@@ -1,34 +1,30 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useAccess } from "@/hooks/useAccess";
-import {
-  TOTAL_VIDEO_LESSONS,
-  VIDEO_MODULES,
-  videoEmbedUrl,
-  videoThumb,
-  videoWatchUrl,
-  type VideoLesson,
-} from "@/lib/videos";
+import { videoEmbedUrl, videoThumb, videoWatchUrl, type VideoLesson } from "@/lib/videos";
+import { useTrack } from "@/hooks/useTrack";
+import { localizeHead } from "@/lib/tracks";
 
-export const Route = createFileRoute("/videos")({
+export const Route = createFileRoute("/$track/videos")({
   staticData: { sitemap: true },
-  head: () => ({
-    meta: [
-      { title: "Video Modules — Medical Lecture Library | PG Prep" },
-      {
-        name: "description",
-        content:
-          "Curated NEET PG video lectures for anatomy, physiology, biochemistry, pharmacology, pathology and medicine — organised subject by subject inside PG Prep Pro.",
-      },
-      { property: "og:title", content: "Video Modules — PG Prep" },
-      {
-        property: "og:description",
-        content: "Subject-wise medical lecture videos, curated for NEET PG revision.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: ({ params }) =>
+    localizeHead(params.track, {
+      meta: [
+        { title: "Video Modules — Medical Lecture Library | PG Prep" },
+        {
+          name: "description",
+          content:
+            "Curated NEET PG video lectures for anatomy, physiology, biochemistry, pharmacology, pathology and medicine — organised subject by subject inside PG Prep Pro.",
+        },
+        { property: "og:title", content: "Video Modules — PG Prep" },
+        {
+          property: "og:description",
+          content: "Subject-wise medical lecture videos, curated for NEET PG revision.",
+        },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+    }),
   component: VideoModules,
 });
 
@@ -116,8 +112,6 @@ function LessonCard({ lesson, unlocked }: { lesson: VideoLesson; unlocked: boole
               </button>
             </span>
           ) : null}
-
-
         </p>
       </div>
     </article>
@@ -125,29 +119,44 @@ function LessonCard({ lesson, unlocked }: { lesson: VideoLesson; unlocked: boole
 }
 
 function VideoModules() {
+  const track = useTrack();
   const { isPro, isAdmin, signedIn, loading } = useAccess();
-  const [active, setActive] = useState(VIDEO_MODULES[0]!.slug);
-  const mod = VIDEO_MODULES.find((m) => m.slug === active)!;
+  const [active, setActive] = useState(track.videos[0]?.slug ?? "");
+  const mod = track.videos.find((m) => m.slug === active) ?? track.videos[0];
   const unlocked = isPro;
+
+  if (!mod) {
+    return (
+      <div className="mx-auto w-full max-w-3xl px-4 py-10 text-center sm:px-6">
+        <Icon name="play_circle" className="text-[48px] text-primary" />
+        <h1 className="mt-2 text-2xl">{track.name} video modules are coming</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          We're curating free lectures for every {track.name} subject. Until then, the reading
+          modules teach the same concepts.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
       <p className="label-eyebrow">Learn</p>
       <h1 className="text-3xl sm:text-4xl">Video modules</h1>
       <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-        {TOTAL_VIDEO_LESSONS} curated lecture videos across {VIDEO_MODULES.length} subjects — the same
-        concepts as the reading modules, taught on the whiteboard by respected medical educators.
+        {track.videos.reduce((n, m) => n + m.lessons.length, 0)} curated lecture videos across{" "}
+        {track.videos.length} subjects — the same concepts as the reading modules, taught on the
+        whiteboard by respected educators.
       </p>
 
       {!loading && !unlocked ? (
         <section className="card-surface mt-4 flex flex-col gap-2 p-4">
           <p className="flex items-center gap-2 text-sm font-bold">
             <Icon name="workspace_premium" className="text-[18px] text-primary" />
-            Video modules are part of PG Prep Pro
+            Video modules are part of {track.brand.a} Prep Pro
           </p>
           <p className="text-xs text-muted-foreground">
-            Browse the full curriculum below. Playback unlocks with Pro — ₹50 for 3 months or ₹100 for a
-            year. Reading modules stay free forever.
+            Browse the full curriculum below. Playback unlocks with Pro — ₹50 for 3 months or ₹100
+            for a year. Reading modules stay free forever.
           </p>
           <div className="flex flex-wrap gap-2">
             <Link to="/pricing" className="btn-base btn-primary h-9 px-3 text-xs">
@@ -158,7 +167,11 @@ function VideoModules() {
                 Sign in
               </Link>
             ) : null}
-            <Link to="/learn" className="btn-base btn-ghost h-9 px-3 text-xs">
+            <Link
+              to="/$track/learn"
+              params={{ track: track.slug }}
+              className="btn-base btn-ghost h-9 px-3 text-xs"
+            >
               Free reading modules
             </Link>
           </div>
@@ -167,12 +180,14 @@ function VideoModules() {
 
       {!loading && unlocked ? (
         <p className="mt-3 text-xs font-bold text-success">
-          {isAdmin ? "Admin access — every video module unlocked." : "Pro active — all videos unlocked."}
+          {isAdmin
+            ? "Admin access — every video module unlocked."
+            : "Pro active — all videos unlocked."}
         </p>
       ) : null}
 
       <div className="mt-5 flex flex-wrap gap-2">
-        {VIDEO_MODULES.map((m) => (
+        {track.videos.map((m) => (
           <button
             key={m.slug}
             type="button"
@@ -198,14 +213,18 @@ function VideoModules() {
 
         <div className="mt-5 flex flex-wrap gap-2">
           <Link
-            to="/learn/$subject"
-            params={{ subject: mod.slug }}
+            to="/$track/learn/$subject"
+            params={{ track: track.slug, subject: mod.slug }}
             className="btn-base btn-ghost text-xs"
           >
             <Icon name="menu_book" className="text-[16px]" />
             Read the {mod.subject} notes
           </Link>
-          <Link to="/bank/$subject" params={{ subject: mod.subject }} className="btn-base btn-ghost text-xs">
+          <Link
+            to="/$track/bank/$subject"
+            params={{ track: track.slug, subject: mod.subject }}
+            className="btn-base btn-ghost text-xs"
+          >
             <Icon name="quiz" className="text-[16px]" />
             Practise {mod.subject} questions
           </Link>
@@ -213,8 +232,8 @@ function VideoModules() {
       </section>
 
       <p className="mt-6 text-xs text-muted-foreground">
-        Videos are hosted on YouTube by their original creators and embedded here for study. All credit
-        stays with the channels named on each card.
+        Videos are hosted on YouTube by their original creators and embedded here for study. All
+        credit stays with the channels named on each card.
       </p>
     </div>
   );

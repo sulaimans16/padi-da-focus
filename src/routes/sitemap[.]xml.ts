@@ -7,8 +7,8 @@ import {
   sitemapXML,
   type SitemapEntry,
 } from "@/lib/sitemap";
-import { SUBJECTS } from "@/lib/focus-session";
-import { LEARN_MODULES } from "@/lib/learn";
+import type { AnyRoute } from "@tanstack/react-router";
+import { TRACK_LIST } from "@/lib/tracks";
 
 const BASE_URL = "https://pg-pre.learners-studio.com";
 
@@ -20,31 +20,39 @@ export const Route = createFileRoute("/sitemap.xml")({
         const router = await getRouterInstance();
         const entries: SitemapEntry[] = sitemapStaticPaths(router).map((path) => ({ path }));
 
-        const learnRouteId = "/learn/$subject";
-        if (isSitemapRouteIncluded(router.routesById[learnRouteId])) {
-          for (const mod of LEARN_MODULES) {
+        // Track pages: every /$track/... route with only the track param, per track.
+        for (const track of TRACK_LIST) {
+          for (const route of Object.values(router.routesById) as AnyRoute[]) {
+            const full = route.fullPath as string;
+            if (!full.startsWith("/$track") || !isSitemapRouteIncluded(route)) continue;
+            if (/[$*]/.test(full.replace("/$track", ""))) continue;
             const location = router.buildLocation({
-              to: "/learn/$subject",
-              params: { subject: mod.slug },
+              to: full,
+              params: { track: track.slug },
               search: () => ({}),
               hash: "",
-            });
-            const path = sitemapPathForLocation(router, location, learnRouteId);
+            } as never);
+            const path = sitemapPathForLocation(router, location, route.id);
             if (path) entries.push({ path });
           }
-        }
 
-        const bankRouteId = "/bank/$subject";
-        if (isSitemapRouteIncluded(router.routesById[bankRouteId])) {
-          for (const subject of SUBJECTS) {
-            const location = router.buildLocation({
-              to: "/bank/$subject",
-              params: { subject },
-              search: () => ({}),
-              hash: "",
-            });
-            const path = sitemapPathForLocation(router, location, bankRouteId);
-            if (path) entries.push({ path });
+          const subjectPages: [string, string[]][] = [
+            ["/$track/learn/$subject", track.learn.map((m) => m.slug)],
+            ["/$track/bank/$subject", track.subjects],
+          ];
+          for (const [routeId, subjects] of subjectPages) {
+            const route = (router.routesById as unknown as Record<string, AnyRoute>)[routeId];
+            if (!isSitemapRouteIncluded(route)) continue;
+            for (const subject of subjects) {
+              const location = router.buildLocation({
+                to: routeId,
+                params: { track: track.slug, subject },
+                search: () => ({}),
+                hash: "",
+              } as never);
+              const path = sitemapPathForLocation(router, location, routeId);
+              if (path) entries.push({ path });
+            }
           }
         }
 

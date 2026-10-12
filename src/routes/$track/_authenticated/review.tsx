@@ -11,24 +11,28 @@ import { fetchMistakes } from "@/lib/gamification";
 import { fetchQuestionsByIds, shuffle } from "@/lib/quiz";
 import type { Question } from "@/lib/questions";
 import { subjectColor } from "@/lib/questions";
+import { useTrack } from "@/hooks/useTrack";
+import { localizeHead } from "@/lib/tracks";
 
-export const Route = createFileRoute("/_authenticated/review")({
+export const Route = createFileRoute("/$track/_authenticated/review")({
   staticData: { sitemap: false },
-  head: () => ({
-    meta: [
-      { title: "Fix Mistakes — PG Prep" },
-      {
-        name: "description",
-        content: "Spaced review of the NEET PG questions you got wrong. Each fix earns bonus XP.",
-      },
-    ],
-  }),
+  head: ({ params }) =>
+    localizeHead(params.track, {
+      meta: [
+        { title: "Fix Mistakes — PG Prep" },
+        {
+          name: "description",
+          content: "Spaced review of the NEET PG questions you got wrong. Each fix earns bonus XP.",
+        },
+      ],
+    }),
   component: Review,
 });
 
 const STAGES = ["New", "1 day", "3 days", "7 days"];
 
 function Review() {
+  const track = useTrack();
   const mistakes = useQuery({ queryKey: ["mistakes"], queryFn: fetchMistakes });
   const [session, setSession] = useState<Question[] | null>(null);
   const [loading, setLoading] = useState(false);
@@ -147,7 +151,11 @@ function Review() {
             <p className="mt-1 text-sm text-muted-foreground">
               Drill the QBank and anything you miss will show up here.
             </p>
-            <Link to="/bank" className="btn-base btn-primary mt-4 text-sm">
+            <Link
+              to="/$track/bank"
+              params={{ track: track.slug }}
+              className="btn-base btn-primary mt-4 text-sm"
+            >
               Open QBank
             </Link>
           </div>

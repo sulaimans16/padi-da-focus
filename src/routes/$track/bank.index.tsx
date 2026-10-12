@@ -1,37 +1,35 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { SUBJECTS } from "@/lib/focus-session";
 import { fetchRemoteCounts } from "@/lib/remote-questions";
-import {
-  allQuestions,
-  saveCustomQuestion,
-  subjectColor,
-  type Question,
-} from "@/lib/questions";
+import { allQuestions, saveCustomQuestion, subjectColor, type Question } from "@/lib/questions";
+import { useTrack } from "@/hooks/useTrack";
+import { localizeHead } from "@/lib/tracks";
 
-export const Route = createFileRoute("/bank/")({
+export const Route = createFileRoute("/$track/bank/")({
   staticData: { sitemap: true },
-  head: () => ({
-    meta: [
-      { title: "Question Bank — PG Prep NEET PG" },
-      {
-        name: "description",
-        content:
-          "Subject-wise NEET PG question bank with NBE-style single-best-answer questions, distractor breakdowns and high-yield fact boxes.",
-      },
-      { property: "og:title", content: "Question Bank — PG Prep NEET PG" },
-      {
-        property: "og:description",
-        content: "Drill NEET PG questions subject by subject, with 2am-mode explanations.",
-      },
-    ],
-  }),
+  head: ({ params }) =>
+    localizeHead(params.track, {
+      meta: [
+        { title: "Question Bank — PG Prep NEET PG" },
+        {
+          name: "description",
+          content:
+            "Subject-wise NEET PG question bank with NBE-style single-best-answer questions, distractor breakdowns and high-yield fact boxes.",
+        },
+        { property: "og:title", content: "Question Bank — PG Prep NEET PG" },
+        {
+          property: "og:description",
+          content: "Drill NEET PG questions subject by subject, with 2am-mode explanations.",
+        },
+      ],
+    }),
   component: BankIndex,
 });
 
 const TARGET = 100;
 
 function BankIndex() {
+  const track = useTrack();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [remote, setRemote] = useState<Map<string, number>>(new Map());
   const [showForm, setShowForm] = useState(false);
@@ -64,11 +62,15 @@ function BankIndex() {
           <p className="label-eyebrow">Practice library</p>
           <h1 className="text-3xl sm:text-4xl">Question Bank</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            {total} questions loaded across {SUBJECTS.length} subjects. Open a subject and use “Fill
-            to 50/100” to grow it.
+            {total} questions loaded across {track.subjects.length} subjects. Open a subject and use
+            “Fill to 50/100” to grow it.
           </p>
         </div>
-        <Link to="/bank/fill" className="btn-base btn-primary text-sm">
+        <Link
+          to="/$track/bank/fill"
+          params={{ track: track.slug }}
+          className="btn-base btn-primary text-sm"
+        >
           <span aria-hidden className="material-symbols-outlined text-[18px]">
             cloud_download
           </span>
@@ -82,14 +84,14 @@ function BankIndex() {
           <span className="label-eyebrow">Target {TARGET} Qs each</span>
         </div>
         <div className="grid grid-cols-1 gap-3 p-5 sm:grid-cols-2 lg:grid-cols-3">
-          {SUBJECTS.map((s) => {
+          {track.subjects.map((s) => {
             const count = counts.get(s) ?? 0;
             const pct = Math.min(100, Math.round((count / TARGET) * 100));
             return (
               <Link
                 key={s}
-                to="/bank/$subject"
-                params={{ subject: s }}
+                to="/$track/bank/$subject"
+                params={{ track: track.slug, subject: s }}
                 className="rounded-xl border border-border bg-surface p-4 transition-colors hover:bg-surface-2"
               >
                 <div className="flex items-start justify-between gap-2">
@@ -128,7 +130,6 @@ function BankIndex() {
         dataset (AIIMS &amp; NEET-PG entrance MCQs with explanations, MIT licensed).
       </p>
 
-
       <div className="mt-6">
         <button
           onClick={() => setShowForm((v) => !v)}
@@ -146,7 +147,8 @@ function BankIndex() {
 }
 
 function AddQuestionForm({ onSaved }: { onSaved: () => void }) {
-  const [subject, setSubject] = useState<string>(SUBJECTS[0]);
+  const track = useTrack();
+  const [subject, setSubject] = useState<string>(track.subjects[0] ?? "");
   const [topic, setTopic] = useState("");
   const [stem, setStem] = useState("");
   const [opts, setOpts] = useState(["", "", "", ""]);
@@ -190,7 +192,7 @@ function AddQuestionForm({ onSaved }: { onSaved: () => void }) {
       <div className="space-y-3 p-5">
         <div className="grid gap-3 sm:grid-cols-2">
           <select value={subject} onChange={(e) => setSubject(e.target.value)} className={field}>
-            {SUBJECTS.map((s) => (
+            {track.subjects.map((s) => (
               <option key={s} value={s}>
                 {s}
               </option>

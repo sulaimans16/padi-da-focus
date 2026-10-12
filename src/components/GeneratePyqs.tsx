@@ -1,28 +1,7 @@
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { generateQuestionBatch } from "@/lib/questions-ai.functions";
-
-const SUBJECTS = [
-  "Medicine",
-  "Surgery",
-  "Obstetrics & Gynaecology",
-  "Pediatrics",
-  "Pharmacology",
-  "Pathology",
-  "Microbiology",
-  "PSM",
-  "Anatomy",
-  "Physiology",
-  "Biochemistry",
-  "Radiology",
-  "Anaesthesia",
-  "Ophthalmology",
-  "ENT",
-  "Orthopaedics",
-  "Psychiatry",
-  "Dermatology",
-  "Forensic Medicine",
-];
+import { useTrack } from "@/hooks/useTrack";
 
 const YEARS = [2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016];
 const BATCH = 10;
@@ -34,6 +13,7 @@ export function GeneratePyqs({
   existingStems: string[];
   onDone: () => void | Promise<void>;
 }) {
+  const track = useTrack();
   const generate = useServerFn(generateQuestionBatch);
   const [subject, setSubject] = useState("Medicine");
   const [year, setYear] = useState<string>("mixed");
@@ -85,8 +65,8 @@ export function GeneratePyqs({
       </div>
       <div className="space-y-3 p-5">
         <p className="text-[11px] leading-snug text-muted-foreground">
-          Adds previous-year style questions with explanations, distractor breakdowns and
-          high-yield lines. Always cross-check against a standard text.
+          Adds previous-year style questions with explanations, distractor breakdowns and high-yield
+          lines. Always cross-check against a standard text.
         </p>
         <div className="grid gap-3 sm:grid-cols-3">
           <select
@@ -95,7 +75,7 @@ export function GeneratePyqs({
             className={field}
             disabled={busy}
           >
-            {SUBJECTS.map((s) => (
+            {track.subjects.map((s) => (
               <option key={s} value={s}>
                 {s}
               </option>
@@ -110,7 +90,7 @@ export function GeneratePyqs({
             <option value="mixed">Mixed years</option>
             {YEARS.map((y) => (
               <option key={y} value={String(y)}>
-                NEET PG {y}
+                {track.name} {y}
               </option>
             ))}
           </select>

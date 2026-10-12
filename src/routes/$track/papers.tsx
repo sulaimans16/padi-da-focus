@@ -4,6 +4,7 @@ import { fetchRemotePyqs } from "@/lib/remote-questions";
 import { allQuestions, type Question } from "@/lib/questions";
 import { buildPaperHtml, downloadHtml, printHtml, slug } from "@/lib/paper-export";
 import { localizeHead } from "@/lib/tracks";
+import { useTrack } from "@/hooks/useTrack";
 
 export const Route = createFileRoute("/$track/papers")({
   staticData: { sitemap: true },
@@ -37,6 +38,7 @@ function Icon({ name, className = "" }: { name: string; className?: string }) {
 }
 
 function PapersPage() {
+  const track = useTrack();
   const [pyqs, setPyqs] = useState<Question[]>([]);
   const [withAnswers, setWithAnswers] = useState(true);
   const [subject, setSubject] = useState("all");
@@ -79,12 +81,30 @@ function PapersPage() {
       .sort((a, b) => b[0] - a[0]);
   }, [pool]);
 
+  const external =
+    track.id === "neet_ug"
+      ? {
+          title: "Official NEET UG papers from NTA",
+          note: "NTA publishes past question papers and answer keys on its NEET site. Opens in a new tab.",
+          href: "https://exams.nta.ac.in/NEET/",
+          cta: "Open NTA NEET",
+        }
+      : {
+          title: "Browse Collegedunia’s NEET PG collection",
+          note: "Open their year-wise question-paper library in a new tab. Availability and content are managed by Collegedunia.",
+          href: "https://collegedunia.com/exams/neet-pg/question-paper",
+          cta: "Browse Collegedunia",
+        };
+
   const paperTitle = (year: number) =>
-    `NEET PG ${year} Question Paper${subject === "all" ? "" : ` — ${subject}`}`;
+    `${track.name} ${year} Question Paper${subject === "all" ? "" : ` — ${subject}`}`;
 
   const handleDownload = (year: number, qs: Question[]) => {
     const title = paperTitle(year);
-    downloadHtml(`${slug(title)}.html`, buildPaperHtml(title, qs, withAnswers));
+    downloadHtml(
+      `${slug(title)}.html`,
+      buildPaperHtml(title, qs, withAnswers, track.name, `${track.brand.a} Prep`),
+    );
   };
 
   const field =
@@ -104,20 +124,17 @@ function PapersPage() {
       <aside className="mt-5 flex flex-col gap-4 border-y border-glass-line py-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="label-eyebrow">More past papers</p>
-          <h2 className="mt-1 text-xl">Browse Collegedunia’s NEET PG collection</h2>
-          <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-            Open their year-wise question-paper library in a new tab. Availability and content are
-            managed by Collegedunia.
-          </p>
+          <h2 className="mt-1 text-xl">{external.title}</h2>
+          <p className="mt-1 max-w-2xl text-sm text-muted-foreground">{external.note}</p>
         </div>
         <a
-          href="https://collegedunia.com/exams/neet-pg/question-paper"
+          href={external.href}
           target="_blank"
           rel="noopener noreferrer"
           className="btn-base btn-ghost shrink-0 self-start sm:self-auto"
-          aria-label="Browse NEET PG question papers on Collegedunia (opens in a new tab)"
+          aria-label={`${external.cta} (opens in a new tab)`}
         >
-          Browse Collegedunia
+          {external.cta}
           <Icon name="open_in_new" className="text-[18px]" />
         </a>
       </aside>
@@ -162,7 +179,7 @@ function PapersPage() {
           <article key={year} className="card-surface flex flex-col gap-3 p-5">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="label-eyebrow">NEET PG</p>
+                <p className="label-eyebrow">{track.name}</p>
                 <h2 className="text-2xl">{year}</h2>
               </div>
               <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-surface-2 text-primary">
@@ -185,7 +202,17 @@ function PapersPage() {
               </button>
               <button
                 type="button"
-                onClick={() => printHtml(buildPaperHtml(paperTitle(year), qs, withAnswers))}
+                onClick={() =>
+                  printHtml(
+                    buildPaperHtml(
+                      paperTitle(year),
+                      qs,
+                      withAnswers,
+                      track.name,
+                      `${track.brand.a} Prep`,
+                    ),
+                  )
+                }
                 className="btn-base btn-ghost h-9 px-3 text-xs"
               >
                 <Icon name="print" className="text-[16px]" />

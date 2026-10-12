@@ -10,17 +10,17 @@ export const Route = createFileRoute("/welcome")({
   staticData: { sitemap: true },
   head: () => ({
     meta: [
-      { title: "PG Prep — Smarter NEET PG Preparation" },
+      { title: "Smarter NEET UG & NEET PG Preparation — Learners Studio" },
       {
         name: "description",
         content:
-          "PG Prep by Learners Studio: NBE-pattern question bank, eight years of PYQs, timed mocks, Focus Lock sessions and weak-spot analytics for NEET PG.",
+          "Learners Studio: NEET UG and NEET PG tracks with teaching-first lessons, question banks, PYQs, timed mocks, Focus Lock sessions and weak-spot analytics.",
       },
-      { property: "og:title", content: "PG Prep — Smarter NEET PG Preparation" },
+      { property: "og:title", content: "Smarter NEET UG & NEET PG Preparation" },
       {
         property: "og:description",
         content:
-          "Question bank, PYQ vault, timed mocks, Focus Lock and weak-spot analytics for NEET PG aspirants.",
+          "Lessons, question banks, PYQ vault, timed mocks, Focus Lock and weak-spot analytics for NEET UG and NEET PG aspirants.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://pg-pre.learners-studio.com/welcome" },
@@ -46,7 +46,7 @@ const FEATURES = [
   {
     icon: "quiz",
     title: "MCQ practice",
-    body: "23,000+ exam-oriented questions with detailed explanations.",
+    body: "Exam-oriented question banks for NEET UG and NEET PG, with detailed explanations.",
   },
   {
     icon: "timer",
@@ -247,9 +247,9 @@ function WelcomePage() {
             <div className="flex flex-wrap items-center gap-3">
               <span className="inline-flex items-center gap-2 rounded-full bg-primary/15 px-4 py-1.5 text-xs text-primary ring-1 ring-inset ring-primary/30">
                 <Icon name="school" className="text-[16px]" />
-                NEET PG
+                NEET UG · NEET PG
               </span>
-              <span className="text-xs text-muted-foreground">Your next step in medicine</span>
+              <span className="text-xs text-muted-foreground">Your path into medicine, and beyond</span>
             </div>
 
             <h1 className="mt-7 text-5xl leading-[1.03] tracking-tight sm:text-6xl">
@@ -259,9 +259,9 @@ function WelcomePage() {
             </h1>
 
             <p className="mt-6 max-w-md text-base leading-relaxed text-muted-foreground">
-              Comprehensive, structured NEET PG preparation — an NBE-pattern question bank, eight
-              years of previous-year recalls, timed mocks, Focus Lock sessions and weak-spot
-              analytics, all in one place.
+              Two separate tracks — NEET UG for Class 11–12 and NEET PG for doctors — each with
+              teaching-first lessons, a question bank, previous-year questions, timed mocks, Focus
+              Lock sessions and weak-spot analytics, all in one place.
             </p>
 
             <div className="mt-9 flex flex-wrap items-center gap-3">
@@ -302,7 +302,7 @@ function WelcomePage() {
         <section id="features" className="mx-auto max-w-6xl px-6 py-20">
           <div className="text-center">
             <h2 className="text-3xl leading-tight sm:text-4xl">
-              Built for NEET PG. Designed for your success.
+              Built for NEET UG and NEET PG. Designed for your success.
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
               Everything you need to prepare smarter, stay consistent and hit your target score.
@@ -372,7 +372,7 @@ function WelcomePage() {
 
         <footer className="mx-auto max-w-6xl px-6 pb-16 pt-6 text-center">
           <p className="text-xs text-muted-foreground">
-            PG Prep by Learners Studio · Built for NEET PG aspirants
+            Learners Studio · Built for NEET UG and NEET PG aspirants
           </p>
           <Link
             to="/privacy"

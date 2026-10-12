@@ -93,7 +93,7 @@ export function learnDecks(modules: LearnModule[]): Deck[] {
         });
       }
     });
-    return { id: m.slug, title: m.subject, icon: m.icon, hue: HUES[i % HUES.length]!, cards };
+    return { id: m.slug, title: m.title ?? m.subject, icon: m.icon, hue: HUES[i % HUES.length]!, cards };
   });
 }
 

@@ -7,6 +7,7 @@ import { fetchMockQuestions } from "@/lib/quiz";
 import type { Question } from "@/lib/questions";
 import { cn } from "@/lib/utils";
 import { useTrack } from "@/hooks/useTrack";
+import type { MockLength } from "@/lib/tracks";
 import { localizeHead } from "@/lib/tracks";
 
 export const Route = createFileRoute("/$track/mock")({
@@ -32,16 +33,10 @@ export const Route = createFileRoute("/$track/mock")({
   component: MockPage,
 });
 
-const PRESETS = [
-  { label: "Quick blitz", count: 25, minutes: 25 },
-  { label: "Half paper", count: 50, minutes: 55 },
-  { label: "Grand test", count: 100, minutes: 110 },
-  { label: "Full length", count: 200, minutes: 210 },
-] as const;
-
 function MockPage() {
   const track = useTrack();
-  const [preset, setPreset] = useState<(typeof PRESETS)[number]>(PRESETS[1]);
+  const PRESETS = track.mock.lengths;
+  const [preset, setPreset] = useState<MockLength>(PRESETS[1] ?? PRESETS[0]!);
   const [subject, setSubject] = useState("all");
   const [questions, setQuestions] = useState<Question[] | null>(null);
   const [loading, setLoading] = useState(false);

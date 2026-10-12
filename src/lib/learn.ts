@@ -102,7 +102,10 @@ export type SubjectGroup = string;
 export type LearnModule = {
   slug: string;
   group: SubjectGroup;
+  /** QBank subject this module practises (also its colour). */
   subject: string;
+  /** Display name when several modules share a subject (e.g. "Mechanics" in Physics). */
+  title?: string;
   icon: string;
   cover?: Figure;
   blurb: string;
@@ -110,6 +113,9 @@ export type LearnModule = {
   objectives: string[];
   concepts: Concept[];
 };
+
+/** Name to show for a module. */
+export const moduleTitle = (m: Pick<LearnModule, "subject" | "title">) => m.title ?? m.subject;
 
 /** Rendered image URL for a Commons file. */
 export function figureUrl(file: string, width = 900) {

@@ -19,7 +19,7 @@ export const Route = createFileRoute("/$track/learn/$subject")({
     const track = trackBySlug(params.track);
     const mod = track && getTrackModule(track, params.subject);
     if (!track || !mod) throw notFound();
-    return { subject: mod.subject, blurb: mod.blurb, brand: `${track.brand.a} Prep` };
+    return { subject: mod.title ?? mod.subject, blurb: mod.blurb, brand: `${track.brand.a} Prep` };
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
@@ -205,7 +205,7 @@ function LearnSubject() {
       emitGameEvent({
         type: "celebrate",
         kind: "lesson",
-        title: `${mod.subject} complete!`,
+        title: `${mod.title ?? mod.subject} complete!`,
         subtitle: "Every concept in this module is learned. Lock it in with a QBank drill.",
         icon: "workspace_premium",
       });
@@ -234,7 +234,7 @@ function LearnSubject() {
           <div className="p-5 sm:p-6">
             <p className="label-eyebrow">Subject module</p>
             <h1 className="flex items-center gap-2 text-3xl">
-              {mod.subject}
+              {mod.title ?? mod.subject}
               {allDone ? (
                 <Icon name="workspace_premium" filled className="text-[30px] text-xp" />
               ) : null}
@@ -362,7 +362,7 @@ function LearnSubject() {
                     <span className="chip shrink-0 whitespace-nowrap text-xp">+15 XP</span>
                   )}
                 </div>
-                <ConceptBody c={selected} />
+                <ConceptBody c={selected} caseLabel={track.caseLabel} />
                 <div className="flex flex-wrap items-center justify-between gap-3 border-t-2 border-glass-line px-5 py-4">
                   <button
                     type="button"
@@ -413,7 +413,7 @@ function LearnSubject() {
                 params={{ track: track.slug, subject: m.slug }}
                 className="chip hover:text-primary"
               >
-                {m.subject}
+                {m.title ?? m.subject}
               </Link>
             ))}
         </div>

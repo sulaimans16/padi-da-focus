@@ -142,13 +142,17 @@ function FlowBlock({ flow }: { flow: Flow }) {
   );
 }
 
-function VignetteBlock({ v }: { v: Vignette }) {
+function VignetteBlock({ v, label }: { v: Vignette; label: string }) {
   const [show, setShow] = useState(false);
   return (
     <div className="mt-6 rounded-2xl border-2 border-glass-line p-4">
       <p className="label-eyebrow flex items-center gap-1.5 text-primary">
-        <Icon name="clinical_notes" filled className="text-[16px]" />
-        Clinical case
+        <Icon
+          name={label === "Clinical case" ? "clinical_notes" : "calculate"}
+          filled
+          className="text-[16px]"
+        />
+        {label}
       </p>
       <p className="clinical-text mt-2">{v.stem}</p>
       <AnimatePresence initial={false} mode="wait">
@@ -289,7 +293,13 @@ function KeyPoints({ points }: { points: string[] }) {
   );
 }
 
-export function ConceptBody({ c }: { c: Concept }) {
+export function ConceptBody({
+  c,
+  caseLabel = "Clinical case",
+}: {
+  c: Concept;
+  caseLabel?: string;
+}) {
   return (
     <div className="p-5 sm:p-6">
       {c.figure ? <FigureBlock figure={c.figure} /> : null}
@@ -310,6 +320,24 @@ export function ConceptBody({ c }: { c: Concept }) {
       <p className="clinical-text mt-1">{c.mechanism}</p>
 
       <KeyPoints points={c.points} />
+
+      {c.formulae?.length ? (
+        <div className="mt-6">
+          <h3 className="label-eyebrow">Key formulae</h3>
+          <ul className="mt-2 grid gap-2 sm:grid-cols-2">
+            {c.formulae.map((f) => (
+              <li
+                key={f.label}
+                className="rounded-2xl border-2 border-glass-line bg-surface-2/40 p-3"
+              >
+                <p className="text-xs font-semibold text-muted-foreground">{f.label}</p>
+                <p className="mt-1 font-mono text-[15px] font-semibold text-foreground">{f.expr}</p>
+                {f.note ? <p className="mt-1 text-xs text-muted-foreground">{f.note}</p> : null}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
 
       {c.flow ? <FlowBlock flow={c.flow} /> : null}
 
@@ -378,7 +406,7 @@ export function ConceptBody({ c }: { c: Concept }) {
         </div>
       ) : null}
 
-      {c.vignette ? <VignetteBlock v={c.vignette} /> : null}
+      {c.vignette ? <VignetteBlock v={c.vignette} label={caseLabel} /> : null}
 
       <div className="mt-6 rounded-2xl border-2 border-primary/40 bg-tint/60 p-4">
         <p className="label-eyebrow flex items-center gap-1.5 text-primary">

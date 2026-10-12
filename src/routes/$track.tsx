@@ -34,5 +34,11 @@ export const Route = createFileRoute("/$track")({
     }
     throw notFound();
   },
-  component: () => <Outlet />,
+  component: TrackLayout,
 });
+
+// Keyed by track so every screen remounts with fresh state when the exam changes.
+function TrackLayout() {
+  const { track } = Route.useParams();
+  return <Outlet key={track} />;
+}

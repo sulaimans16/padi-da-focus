@@ -46,7 +46,7 @@ function ModuleTile({ m, learned }: { m: LearnModule; learned: number }) {
       <div className="flex flex-1 flex-col border-t-2 border-glass-line p-4">
         <div className="flex items-center gap-2">
           <Icon name={m.icon} filled className="text-[20px] text-primary" />
-          <h3 className="text-base font-bold">{m.subject}</h3>
+          <h3 className="text-base font-bold">{m.title ?? m.subject}</h3>
           <span className="ml-auto text-[11px] font-semibold text-muted-foreground">
             {total} concepts
           </span>
@@ -151,7 +151,9 @@ function LearnIndex() {
                   <Icon name={m.icon} filled className="text-[22px] text-primary" />
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-sm font-semibold">{c.title}</span>
-                    <span className="block text-xs text-muted-foreground">{m.subject}</span>
+                    <span className="block text-xs text-muted-foreground">
+                      {m.title ?? m.subject}
+                    </span>
                   </span>
                   {done.has(`${m.slug}/${c.id}`) ? (
                     <Icon name="check_circle" filled className="text-[18px] text-xp" />

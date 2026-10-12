@@ -20,6 +20,7 @@ export type Database = {
           context: string
           correct: boolean
           created_at: string
+          exam: string
           id: string
           question_id: string
           seconds: number
@@ -32,6 +33,7 @@ export type Database = {
           context?: string
           correct: boolean
           created_at?: string
+          exam?: string
           id?: string
           question_id: string
           seconds?: number
@@ -44,6 +46,7 @@ export type Database = {
           context?: string
           correct?: boolean
           created_at?: string
+          exam?: string
           id?: string
           question_id?: string
           seconds?: number
@@ -56,18 +59,21 @@ export type Database = {
       bookmarks: {
         Row: {
           created_at: string
+          exam: string
           id: string
           question_id: string
           user_id: string
         }
         Insert: {
           created_at?: string
+          exam?: string
           id?: string
           question_id: string
           user_id: string
         }
         Update: {
           created_at?: string
+          exam?: string
           id?: string
           question_id?: string
           user_id?: string
@@ -207,6 +213,7 @@ export type Database = {
           completed: boolean
           created_at: string
           escapes: number
+          exam: string
           id: string
           minutes: number
           planned_minutes: number
@@ -217,6 +224,7 @@ export type Database = {
           completed?: boolean
           created_at?: string
           escapes?: number
+          exam?: string
           id?: string
           minutes?: number
           planned_minutes?: number
@@ -227,6 +235,7 @@ export type Database = {
           completed?: boolean
           created_at?: string
           escapes?: number
+          exam?: string
           id?: string
           minutes?: number
           planned_minutes?: number
@@ -243,6 +252,7 @@ export type Database = {
           created_at: string
           current_combo: number
           daily_goal: number
+          exam: string
           last_attempt_at: string | null
           last_streak_day: string | null
           league_opt_out: boolean
@@ -262,6 +272,7 @@ export type Database = {
           created_at?: string
           current_combo?: number
           daily_goal?: number
+          exam?: string
           last_attempt_at?: string | null
           last_streak_day?: string | null
           league_opt_out?: boolean
@@ -281,6 +292,7 @@ export type Database = {
           created_at?: string
           current_combo?: number
           daily_goal?: number
+          exam?: string
           last_attempt_at?: string | null
           last_streak_day?: string | null
           league_opt_out?: boolean
@@ -298,6 +310,7 @@ export type Database = {
       goals: {
         Row: {
           created_at: string
+          exam: string
           id: string
           target_at: string
           title: string
@@ -306,6 +319,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          exam?: string
           id?: string
           target_at: string
           title?: string
@@ -314,6 +328,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          exam?: string
           id?: string
           target_at?: string
           title?: string
@@ -326,6 +341,7 @@ export type Database = {
         Row: {
           cohort: number
           created_at: string
+          exam: string
           tier: number
           user_id: string
           week_start: string
@@ -333,6 +349,7 @@ export type Database = {
         Insert: {
           cohort: number
           created_at?: string
+          exam?: string
           tier: number
           user_id: string
           week_start: string
@@ -340,6 +357,7 @@ export type Database = {
         Update: {
           cohort?: number
           created_at?: string
+          exam?: string
           tier?: number
           user_id?: string
           week_start?: string
@@ -350,6 +368,7 @@ export type Database = {
         Row: {
           created_at: string
           due_at: string
+          exam: string
           question_id: string
           stage: number
           subject: string
@@ -358,6 +377,7 @@ export type Database = {
         Insert: {
           created_at?: string
           due_at?: string
+          exam?: string
           question_id: string
           stage?: number
           subject?: string
@@ -366,6 +386,7 @@ export type Database = {
         Update: {
           created_at?: string
           due_at?: string
+          exam?: string
           question_id?: string
           stage?: number
           subject?: string
@@ -400,6 +421,7 @@ export type Database = {
           created_at: string
           difficulty: string
           distractors: Json
+          exam: string
           explanation: string
           high_yield: string
           id: string
@@ -419,6 +441,7 @@ export type Database = {
           created_at?: string
           difficulty?: string
           distractors?: Json
+          exam?: string
           explanation: string
           high_yield?: string
           id?: string
@@ -438,6 +461,7 @@ export type Database = {
           created_at?: string
           difficulty?: string
           distractors?: Json
+          exam?: string
           explanation?: string
           high_yield?: string
           id?: string
@@ -505,16 +529,19 @@ export type Database = {
       user_badges: {
         Row: {
           badge_id: string
+          exam: string
           unlocked_at: string
           user_id: string
         }
         Insert: {
           badge_id: string
+          exam?: string
           unlocked_at?: string
           user_id: string
         }
         Update: {
           badge_id?: string
+          exam?: string
           unlocked_at?: string
           user_id?: string
         }
@@ -546,6 +573,7 @@ export type Database = {
           amount: number
           created_at: string
           day: string
+          exam: string
           id: string
           ref_id: string
           source: string
@@ -555,6 +583,7 @@ export type Database = {
           amount: number
           created_at?: string
           day: string
+          exam?: string
           id?: string
           ref_id?: string
           source: string
@@ -564,6 +593,7 @@ export type Database = {
           amount?: number
           created_at?: string
           day?: string
+          exam?: string
           id?: string
           ref_id?: string
           source?: string
@@ -576,15 +606,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      claim_xp: { Args: { _ref: string; _source: string }; Returns: number }
+      claim_xp: {
+        Args: { _exam?: string; _ref: string; _source: string }
+        Returns: number
+      }
       coupon_access_until: { Args: { _user_id: string }; Returns: string }
       game_award_badge: {
-        Args: { _badge: string; _uid: string }
+        Args: { _badge: string; _exam: string; _uid: string }
         Returns: undefined
       }
-      game_check_badges: { Args: { _uid: string }; Returns: undefined }
+      game_check_badges: {
+        Args: { _exam: string; _uid: string }
+        Returns: undefined
+      }
       game_daily_quests: {
-        Args: { _day: string; _uid: string }
+        Args: { _day: string; _exam: string; _uid: string }
         Returns: {
           metric: string
           quest_key: string
@@ -594,7 +630,7 @@ export type Database = {
         }[]
       }
       game_ensure_profile: {
-        Args: { _uid: string }
+        Args: { _exam: string; _uid: string }
         Returns: {
           best_combo: number
           best_combo_today: number
@@ -602,6 +638,7 @@ export type Database = {
           created_at: string
           current_combo: number
           daily_goal: number
+          exam: string
           last_attempt_at: string | null
           last_streak_day: string | null
           league_opt_out: boolean
@@ -622,10 +659,16 @@ export type Database = {
         }
       }
       game_grant_xp: {
-        Args: { _amount: number; _ref: string; _source: string; _uid: string }
+        Args: {
+          _amount: number
+          _exam: string
+          _ref: string
+          _source: string
+          _uid: string
+        }
         Returns: number
       }
-      game_local_day: { Args: { _uid: string }; Returns: string }
+      game_local_day: { Args: { _exam: string; _uid: string }; Returns: string }
       game_quest_catalogue: {
         Args: never
         Returns: {
@@ -637,12 +680,16 @@ export type Database = {
         }[]
       }
       game_quest_metric: {
-        Args: { _day: string; _metric: string; _uid: string }
+        Args: { _day: string; _exam: string; _metric: string; _uid: string }
         Returns: number
       }
-      game_settle_streak: { Args: { _uid: string }; Returns: number }
-      get_game_state: { Args: never; Returns: Json }
-      get_league: { Args: never; Returns: Json }
+      game_settle_streak: {
+        Args: { _exam: string; _uid: string }
+        Returns: number
+      }
+      game_valid_exam: { Args: { _exam: string }; Returns: string }
+      get_game_state: { Args: { _exam?: string }; Returns: Json }
+      get_league: { Args: { _exam?: string }; Returns: Json }
       has_active_subscription: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
         Args: {
@@ -669,6 +716,7 @@ export type Database = {
       update_game_settings: {
         Args: {
           _daily_goal?: number
+          _exam?: string
           _league_opt_out?: boolean
           _timezone?: string
         }

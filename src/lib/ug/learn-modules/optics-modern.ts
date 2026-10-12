@@ -143,12 +143,7 @@ export const opticsModern: LearnModule = {
         },
         {
           q: "A convex glass lens (n = 1.5) is immersed in water (n = 1.33). Its focal length:",
-          options: [
-            "Decreases",
-            "Becomes infinite",
-            "Is unchanged",
-            "Increases",
-          ],
+          options: ["Decreases", "Becomes infinite", "Is unchanged", "Increases"],
           answer: 3,
           why: "n₂₁ − 1 falls from 0.5 to about 0.13, so 1/f falls and f increases (about four times).",
         },
@@ -186,9 +181,21 @@ export const opticsModern: LearnModule = {
         title: "Optical instruments",
         columns: ["Instrument", "Magnifying power", "Lens requirement"],
         rows: [
-          ["Simple microscope", "1 + D/f (near point) or D/f (infinity)", "Short focal length convex lens"],
-          ["Compound microscope", "(L/f₀)(D/fₑ)", "Objective and eyepiece both short focus; f₀ < fₑ"],
-          ["Astronomical telescope", "f₀/fₑ", "Objective long focus and wide aperture; eyepiece short focus"],
+          [
+            "Simple microscope",
+            "1 + D/f (near point) or D/f (infinity)",
+            "Short focal length convex lens",
+          ],
+          [
+            "Compound microscope",
+            "(L/f₀)(D/fₑ)",
+            "Objective and eyepiece both short focus; f₀ < fₑ",
+          ],
+          [
+            "Astronomical telescope",
+            "f₀/fₑ",
+            "Objective long focus and wide aperture; eyepiece short focus",
+          ],
         ],
       },
       pitfalls: [
@@ -249,7 +256,11 @@ export const opticsModern: LearnModule = {
         title: "Interference versus diffraction",
         columns: ["Feature", "Interference (YDSE)", "Single-slit diffraction"],
         rows: [
-          ["Origin", "Superposition from two coherent sources", "Superposition of wavelets from one slit"],
+          [
+            "Origin",
+            "Superposition from two coherent sources",
+            "Superposition of wavelets from one slit",
+          ],
           ["Fringe width", "All equal, λD/d", "Central maximum twice as wide as others"],
           ["Intensity", "All bright fringes equally bright", "Falls rapidly away from the centre"],
           ["Condition for dark band", "Path difference (2n − 1)λ/2", "a sinθ = nλ"],
@@ -375,7 +386,11 @@ export const opticsModern: LearnModule = {
         { label: "Energy levels", expr: "Eₙ = −13.6 Z²/n² eV" },
         { label: "Rydberg formula", expr: "1/λ = RZ²(1/n₁² − 1/n₂²)" },
         { label: "Photon emitted", expr: "hν = E(upper) − E(lower)" },
-        { label: "Closest approach", expr: "r₀ = 2kZe²/K", note: "alpha particle of kinetic energy K, head-on" },
+        {
+          label: "Closest approach",
+          expr: "r₀ = 2kZe²/K",
+          note: "alpha particle of kinetic energy K, head-on",
+        },
       ],
       table: {
         title: "Hydrogen spectral series",

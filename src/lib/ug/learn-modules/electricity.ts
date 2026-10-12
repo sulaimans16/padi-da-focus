@@ -184,8 +184,7 @@ export const electricity: LearnModule = {
       vignette: {
         stem: "How much work is needed to bring a 2 μC charge from infinity to a point 0.3 m from a fixed 5 μC charge (k = 9 × 10⁹ N m² C⁻²)?",
         answer: "0.3 J",
-        reasoning:
-          "W = U = kq₁q₂/r = 9 × 10⁹ × 2 × 10⁻⁶ × 5 × 10⁻⁶ / 0.3 = 0.09/0.3 = 0.3 J.",
+        reasoning: "W = U = kq₁q₂/r = 9 × 10⁹ × 2 × 10⁻⁶ × 5 × 10⁻⁶ / 0.3 = 0.09/0.3 = 0.3 J.",
       },
       highYield:
         "E = −dV/dr; equipotentials ⊥ field lines; dipole potential zero on the equatorial line; conductor = equipotential.",
@@ -360,11 +359,26 @@ export const electricity: LearnModule = {
       flow: {
         title: "Solving a network with Kirchhoff's rules",
         steps: [
-          { label: "Look for symmetry or balance", detail: "A balanced bridge lets you remove the middle resistor." },
-          { label: "Assign currents", detail: "Use the junction rule so each branch has one unknown current." },
-          { label: "Choose loops", detail: "Pick independent loops and a direction to traverse each." },
-          { label: "Write loop equations", detail: "IR drop is −IR along the current; EMF is +E going − to +." },
-          { label: "Solve and interpret", detail: "A negative current simply flows opposite to the assumed direction." },
+          {
+            label: "Look for symmetry or balance",
+            detail: "A balanced bridge lets you remove the middle resistor.",
+          },
+          {
+            label: "Assign currents",
+            detail: "Use the junction rule so each branch has one unknown current.",
+          },
+          {
+            label: "Choose loops",
+            detail: "Pick independent loops and a direction to traverse each.",
+          },
+          {
+            label: "Write loop equations",
+            detail: "IR drop is −IR along the current; EMF is +E going − to +.",
+          },
+          {
+            label: "Solve and interpret",
+            detail: "A negative current simply flows opposite to the assumed direction.",
+          },
         ],
       },
       pitfalls: [
@@ -374,8 +388,7 @@ export const electricity: LearnModule = {
       vignette: {
         stem: "In a metre bridge, an unknown resistance X is in the left gap and 60 Ω in the right gap. The null point is 40 cm from the left end. Find X.",
         answer: "40 Ω",
-        reasoning:
-          "X/60 = l/(100 − l) = 40/60, so X = 60 × 40/60 = 40 Ω.",
+        reasoning: "X/60 = l/(100 − l) = 40/60, so X = 60 × 40/60 = 40 Ω.",
       },
       highYield:
         "Junction rule = charge conservation; loop rule = energy conservation; balanced bridge P/Q = R/S; metre bridge R/S = l/(100 − l).",
@@ -439,8 +452,7 @@ export const electricity: LearnModule = {
         reasoning:
           "I = E/(R + r) = 2/4 = 0.5 A. V = E − Ir = 2 − 0.25 = 1.75 V (= IR = 0.5 × 3.5). Internal loss = I²r = 0.25 × 0.5 = 0.125 W.",
       },
-      highYield:
-        "V = E − Ir on discharge, E + Ir on charge; maximum power E²/4r when R = r.",
+      highYield: "V = E − Ir on discharge, E + Ir on charge; maximum power E²/4r when R = r.",
       checks: [
         {
           q: "A 12 V battery has an internal resistance of 2 Ω. The maximum power it can deliver to an external resistor is:",

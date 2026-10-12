@@ -42,7 +42,11 @@ export const mechanics: LearnModule = {
           expr: "ΔZ/Z = pΔA/A + qΔB/B + rΔC/C",
           note: "for Z = AᵖBᵠ/Cʳ; errors always add",
         },
-        { label: "Error in a sum or difference", expr: "ΔZ = ΔA + ΔB", note: "absolute errors add" },
+        {
+          label: "Error in a sum or difference",
+          expr: "ΔZ = ΔA + ΔB",
+          note: "absolute errors add",
+        },
         { label: "Vernier callipers", expr: "LC = 1 MSD − 1 VSD" },
         { label: "Screw gauge", expr: "LC = pitch / number of circular divisions" },
       ],
@@ -116,7 +120,11 @@ export const mechanics: LearnModule = {
         { label: "Displacement", expr: "s = ut + ½at²" },
         { label: "Velocity–displacement", expr: "v² = u² + 2as" },
         { label: "Distance in nth second", expr: "sₙ = u + a(2n − 1)/2" },
-        { label: "Projectile", expr: "T = 2u sinθ/g, H = u²sin²θ/2g, R = u²sin2θ/g", note: "launch and landing at the same level" },
+        {
+          label: "Projectile",
+          expr: "T = 2u sinθ/g, H = u²sin²θ/2g, R = u²sin2θ/g",
+          note: "launch and landing at the same level",
+        },
         { label: "Trajectory", expr: "y = x tanθ − gx²/(2u²cos²θ)" },
       ],
       table: {
@@ -180,7 +188,11 @@ export const mechanics: LearnModule = {
         { label: "Second law", expr: "F = dp/dt = ma", note: "ma form for constant mass" },
         { label: "Impulse", expr: "J = FΔt = Δp" },
         { label: "Friction", expr: "fₛ ≤ μₛN, fₖ = μₖN" },
-        { label: "Atwood machine", expr: "a = (m₁ − m₂)g/(m₁ + m₂), T = 2m₁m₂g/(m₁ + m₂)", note: "light string, frictionless pulley" },
+        {
+          label: "Atwood machine",
+          expr: "a = (m₁ − m₂)g/(m₁ + m₂), T = 2m₁m₂g/(m₁ + m₂)",
+          note: "light string, frictionless pulley",
+        },
         { label: "Angle of repose", expr: "tanθ = μₛ" },
       ],
       table: {
@@ -254,7 +266,11 @@ export const mechanics: LearnModule = {
           label: "1D elastic, m₂ at rest",
           expr: "v₁ = (m₁ − m₂)u₁/(m₁ + m₂), v₂ = 2m₁u₁/(m₁ + m₂)",
         },
-        { label: "Restitution", expr: "e = (v₂ − v₁)/(u₁ − u₂)", note: "separation speed / approach speed" },
+        {
+          label: "Restitution",
+          expr: "e = (v₂ − v₁)/(u₁ − u₂)",
+          note: "separation speed / approach speed",
+        },
       ],
       table: {
         title: "Types of collision",
@@ -324,16 +340,33 @@ export const mechanics: LearnModule = {
           label: "Banking with friction",
           expr: "v_max = √[rg(μₛ + tanθ)/(1 − μₛ tanθ)]",
         },
-        { label: "Vertical circle", expr: "v_top(min) = √(gr), v_bottom(min) = √(5gr)", note: "body on a string" },
+        {
+          label: "Vertical circle",
+          expr: "v_top(min) = √(gr), v_bottom(min) = √(5gr)",
+          note: "body on a string",
+        },
       ],
       flow: {
         title: "Solving a circular-motion problem",
         steps: [
-          { label: "Identify the centre", detail: "Find the circle and the radius r actually traced." },
-          { label: "List real forces", detail: "Tension, weight, normal reaction, friction — no 'centripetal force' in the diagram." },
+          {
+            label: "Identify the centre",
+            detail: "Find the circle and the radius r actually traced.",
+          },
+          {
+            label: "List real forces",
+            detail:
+              "Tension, weight, normal reaction, friction — no 'centripetal force' in the diagram.",
+          },
           { label: "Resolve towards the centre", detail: "Net inward component = mv²/r." },
-          { label: "Resolve perpendicular", detail: "Usually vertical balance, e.g. N cosθ = mg on a banked road." },
-          { label: "Apply the limit", detail: "Friction ≤ μN, tension ≥ 0, to get the extreme speed." },
+          {
+            label: "Resolve perpendicular",
+            detail: "Usually vertical balance, e.g. N cosθ = mg on a banked road.",
+          },
+          {
+            label: "Apply the limit",
+            detail: "Friction ≤ μN, tension ≥ 0, to get the extreme speed.",
+          },
         ],
       },
       pitfalls: [
@@ -475,8 +508,7 @@ export const mechanics: LearnModule = {
       vignette: {
         stem: "A planet has 8 times the mass and 2 times the radius of Earth. If the escape speed from Earth is 11.2 km s⁻¹, what is it from the planet?",
         answer: "22.4 km s⁻¹",
-        reasoning:
-          "vₑ = √(2GM/R) ∝ √(M/R) = √(8/2) = 2, so vₑ = 2 × 11.2 = 22.4 km s⁻¹.",
+        reasoning: "vₑ = √(2GM/R) ∝ √(M/R) = √(8/2) = 2, so vₑ = 2 × 11.2 = 22.4 km s⁻¹.",
       },
       highYield:
         "vₑ = √2 v₀; satellite KE : PE : E = 1 : −2 : −1; g falls as 1/r² above the surface but linearly below it.",
@@ -517,10 +549,21 @@ export const mechanics: LearnModule = {
       ],
       formulae: [
         { label: "Young's modulus", expr: "Y = FL/(AΔL)" },
-        { label: "Bernoulli", expr: "P + ½ρv² + ρgh = constant", note: "along a streamline, ideal fluid" },
+        {
+          label: "Bernoulli",
+          expr: "P + ½ρv² + ρgh = constant",
+          note: "along a streamline, ideal fluid",
+        },
         { label: "Continuity", expr: "A₁v₁ = A₂v₂" },
-        { label: "Terminal velocity", expr: "v_t = 2r²(ρ − σ)g/(9η)", note: "ρ = sphere density, σ = fluid density" },
-        { label: "Excess pressure", expr: "drop or bubble in liquid: 2T/r; soap bubble in air: 4T/r" },
+        {
+          label: "Terminal velocity",
+          expr: "v_t = 2r²(ρ − σ)g/(9η)",
+          note: "ρ = sphere density, σ = fluid density",
+        },
+        {
+          label: "Excess pressure",
+          expr: "drop or bubble in liquid: 2T/r; soap bubble in air: 4T/r",
+        },
         { label: "Capillary rise", expr: "h = 2T cosθ/(rρg)" },
       ],
       table: {

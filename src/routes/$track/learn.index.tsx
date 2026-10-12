@@ -104,8 +104,8 @@ function LearnIndex() {
       <h1 className="text-3xl sm:text-4xl">Subject modules</h1>
       <MascotSays mood={learnedTotal ? "happy" : "idle"} size={76} className="mt-4 max-w-2xl">
         {learnedTotal
-          ? `${learnedTotal} of ${total} concepts learned across ${track.learn.length} subjects. Pick up where you left off!`
-          : `${total} concepts across ${track.learn.length} ${track.name} subjects. Each one teaches the why, then the line the exam tests.`}
+          ? `${learnedTotal} of ${total} concepts learned across ${track.learn.length} modules. Pick up where you left off!`
+          : `${total} concepts across ${track.learn.length} ${track.name} modules. Each one teaches the why, then the line the exam tests.`}
       </MascotSays>
 
       <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -114,7 +114,11 @@ function LearnIndex() {
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search concepts, e.g. thyroid, Erb's palsy, ECG"
+            placeholder={
+              track.id === "neet_ug"
+                ? "Search concepts, e.g. projectile, Krebs cycle, SN2"
+                : "Search concepts, e.g. thyroid, Erb's palsy, ECG"
+            }
             className="min-w-0 flex-1 bg-transparent text-sm outline-none"
             aria-label="Search concepts"
           />

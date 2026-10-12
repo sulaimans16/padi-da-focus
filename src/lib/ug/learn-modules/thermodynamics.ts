@@ -105,7 +105,11 @@ export const thermodynamics: LearnModule = {
       ],
       formulae: [
         { label: "Conduction", expr: "H = KA(T₁ − T₂)/L" },
-        { label: "Thermal resistance", expr: "R = L/(KA)", note: "series: add R; parallel: add 1/R" },
+        {
+          label: "Thermal resistance",
+          expr: "R = L/(KA)",
+          note: "series: add R; parallel: add 1/R",
+        },
         { label: "Stefan–Boltzmann", expr: "H = eσAT⁴" },
         { label: "Wien's law", expr: "λₘT = b ≈ 2.9 × 10⁻³ m K" },
         { label: "Newton's cooling (average form)", expr: "(T₁ − T₂)/t = k[(T₁ + T₂)/2 − Tₛ]" },
@@ -114,7 +118,12 @@ export const thermodynamics: LearnModule = {
         title: "Modes of heat transfer",
         columns: ["Mode", "Needs a medium?", "Mechanism", "Example"],
         rows: [
-          ["Conduction", "Yes", "Molecular collisions and free electrons, no bulk flow", "Hot handle of a metal spoon"],
+          [
+            "Conduction",
+            "Yes",
+            "Molecular collisions and free electrons, no bulk flow",
+            "Hot handle of a metal spoon",
+          ],
           ["Convection", "Yes (fluid)", "Bulk motion of the fluid", "Sea and land breezes"],
           ["Radiation", "No", "Electromagnetic waves", "Sunlight reaching Earth"],
         ],
@@ -240,10 +249,22 @@ export const thermodynamics: LearnModule = {
       flow: {
         title: "The Carnot cycle",
         steps: [
-          { label: "Isothermal expansion at T₁", detail: "Gas absorbs Q₁ from the source and does work." },
-          { label: "Adiabatic expansion", detail: "Gas cools from T₁ to T₂, doing more work at the cost of internal energy." },
-          { label: "Isothermal compression at T₂", detail: "Work is done on the gas and it rejects Q₂ to the sink." },
-          { label: "Adiabatic compression", detail: "Gas is heated from T₂ back to T₁, closing the cycle." },
+          {
+            label: "Isothermal expansion at T₁",
+            detail: "Gas absorbs Q₁ from the source and does work.",
+          },
+          {
+            label: "Adiabatic expansion",
+            detail: "Gas cools from T₁ to T₂, doing more work at the cost of internal energy.",
+          },
+          {
+            label: "Isothermal compression at T₂",
+            detail: "Work is done on the gas and it rejects Q₂ to the sink.",
+          },
+          {
+            label: "Adiabatic compression",
+            detail: "Gas is heated from T₂ back to T₁, closing the cycle.",
+          },
         ],
       },
       pitfalls: [
@@ -321,8 +342,7 @@ export const thermodynamics: LearnModule = {
       vignette: {
         stem: "At what temperature will the rms speed of hydrogen molecules (M = 2 g mol⁻¹) equal the rms speed of oxygen molecules (M = 32 g mol⁻¹) at 47 °C?",
         answer: "20 K (−253 °C)",
-        reasoning:
-          "v(rms) ∝ √(T/M), so T(H₂)/2 = 320/32 = 10, giving T(H₂) = 20 K.",
+        reasoning: "v(rms) ∝ √(T/M), so T(H₂)/2 = 320/32 = 10, giving T(H₂) = 20 K.",
       },
       highYield:
         "v(rms) ∝ √(T/M); average KE = (3/2)k_BT for every gas; γ = 5/3 monatomic, 7/5 diatomic.",
@@ -502,8 +522,14 @@ export const thermodynamics: LearnModule = {
         steps: [
           { label: "Write both options", detail: "Unknown = known ± beat frequency." },
           { label: "Apply the change", detail: "Waxing lowers the unknown; filing raises it." },
-          { label: "Predict new beat rate", detail: "Work out the beat rate each option would now give." },
-          { label: "Match the observation", detail: "Keep the option consistent with the reported change in beats." },
+          {
+            label: "Predict new beat rate",
+            detail: "Work out the beat rate each option would now give.",
+          },
+          {
+            label: "Match the observation",
+            detail: "Keep the option consistent with the reported change in beats.",
+          },
         ],
       },
       pitfalls: [

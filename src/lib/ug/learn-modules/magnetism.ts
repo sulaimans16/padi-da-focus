@@ -64,8 +64,7 @@ export const magnetism: LearnModule = {
         reasoning:
           "n = 500/0.5 = 1000 m⁻¹. B = μ₀nI = 4π × 10⁻⁷ × 1000 × 2 = 8π × 10⁻⁴ ≈ 2.51 × 10⁻³ T.",
       },
-      highYield:
-        "Wire μ₀I/2πr; loop centre μ₀NI/2R; solenoid μ₀nI; toroid μ₀NI/2πr.",
+      highYield: "Wire μ₀I/2πr; loop centre μ₀NI/2R; solenoid μ₀nI; toroid μ₀NI/2πr.",
       checks: [
         {
           q: "The magnetic field 5 cm from a long straight wire carrying 10 A is:",
@@ -137,7 +136,12 @@ export const magnetism: LearnModule = {
       checks: [
         {
           q: "Two long parallel wires 1 m apart in vacuum each carry 1 A in the same direction. The force per metre between them is:",
-          options: ["2 × 10⁻⁷ N, repulsive", "2 × 10⁻⁷ N, attractive", "4π × 10⁻⁷ N, attractive", "10⁻⁷ N, attractive"],
+          options: [
+            "2 × 10⁻⁷ N, repulsive",
+            "2 × 10⁻⁷ N, attractive",
+            "4π × 10⁻⁷ N, attractive",
+            "10⁻⁷ N, attractive",
+          ],
           answer: 1,
           why: "F/L = μ₀I₁I₂/2πd = 2 × 10⁻⁷ × 1 × 1/1 = 2 × 10⁻⁷ N m⁻¹; like currents attract.",
         },
@@ -248,7 +252,12 @@ export const magnetism: LearnModule = {
         rows: [
           ["Susceptibility χ", "Small, negative", "Small, positive", "Very large, positive"],
           ["μᵣ", "Slightly < 1", "Slightly > 1", "≫ 1"],
-          ["In a non-uniform field", "Moves to weaker field", "Moves to stronger field", "Strongly attracted"],
+          [
+            "In a non-uniform field",
+            "Moves to weaker field",
+            "Moves to stronger field",
+            "Strongly attracted",
+          ],
           ["Temperature dependence", "Practically none", "χ ∝ 1/T", "Para above Curie temperature"],
           ["Examples", "Bi, Cu, Pb, H₂O", "Al, Na, Ca, O₂", "Fe, Co, Ni, Gd"],
         ],
@@ -312,7 +321,10 @@ export const magnetism: LearnModule = {
           { label: "Original field", detail: "Note the direction of B through the loop." },
           { label: "Change", detail: "Is the flux through the loop increasing or decreasing?" },
           { label: "Opposition", detail: "Induced B opposes an increase, or supports a decrease." },
-          { label: "Current direction", detail: "Use the right-hand rule to get the current that makes that induced B." },
+          {
+            label: "Current direction",
+            detail: "Use the right-hand rule to get the current that makes that induced B.",
+          },
         ],
       },
       pitfalls: [
@@ -385,11 +397,9 @@ export const magnetism: LearnModule = {
       vignette: {
         stem: "The current in a 0.5 H coil falls uniformly from 2 A to zero in 0.05 s. Find the average self-induced EMF and the energy initially stored.",
         answer: "20 V; 1 J",
-        reasoning:
-          "ε = L ΔI/Δt = 0.5 × 2/0.05 = 20 V. U = ½LI² = ½ × 0.5 × 2² = 1 J.",
+        reasoning: "ε = L ΔI/Δt = 0.5 × 2/0.05 = 20 V. U = ½LI² = ½ × 0.5 × 2² = 1 J.",
       },
-      highYield:
-        "ε = −L dI/dt; L = μ₀N²A/l ∝ N²; U = ½LI²; inductance is electrical inertia.",
+      highYield: "ε = −L dI/dt; L = μ₀N²A/l ∝ N²; U = ½LI²; inductance is electrical inertia.",
       checks: [
         {
           q: "The number of turns of a solenoid is doubled keeping its length and area fixed. Its self-inductance becomes:",

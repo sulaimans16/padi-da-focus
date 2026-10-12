@@ -12,6 +12,7 @@ import { Icon } from "@/components/Primitives";
 import { SPRING } from "@/components/motion/Reveal";
 import { answerFeedback } from "@/lib/game-feedback";
 import { cn } from "@/lib/utils";
+import { useTrack } from "@/hooks/useTrack";
 
 const DIFF_LABEL: Record<Question["difficulty"], string> = {
   easy: "Easy",
@@ -30,6 +31,7 @@ export function QuestionCard({
   total: number;
   context: "question_bank" | "pyq";
 }) {
+  const track = useTrack();
   const [selected, setSelected] = useState<string | null>(null);
   const [expanded, setExpanded] = useState(false);
   const [feedback, setFeedback] = useState<ReturnType<typeof answerFeedback> | null>(null);
@@ -90,15 +92,14 @@ export function QuestionCard({
           <span className="font-mono text-xs font-bold text-muted-foreground">
             Q{index + 1}/{total}
           </span>
-          <span
-            className="chip"
-            style={{ backgroundColor: `${accent}1f`, color: accent }}
-          >
+          <span className="chip" style={{ backgroundColor: `${accent}1f`, color: accent }}>
             {question.topic}
           </span>
           <span className="chip">{DIFF_LABEL[question.difficulty]}</span>
           {question.isPyq && (
-            <span className="chip text-primary">{question.source ?? `PYQ ${question.pyqYear}`}</span>
+            <span className="chip text-primary">
+              {question.source ?? `PYQ ${question.pyqYear}`}
+            </span>
           )}
           {(question.repeatCount ?? 0) >= 3 && (
             <span className="chip text-destructive">
@@ -125,12 +126,15 @@ export function QuestionCard({
       <div className="grid gap-0 lg:grid-cols-12">
         {/* Clinical vignette */}
         <div className="border-b border-border p-5 lg:col-span-7 lg:border-b-0 lg:border-r">
-          <p className="label-eyebrow mb-2">Clinical vignette</p>
-          <p className="clinical-text text-foreground">{question.stem}</p>
+          <p className="label-eyebrow mb-2">
+            {track.id === "neet_ug" ? "Question" : "Clinical vignette"}
+          </p>
+          {/* pre-line keeps statement lists and match-the-column rows on their own lines */}
+          <p className="clinical-text whitespace-pre-line text-foreground">{question.stem}</p>
           {question.imageUrl ? (
             <img
               src={question.imageUrl}
-              alt={`Clinical figure for: ${question.stem.slice(0, 80)}`}
+              alt={`Figure for: ${question.stem.slice(0, 80)}`}
               loading="lazy"
               className="mt-3 max-h-72 w-full rounded-lg border border-border bg-surface-2 object-contain"
             />
@@ -193,10 +197,15 @@ export function QuestionCard({
                     : "bg-destructive text-destructive-foreground",
                 )}
               >
-                <Icon name={selected === question.correctOptionId ? "check" : "close"} className="text-[22px]" />
+                <Icon
+                  name={selected === question.correctOptionId ? "check" : "close"}
+                  className="text-[22px]"
+                />
               </span>
               <p className="min-w-0 flex-1 text-sm font-semibold">{feedback.message}</p>
-              <span className="shrink-0 font-display text-sm font-bold text-xp">+{feedback.amount} XP</span>
+              <span className="shrink-0 font-display text-sm font-bold text-xp">
+                +{feedback.amount} XP
+              </span>
             </motion.div>
           )}
 
@@ -208,10 +217,7 @@ export function QuestionCard({
                 </span>{" "}
                 {question.oneLiner}
               </p>
-              <button
-                onClick={() => setExpanded((v) => !v)}
-                className="label-eyebrow text-primary"
-              >
+              <button onClick={() => setExpanded((v) => !v)} className="label-eyebrow text-primary">
                 {expanded ? "Collapse explanation" : "Full explanation"}
               </button>
               {expanded && (
@@ -220,7 +226,9 @@ export function QuestionCard({
                   <ul className="space-y-1">
                     {Object.entries(question.distractors).map(([id, why]) => (
                       <li key={id}>
-                        <span className="font-mono font-bold uppercase text-destructive">{id})</span>{" "}
+                        <span className="font-mono font-bold uppercase text-destructive">
+                          {id})
+                        </span>{" "}
                         {why}
                       </li>
                     ))}

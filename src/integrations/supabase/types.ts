@@ -244,6 +244,78 @@ export type Database = {
         }
         Relationships: []
       }
+      friend_challenges: {
+        Row: {
+          created_at: string
+          creator: string
+          creator_answers: Json | null
+          creator_score: number | null
+          creator_seconds: number | null
+          exam: string
+          expires_at: string
+          id: string
+          opponent: string
+          opponent_answers: Json | null
+          opponent_score: number | null
+          opponent_seconds: number | null
+          question_ids: string[]
+        }
+        Insert: {
+          created_at?: string
+          creator: string
+          creator_answers?: Json | null
+          creator_score?: number | null
+          creator_seconds?: number | null
+          exam?: string
+          expires_at?: string
+          id?: string
+          opponent: string
+          opponent_answers?: Json | null
+          opponent_score?: number | null
+          opponent_seconds?: number | null
+          question_ids: string[]
+        }
+        Update: {
+          created_at?: string
+          creator?: string
+          creator_answers?: Json | null
+          creator_score?: number | null
+          creator_seconds?: number | null
+          exam?: string
+          expires_at?: string
+          id?: string
+          opponent?: string
+          opponent_answers?: Json | null
+          opponent_score?: number | null
+          opponent_seconds?: number | null
+          question_ids?: string[]
+        }
+        Relationships: []
+      }
+      friendships: {
+        Row: {
+          created_at: string
+          requested_by: string
+          status: string
+          user_a: string
+          user_b: string
+        }
+        Insert: {
+          created_at?: string
+          requested_by: string
+          status: string
+          user_a: string
+          user_b: string
+        }
+        Update: {
+          created_at?: string
+          requested_by?: string
+          status?: string
+          user_a?: string
+          user_b?: string
+        }
+        Relationships: []
+      }
       game_profiles: {
         Row: {
           best_combo: number
@@ -391,6 +463,24 @@ export type Database = {
           stage?: number
           subject?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      monthly_event_awards: {
+        Row: {
+          awarded_at: string
+          exam: string
+          month: string
+        }
+        Insert: {
+          awarded_at?: string
+          exam: string
+          month: string
+        }
+        Update: {
+          awarded_at?: string
+          exam?: string
+          month?: string
         }
         Relationships: []
       }
@@ -642,11 +732,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      accept_invite: { Args: { _username: string }; Returns: string }
       claim_xp: {
         Args: { _exam?: string; _ref: string; _source: string }
         Returns: number
       }
       coupon_access_until: { Args: { _user_id: string }; Returns: string }
+      create_challenge: {
+        Args: { _exam: string; _opponent: string; _question_ids: string[] }
+        Returns: string
+      }
       game_award_badge: {
         Args: { _badge: string; _exam: string; _uid: string }
         Returns: undefined
@@ -724,24 +819,10 @@ export type Database = {
         Returns: number
       }
       game_valid_exam: { Args: { _exam: string }; Returns: string }
+      get_friends: { Args: { _exam?: string }; Returns: Json }
       get_game_state: { Args: { _exam?: string }; Returns: Json }
       get_league: { Args: { _exam?: string }; Returns: Json }
-      get_friends: { Args: { _exam?: string }; Returns: Json }
       get_monthly_event: { Args: { _exam?: string }; Returns: Json }
-      list_challenges: { Args: { _exam?: string }; Returns: Json }
-      set_username: { Args: { _name: string }; Returns: string }
-      request_friend: { Args: { _username: string }; Returns: string }
-      respond_friend: { Args: { _other: string; _accept: boolean }; Returns: string }
-      remove_friend: { Args: { _other: string }; Returns: undefined }
-      accept_invite: { Args: { _username: string }; Returns: string }
-      create_challenge: {
-        Args: { _exam: string; _opponent: string; _question_ids: string[] }
-        Returns: string
-      }
-      submit_challenge: {
-        Args: { _id: string; _answers: Json; _seconds: number }
-        Returns: Json
-      }
       has_active_subscription: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
         Args: {
@@ -751,8 +832,15 @@ export type Database = {
         Returns: boolean
       }
       is_pro: { Args: { _user_id: string }; Returns: boolean }
+      list_challenges: { Args: { _exam?: string }; Returns: Json }
       my_coupon_access: { Args: never; Returns: string }
       redeem_coupon: { Args: { _code: string }; Returns: Json }
+      remove_friend: { Args: { _other: string }; Returns: undefined }
+      request_friend: { Args: { _username: string }; Returns: string }
+      respond_friend: {
+        Args: { _accept: boolean; _other: string }
+        Returns: string
+      }
       review_flashcard: {
         Args: {
           _card_id: string
@@ -764,6 +852,13 @@ export type Database = {
           _stability: number
         }
         Returns: number
+      }
+      set_username: { Args: { _name: string }; Returns: string }
+      social_are_friends: { Args: { _x: string; _y: string }; Returns: boolean }
+      social_user_by_name: { Args: { _name: string }; Returns: string }
+      submit_challenge: {
+        Args: { _answers: Json; _id: string; _seconds: number }
+        Returns: Json
       }
       update_game_settings: {
         Args: {

@@ -5,7 +5,7 @@ import { Icon } from "@/components/Primitives";
 import { SPRING } from "@/components/motion/Reveal";
 import { ProgressBar } from "@/components/game/Widgets";
 import { Mascot } from "@/components/mascot/Mascot";
-import { loadLastRoadmap, roadmapProgress, type SavedMap } from "@/lib/roadmap-store";
+import { loadLastRoadmap, roadmapProgress, syncRoadmaps, type SavedMap } from "@/lib/roadmap-store";
 import { cn } from "@/lib/utils";
 import { useTrack } from "@/hooks/useTrack";
 
@@ -123,6 +123,14 @@ export function RoadmapCard() {
   useEffect(() => {
     setMap(loadLastRoadmap());
     setReady(true);
+    let live = true;
+    // A plan made on another device shows up here once the account sync lands.
+    void syncRoadmaps().then((m) => {
+      if (live && m) setMap(m);
+    });
+    return () => {
+      live = false;
+    };
   }, []);
 
   if (!ready) return <div className="card-pop h-56" aria-hidden />;

@@ -5,11 +5,13 @@ import { generateRoadmap, type Roadmap } from "@/lib/roadmap.functions";
 import {
   LAST_KEY,
   loadSaved,
-  rememberLastRoadmap,
-  storageKey,
+  markOpened,
+  saveRoadmap,
+  syncRoadmaps,
   type SavedMap,
 } from "@/lib/roadmap-store";
 import { useAccess } from "@/hooks/useAccess";
+import { useAuth } from "@/hooks/useAuth";
 import { useTrack } from "@/hooks/useTrack";
 import { Icon } from "@/components/Primitives";
 import { ProGate } from "@/components/ProGate";
@@ -167,6 +169,7 @@ const SAMPLE: Roadmap = {
 function RoadmapPage() {
   const track = useTrack();
   const { isPro, loading } = useAccess();
+  const { user } = useAuth();
   const generate = useServerFn(generateRoadmap);
 
   const [goal, setGoal] = useState("");
@@ -190,11 +193,37 @@ function RoadmapPage() {
     }
   }, []);
 
+  // Pull plans made on other devices (and push this device's) once signed in.
+  useEffect(() => {
+    if (!user) return;
+    let live = true;
+    void syncRoadmaps().then((m) => {
+      if (!live || !m) return;
+      setCurrent((cur) =>
+        !cur ||
+        cur.goal !== m.goal ||
+        Date.parse(m.updatedAt ?? "") > Date.parse(cur.updatedAt ?? "")
+          ? m
+          : cur,
+      );
+      setGoal((g) => g || m.goal);
+    });
+    return () => {
+      live = false;
+    };
+  }, [user]);
+
   useEffect(() => {
     if (!current) return;
     setDone(new Set(current.done));
-    rememberLastRoadmap(current.goal);
   }, [current]);
+
+  const openedGoal = current?.goal;
+  useEffect(() => {
+    if (current) markOpened(current);
+    // Only when a different plan is opened, not on every progress change.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openedGoal]);
 
   const totalSteps = useMemo(
     () => current?.roadmap.phases.reduce((n, p) => n + p.steps.length, 0) ?? 0,
@@ -217,13 +246,7 @@ function RoadmapPage() {
     setBusy(true);
     try {
       const res = await generate({ data: { goal: q, weeks, exam: track.id } });
-      const saved: SavedMap = { goal: q, roadmap: res.roadmap, done: [] };
-      try {
-        localStorage.setItem(storageKey(q), JSON.stringify(saved));
-      } catch {
-        // storage full — roadmap still shows for this session
-      }
-      setCurrent(saved);
+      setCurrent(saveRoadmap({ goal: q, roadmap: res.roadmap, done: [] }));
       setGoal(q);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Roadmap generation failed.");
@@ -238,14 +261,7 @@ function RoadmapPage() {
     if (next.has(id)) next.delete(id);
     else next.add(id);
     setDone(next);
-    try {
-      localStorage.setItem(
-        storageKey(current.goal),
-        JSON.stringify({ ...current, done: [...next] }),
-      );
-    } catch {
-      // ignore
-    }
+    saveRoadmap({ ...current, done: [...next] }, { debounce: 800 });
   }
 
   if (loading) return null;
@@ -384,6 +400,12 @@ function RoadmapPage() {
           </div>
 
           <ProgressBar value={pct / 100} color="var(--color-xp)" className="mt-3 h-4" />
+          <p className="mt-2 flex items-center gap-1 text-xs text-muted-foreground">
+            <Icon name={user ? "cloud_done" : "smartphone"} className="text-[16px]" />
+            {user
+              ? "Synced to your account, so it follows you to any device."
+              : "Saved on this device. Sign in to keep it on every device."}
+          </p>
 
           <div className="mt-10">
             <RoadmapTrail

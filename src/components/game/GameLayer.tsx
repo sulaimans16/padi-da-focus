@@ -16,7 +16,10 @@ import {
   updateGameSettings,
   type GameEvent,
 } from "@/lib/gamification";
+import { CARD_COLORS, renderShareCard, shareOrDownload } from "@/lib/share-card";
 import { playLevelUp } from "@/lib/sfx";
+import { localizeText, trackById } from "@/lib/tracks";
+import { activeTrackId } from "@/lib/track-state";
 import { cn } from "@/lib/utils";
 
 type Toast = { id: number; amount: number; combo: number };
@@ -121,11 +124,18 @@ export function GameLayer() {
       }
       return;
     }
+    const share = {
+      streak: state.streak,
+      level: snapshot.level,
+      rank: rank.title,
+      xpTotal: state.xpTotal ?? 0,
+    };
     if (snapshot.level > before.level) {
       const promoted = rankFor(before.level).title !== rank.title;
       emitGameEvent({
         type: "celebrate",
         kind: "level",
+        share,
         title: promoted ? `Promoted to ${rank.title}!` : `Level ${snapshot.level}!`,
         subtitle: promoted
           ? `Level ${snapshot.level} reached. Your new rank shows on your profile.`
@@ -138,6 +148,7 @@ export function GameLayer() {
       emitGameEvent({
         type: "celebrate",
         kind: "streak",
+        share,
         title: `${state.streak} day streak!`,
         subtitle: milestone
           ? "Milestone unlocked. This is how toppers are made."
@@ -159,7 +170,10 @@ export function GameLayer() {
   }, [state, level.level, level.next, rank.title, rank.icon]);
 
   const current = queue[0];
+  const mascotBox = useRef<HTMLDivElement>(null);
+  const [sharing, setSharing] = useState<"idle" | "busy" | "downloaded" | "error">("idle");
   useEffect(() => {
+    setSharing("idle");
     if (!current) return;
     playLevelUp();
     setConfetti((c) => c + 1);
@@ -216,7 +230,7 @@ export function GameLayer() {
               onClick={(e) => e.stopPropagation()}
               className="card-pop w-full max-w-sm p-8 text-center"
             >
-              <div className="relative mx-auto w-fit">
+              <div ref={mascotBox} className="relative mx-auto w-fit">
                 <Mascot mood={current.kind === "streak" ? "fire" : "cheer"} size={132} />
                 <motion.span
                   initial={{ scale: 0, rotate: -30 }}
@@ -241,11 +255,37 @@ export function GameLayer() {
                   {current.subtitle}
                 </p>
               ) : null}
+              {current.share ? (
+                <>
+                  <button
+                    type="button"
+                    disabled={sharing === "busy"}
+                    onClick={() => void shareCelebration(current, mascotBox.current, setSharing)}
+                    className="btn-base btn-ghost mt-7 h-12 w-full gap-2 text-base"
+                  >
+                    <Icon
+                      name={sharing === "busy" ? "progress_activity" : "ios_share"}
+                      className={cn("text-[20px]", sharing === "busy" && "animate-spin")}
+                    />
+                    {sharing === "busy" ? "Making your card…" : "Share"}
+                  </button>
+                  {sharing === "downloaded" || sharing === "error" ? (
+                    <p className="mt-2 text-xs text-muted-foreground" role="status">
+                      {sharing === "downloaded"
+                        ? "Card saved to your downloads."
+                        : "Couldn't make the card on this device."}
+                    </p>
+                  ) : null}
+                </>
+              ) : null}
               <button
                 type="button"
                 autoFocus
                 onClick={() => setQueue((q) => q.slice(1))}
-                className="btn-base btn-primary mt-7 h-12 w-full text-base"
+                className={cn(
+                  "btn-base btn-primary h-12 w-full text-base",
+                  current.share ? "mt-3" : "mt-7",
+                )}
               >
                 Continue
               </button>
@@ -255,4 +295,45 @@ export function GameLayer() {
       </AnimatePresence>
     </>
   );
+}
+
+async function shareCelebration(
+  c: Celebration,
+  box: HTMLDivElement | null,
+  setStatus: (s: "idle" | "busy" | "downloaded" | "error") => void,
+) {
+  if (!c.share) return;
+  setStatus("busy");
+  const track = trackById(activeTrackId());
+  const brandName = `${track.brand.a} ${track.brand.b}`;
+  const tag = `#${track.name.replace(/\s+/g, "")}`;
+  const { streak, level, rank, xpTotal } = c.share;
+  const text = localizeText(
+    track,
+    c.kind === "streak"
+      ? `I just hit a ${streak}-day study streak on ${brandName} 🔥 ${tag}`
+      : `Level ${level} (${rank}) on ${brandName} ⚡ ${tag}`,
+  );
+  try {
+    const blob = await renderShareCard({
+      title: c.title,
+      subtitle: c.subtitle,
+      brand: track.brand,
+      accent: c.kind === "streak" ? CARD_COLORS.streak : CARD_COLORS.gem,
+      mascotSvg: box?.querySelector("svg") ?? null,
+      stats: [
+        { label: "Day streak", value: `🔥 ${streak}`, color: CARD_COLORS.streak },
+        { label: rank, value: `Lv ${level}`, color: CARD_COLORS.gem },
+        { label: "Total XP", value: xpTotal.toLocaleString(), color: CARD_COLORS.xp },
+      ],
+    });
+    const result = await shareOrDownload(blob, {
+      title: c.title,
+      text,
+      filename: `${track.brand.a.toLowerCase()}-prep-${c.kind}-${c.kind === "streak" ? streak : level}.png`,
+    });
+    setStatus(result === "downloaded" ? "downloaded" : "idle");
+  } catch {
+    setStatus("error");
+  }
 }

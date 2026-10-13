@@ -195,6 +195,8 @@ export type GameEvent =
       title: string;
       subtitle?: string;
       icon?: string;
+      /** Present on achievements worth sharing; powers the share-card button. */
+      share?: { streak: number; level: number; rank: string; xpTotal: number };
     };
 
 type Listener = (e: GameEvent) => void;

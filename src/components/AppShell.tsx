@@ -25,6 +25,7 @@ type TrackPath =
   | "/$track/pyq"
   | "/$track/mock"
   | "/$track/daily"
+  | "/$track/practice"
   | "/$track/papers"
   | "/$track/tracker"
   | "/$track/weak-spots"
@@ -54,6 +55,7 @@ const PLAY: NavLink[] = [
 ];
 
 const PRIMARY: NavLink[] = [
+  { label: "Practice", icon: "fitness_center", to: "/$track/practice" },
   { label: "QBank", icon: "quiz", to: "/$track/bank" },
   { label: "Mock Tests", icon: "timer", to: "/$track/mock" },
   { label: "PYQ Vault", icon: "history_edu", to: "/$track/pyq" },
@@ -67,7 +69,7 @@ const PRIMARY: NavLink[] = [
 const MOBILE: NavLink[] = [
   { label: "Home", icon: "home", to: "/$track" },
   { label: "Learn", icon: "menu_book", to: "/$track/learn" },
-  { label: "Practice", icon: "bolt", to: "/$track/daily" },
+  { label: "Practice", icon: "bolt", to: "/$track/practice" },
   { label: "Leagues", icon: "trophy", to: "/$track/leagues" },
   { label: "Profile", icon: "person", to: "/$track/profile" },
 ];

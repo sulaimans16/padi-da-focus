@@ -11,6 +11,7 @@ import {
   subjectStats,
 } from "@/lib/tracker";
 import { useTrack } from "@/hooks/useTrack";
+import { ReadinessCard } from "@/components/ReadinessCard";
 import { localizeHead } from "@/lib/tracks";
 
 export const Route = createFileRoute("/$track/_authenticated/tracker")({
@@ -116,6 +117,8 @@ function Tracker() {
           Sign out
         </button>
       </div>
+
+      <ReadinessCard className="mt-6" />
 
       <section className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Kpi

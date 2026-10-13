@@ -210,7 +210,9 @@ function AddQuestionForm({ onSaved }: { onSaved: () => void }) {
         <textarea
           value={stem}
           onChange={(e) => setStem(e.target.value)}
-          placeholder="Clinical vignette / question stem"
+          placeholder={
+            track.id === "neet_ug" ? "Question stem" : "Clinical vignette / question stem"
+          }
           rows={3}
           className={`${field} clinical-text`}
         />

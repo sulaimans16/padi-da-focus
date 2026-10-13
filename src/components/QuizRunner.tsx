@@ -226,7 +226,9 @@ export function QuizRunner({
                 </button>
               </div>
 
-              <p className="mt-4 text-[15px] leading-relaxed clinical-text">{q.stem}</p>
+              <p className="mt-4 whitespace-pre-line text-[15px] leading-relaxed clinical-text">
+                {q.stem}
+              </p>
               {q.imageUrl ? (
                 <img
                   src={q.imageUrl}
@@ -597,7 +599,9 @@ function ResultReview({
                 </Badge>
                 <Badge>{q.subject}</Badge>
               </div>
-              <p className="mt-3 text-sm leading-relaxed clinical-text">{q.stem}</p>
+              <p className="mt-3 whitespace-pre-line text-sm leading-relaxed clinical-text">
+                {q.stem}
+              </p>
               <div className="mt-3 grid gap-2 text-sm">
                 {q.options.map((opt) => (
                   <div

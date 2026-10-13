@@ -5,6 +5,7 @@ import { Icon } from "@/components/Primitives";
 import { CountUp, Reveal, SPRING } from "@/components/motion/Reveal";
 import { BadgeGrid, LevelBar, StreakFlame } from "@/components/game/Widgets";
 import { ShareNote } from "@/components/game/ShareNote";
+import { ReferralCard } from "@/components/social/ReferralCard";
 import { Mascot } from "@/components/mascot/Mascot";
 import { useAuth } from "@/hooks/useAuth";
 import { useGameState } from "@/hooks/useGameState";
@@ -205,6 +206,10 @@ function Profile() {
             <Mascot mood="cheer" size={136} />
           </div>
         </div>
+      </Reveal>
+
+      <Reveal delay={0.03}>
+        <ReferralCard className="mt-5" />
       </Reveal>
 
       <Reveal delay={0.04}>

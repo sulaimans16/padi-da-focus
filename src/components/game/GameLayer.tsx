@@ -66,7 +66,7 @@ function useInviteLinks() {
           type: "celebrate",
           kind: "goal",
           title: "New study buddy!",
-          subtitle: `You and @${name} are now friends. Challenge them from the Friends page.`,
+          subtitle: `You and @${name} are now friends. New here? Answer 10 questions and you both get 7 days of Pro.`,
           icon: "group",
         });
     });

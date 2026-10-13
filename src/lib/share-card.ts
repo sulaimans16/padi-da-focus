@@ -13,6 +13,8 @@ export type ShareCardOptions = {
   brand: { a: string; b: string };
   /** Accent for the glow and the title underline. */
   accent: string;
+  /** Invite line printed at the foot of the card, e.g. "pg-pre.learners-studio.com/neet-pg". */
+  invite?: string | undefined;
   /** The live mascot <svg> to copy onto the card; skipped if null or it fails to load. */
   mascotSvg?: SVGSVGElement | null;
 };
@@ -186,10 +188,19 @@ export async function renderShareCard(opts: ShareCardOptions): Promise<Blob> {
     ctx.fillText(s.label.toUpperCase(), x + chipW / 2, chipY + 134);
   });
 
-  // Footer.
-  ctx.font = `500 30px ${SANS}`;
-  ctx.fillStyle = CARD_COLORS.muted;
-  ctx.fillText("Learners Studio Prep · learners-studio.com", W / 2, H - 70);
+  // Footer: an invitation to join, with the link.
+  if (opts.invite) {
+    ctx.font = `700 34px ${DISPLAY}`;
+    ctx.fillStyle = CARD_COLORS.primary;
+    ctx.fillText(`Study with me on ${opts.brand.a} ${opts.brand.b}`, W / 2, H - 92);
+    ctx.font = `500 28px ${SANS}`;
+    ctx.fillStyle = CARD_COLORS.muted;
+    ctx.fillText(opts.invite, W / 2, H - 48);
+  } else {
+    ctx.font = `500 30px ${SANS}`;
+    ctx.fillStyle = CARD_COLORS.muted;
+    ctx.fillText("Learners Studio Prep · learners-studio.com", W / 2, H - 70);
+  }
 
   return new Promise((resolve, reject) =>
     canvas.toBlob(
@@ -199,11 +210,14 @@ export async function renderShareCard(opts: ShareCardOptions): Promise<Blob> {
   );
 }
 
-/** Native share sheet with the image when supported; otherwise download it. */
+/**
+ * Native share sheet with the image when supported; otherwise download it and
+ * copy the caption (with the invite link) to the clipboard.
+ */
 export async function shareOrDownload(
   blob: Blob,
   { title, text, filename }: { title: string; text: string; filename: string },
-): Promise<"shared" | "downloaded" | "cancelled"> {
+): Promise<"shared" | "downloaded" | "downloaded+copied" | "cancelled"> {
   const file = new File([blob], filename, { type: "image/png" });
   const nav = typeof navigator !== "undefined" ? navigator : undefined;
   if (nav?.canShare?.({ files: [file] }) && nav.share) {
@@ -223,5 +237,74 @@ export async function shareOrDownload(
   a.click();
   a.remove();
   window.setTimeout(() => URL.revokeObjectURL(url), 2000);
-  return "downloaded";
+  try {
+    await nav?.clipboard?.writeText(text);
+    return "downloaded+copied";
+  } catch {
+    return "downloaded";
+  }
+}
+
+// ---------- achievements ----------
+
+export type ShareStatus = "idle" | "busy" | "downloaded" | "downloaded+copied" | "error";
+
+export type AchievementShare = {
+  /** level / streak come from celebrations; progress is the always-available profile share. */
+  kind: "level" | "streak" | "progress";
+  title: string;
+  subtitle?: string | undefined;
+  stats: { streak: number; level: number; rank: string; xpTotal: number };
+  track: { slug: string; name: string; brand: { a: string; b: string } };
+  mascotSvg?: SVGSVGElement | null;
+};
+
+/** The link a shared card invites friends to: this site's landing page for the track. */
+export function inviteUrl(trackSlug: string) {
+  const origin =
+    typeof window !== "undefined" ? window.location.origin : "https://pg-pre.learners-studio.com";
+  return `${origin}/${trackSlug}`;
+}
+
+/** Caption for the share sheet / clipboard, ending with the invite link. */
+export function shareCaption(a: AchievementShare) {
+  const brand = `${a.track.brand.a} ${a.track.brand.b}`;
+  const tag = `#${a.track.name.replace(/\s+/g, "")}`;
+  const { streak, level, rank, xpTotal } = a.stats;
+  const line =
+    a.kind === "streak"
+      ? `I just hit a ${streak}-day study streak on ${brand} 🔥`
+      : a.kind === "level"
+        ? `Level ${level} (${rank}) on ${brand} ⚡`
+        : `Level ${level} ${rank} · ${streak}-day streak · ${xpTotal.toLocaleString()} XP on ${brand} 📚`;
+  return `${line} Join me and study for ${a.track.name} together: ${inviteUrl(a.track.slug)} ${tag}`;
+}
+
+/** Draw the card for an achievement and share (or download) it. */
+export async function shareAchievement(a: AchievementShare): Promise<ShareStatus> {
+  const { streak, level, rank, xpTotal } = a.stats;
+  const blob = await renderShareCard({
+    title: a.title,
+    subtitle: a.subtitle,
+    brand: a.track.brand,
+    accent:
+      a.kind === "streak"
+        ? CARD_COLORS.streak
+        : a.kind === "level"
+          ? CARD_COLORS.gem
+          : CARD_COLORS.primary,
+    invite: inviteUrl(a.track.slug).replace(/^https?:\/\//, ""),
+    mascotSvg: a.mascotSvg ?? null,
+    stats: [
+      { label: "Day streak", value: `🔥 ${streak}`, color: CARD_COLORS.streak },
+      { label: rank, value: `Lv ${level}`, color: CARD_COLORS.gem },
+      { label: "Total XP", value: xpTotal.toLocaleString(), color: CARD_COLORS.xp },
+    ],
+  });
+  const result = await shareOrDownload(blob, {
+    title: a.title,
+    text: shareCaption(a),
+    filename: `${a.track.brand.a.toLowerCase()}-prep-${a.kind}-${a.kind === "streak" ? streak : level}.png`,
+  });
+  return result === "shared" || result === "cancelled" ? "idle" : result;
 }

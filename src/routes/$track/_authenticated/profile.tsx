@@ -1,15 +1,18 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Icon } from "@/components/Primitives";
 import { CountUp, Reveal, SPRING } from "@/components/motion/Reveal";
 import { BadgeGrid, LevelBar, StreakFlame } from "@/components/game/Widgets";
+import { ShareNote } from "@/components/game/ShareNote";
+import { Mascot } from "@/components/mascot/Mascot";
 import { useAuth } from "@/hooks/useAuth";
 import { useGameState } from "@/hooks/useGameState";
 import { doctorName } from "@/lib/doctor-name";
 import { SignOutButton } from "@/components/SignOutButton";
 import { BADGES, DAILY_GOALS, updateGameSettings } from "@/lib/gamification";
 import { todayKey } from "@/lib/quiz";
+import { shareAchievement, type ShareStatus } from "@/lib/share-card";
 import { isMuted, setMuted } from "@/lib/sfx";
 import { cn } from "@/lib/utils";
 import { useTrack } from "@/hooks/useTrack";
@@ -73,6 +76,8 @@ function Profile() {
   const [saving, setSaving] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => setMutedState(isMuted()), []);
+  const shareMascot = useRef<HTMLDivElement>(null);
+  const [sharing, setSharing] = useState<ShareStatus>("idle");
 
   const name = doctorName(displayName, user?.email);
   const goal = state?.dailyGoal ?? 50;
@@ -86,6 +91,33 @@ function Profile() {
       setError(e instanceof Error ? e.message : "Couldn't save");
     } finally {
       setSaving(null);
+    }
+  };
+
+  const shareProgress = async () => {
+    setSharing("busy");
+    const streak = state?.streak ?? 0;
+    try {
+      setSharing(
+        await shareAchievement({
+          kind: "progress",
+          title: `Level ${level.level} · ${rank.title}`,
+          subtitle:
+            streak > 0
+              ? `${streak}-day study streak and counting. Come study with me!`
+              : "Building my prep one day at a time. Come study with me!",
+          stats: {
+            streak,
+            level: level.level,
+            rank: rank.title,
+            xpTotal: state?.xpTotal ?? 0,
+          },
+          track,
+          mascotSvg: shareMascot.current?.querySelector("svg") ?? null,
+        }),
+      );
+    } catch {
+      setSharing("error");
     }
   };
 
@@ -145,6 +177,32 @@ function Profile() {
                 rankTitle={`${(level.next - (state?.xpTotal ?? 0)).toLocaleString()} XP to level ${level.level + 1}`}
               />
             </div>
+          </div>
+          <div className="flex shrink-0 flex-col items-stretch sm:w-56">
+            <button
+              type="button"
+              disabled={sharing === "busy" || !state}
+              onClick={() => void shareProgress()}
+              className="btn-base btn-primary h-12 w-full gap-2 text-base"
+            >
+              <Icon
+                name={sharing === "busy" ? "progress_activity" : "ios_share"}
+                className={cn("text-[20px]", sharing === "busy" && "animate-spin")}
+              />
+              {sharing === "busy" ? "Making your card…" : "Share & invite"}
+            </button>
+            <p className="mt-1.5 text-center text-xs text-muted-foreground">
+              Share your progress with a link for friends to join.
+            </p>
+            <ShareNote status={sharing} />
+          </div>
+          {/* Off-screen Dr. Pulse, copied onto the share card. */}
+          <div
+            ref={shareMascot}
+            aria-hidden
+            className="pointer-events-none fixed -left-[9999px] top-0"
+          >
+            <Mascot mood="cheer" size={136} />
           </div>
         </div>
       </Reveal>

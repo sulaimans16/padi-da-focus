@@ -400,18 +400,21 @@ export type Database = {
           display_name: string
           id: string
           updated_at: string
+          username: string | null
         }
         Insert: {
           created_at?: string
           display_name?: string
           id: string
           updated_at?: string
+          username?: string | null
         }
         Update: {
           created_at?: string
           display_name?: string
           id?: string
           updated_at?: string
+          username?: string | null
         }
         Relationships: []
       }
@@ -723,6 +726,22 @@ export type Database = {
       game_valid_exam: { Args: { _exam: string }; Returns: string }
       get_game_state: { Args: { _exam?: string }; Returns: Json }
       get_league: { Args: { _exam?: string }; Returns: Json }
+      get_friends: { Args: { _exam?: string }; Returns: Json }
+      get_monthly_event: { Args: { _exam?: string }; Returns: Json }
+      list_challenges: { Args: { _exam?: string }; Returns: Json }
+      set_username: { Args: { _name: string }; Returns: string }
+      request_friend: { Args: { _username: string }; Returns: string }
+      respond_friend: { Args: { _other: string; _accept: boolean }; Returns: string }
+      remove_friend: { Args: { _other: string }; Returns: undefined }
+      accept_invite: { Args: { _username: string }; Returns: string }
+      create_challenge: {
+        Args: { _exam: string; _opponent: string; _question_ids: string[] }
+        Returns: string
+      }
+      submit_challenge: {
+        Args: { _id: string; _answers: Json; _seconds: number }
+        Returns: Json
+      }
       has_active_subscription: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
         Args: {

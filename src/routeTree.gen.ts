@@ -30,6 +30,7 @@ import { Route as TrackPyqRouteImport } from './routes/$track/pyq'
 import { Route as TrackRoadmapRouteImport } from './routes/$track/roadmap'
 import { Route as TrackVideosRouteImport } from './routes/$track/videos'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as TrackAuthenticatedFriendsRouteImport } from './routes/$track/_authenticated/friends'
 import { Route as TrackAuthenticatedLeaguesRouteImport } from './routes/$track/_authenticated/leagues'
 import { Route as TrackAuthenticatedProfileRouteImport } from './routes/$track/_authenticated/profile'
 import { Route as TrackAuthenticatedReviewRouteImport } from './routes/$track/_authenticated/review'
@@ -145,6 +146,12 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const TrackAuthenticatedFriendsRoute =
+  TrackAuthenticatedFriendsRouteImport.update({
+    id: '/friends',
+    path: '/friends',
+    getParentRoute: () => TrackAuthenticatedRouteRoute,
+  } as any)
 const TrackAuthenticatedLeaguesRoute =
   TrackAuthenticatedLeaguesRouteImport.update({
     id: '/leagues',
@@ -227,6 +234,7 @@ export interface FileRoutesByFullPath {
   '/$track/videos': typeof TrackVideosRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/$track/': typeof TrackIndexRoute
+  '/$track/friends': typeof TrackAuthenticatedFriendsRoute
   '/$track/leagues': typeof TrackAuthenticatedLeaguesRoute
   '/$track/profile': typeof TrackAuthenticatedProfileRoute
   '/$track/review': typeof TrackAuthenticatedReviewRoute
@@ -258,6 +266,7 @@ export interface FileRoutesByTo {
   '/$track/roadmap': typeof TrackRoadmapRoute
   '/$track/videos': typeof TrackVideosRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/$track/friends': typeof TrackAuthenticatedFriendsRoute
   '/$track/leagues': typeof TrackAuthenticatedLeaguesRoute
   '/$track/profile': typeof TrackAuthenticatedProfileRoute
   '/$track/review': typeof TrackAuthenticatedReviewRoute
@@ -293,6 +302,7 @@ export interface FileRoutesById {
   '/$track/videos': typeof TrackVideosRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/$track/': typeof TrackIndexRoute
+  '/$track/_authenticated/friends': typeof TrackAuthenticatedFriendsRoute
   '/$track/_authenticated/leagues': typeof TrackAuthenticatedLeaguesRoute
   '/$track/_authenticated/profile': typeof TrackAuthenticatedProfileRoute
   '/$track/_authenticated/review': typeof TrackAuthenticatedReviewRoute
@@ -327,6 +337,7 @@ export interface FileRouteTypes {
     | '/$track/videos'
     | '/admin'
     | '/$track/'
+    | '/$track/friends'
     | '/$track/leagues'
     | '/$track/profile'
     | '/$track/review'
@@ -358,6 +369,7 @@ export interface FileRouteTypes {
     | '/$track/roadmap'
     | '/$track/videos'
     | '/admin'
+    | '/$track/friends'
     | '/$track/leagues'
     | '/$track/profile'
     | '/$track/review'
@@ -392,6 +404,7 @@ export interface FileRouteTypes {
     | '/$track/videos'
     | '/_authenticated/admin'
     | '/$track/'
+    | '/$track/_authenticated/friends'
     | '/$track/_authenticated/leagues'
     | '/$track/_authenticated/profile'
     | '/$track/_authenticated/review'
@@ -566,6 +579,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/$track/_authenticated/friends': {
+      id: '/$track/_authenticated/friends'
+      path: '/friends'
+      fullPath: '/$track/friends'
+      preLoaderRoute: typeof TrackAuthenticatedFriendsRouteImport
+      parentRoute: typeof TrackAuthenticatedRouteRoute
+    }
     '/$track/_authenticated/leagues': {
       id: '/$track/_authenticated/leagues'
       path: '/leagues'
@@ -658,6 +678,7 @@ const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface TrackAuthenticatedRouteRouteChildren {
+  TrackAuthenticatedFriendsRoute: typeof TrackAuthenticatedFriendsRoute
   TrackAuthenticatedLeaguesRoute: typeof TrackAuthenticatedLeaguesRoute
   TrackAuthenticatedProfileRoute: typeof TrackAuthenticatedProfileRoute
   TrackAuthenticatedReviewRoute: typeof TrackAuthenticatedReviewRoute
@@ -667,6 +688,7 @@ interface TrackAuthenticatedRouteRouteChildren {
 
 const TrackAuthenticatedRouteRouteChildren: TrackAuthenticatedRouteRouteChildren =
   {
+    TrackAuthenticatedFriendsRoute: TrackAuthenticatedFriendsRoute,
     TrackAuthenticatedLeaguesRoute: TrackAuthenticatedLeaguesRoute,
     TrackAuthenticatedProfileRoute: TrackAuthenticatedProfileRoute,
     TrackAuthenticatedReviewRoute: TrackAuthenticatedReviewRoute,

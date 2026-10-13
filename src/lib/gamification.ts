@@ -133,6 +133,12 @@ export const BADGES: BadgeDef[] = [
     icon: "trophy",
   },
   { id: "xp_5000", title: "5K Club", description: "Earned 5,000 XP", icon: "star" },
+  {
+    id: "sprint_top10",
+    title: "Sprint Top 10",
+    description: "Finished a monthly sprint in the top 10",
+    icon: "emoji_events",
+  },
 ];
 
 export const badgeById = (id: string) => BADGES.find((b) => b.id === id);

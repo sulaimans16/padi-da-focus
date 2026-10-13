@@ -120,6 +120,13 @@
       "when": 1791903437845,
       "tag": "0016_study_roadmaps",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1791903505901,
+      "tag": "0017_social",
+      "breakpoints": true
     }
   ]
 }

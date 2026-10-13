@@ -13,6 +13,7 @@ import { SPRING } from "@/components/motion/Reveal";
 import { answerFeedback } from "@/lib/game-feedback";
 import { cn } from "@/lib/utils";
 import { useTrack } from "@/hooks/useTrack";
+import { aiQuestion, setAiPageContext } from "@/lib/ai-page-context";
 
 const DIFF_LABEL: Record<Question["difficulty"], string> = {
   easy: "Easy",
@@ -50,9 +51,14 @@ export function QuestionCard({
       .catch(() => undefined);
   }, []);
 
+  // The card the learner last touched is the one Dr. Pulse sees.
+  const shareWithAi = (isAnswered: boolean) =>
+    setAiPageContext({ question: aiQuestion(question, isAnswered) });
+
   const choose = (optionId: string) => {
     if (answered) return;
     setSelected(optionId);
+    shareWithAi(true);
     const isCorrect = optionId === question.correctOptionId;
     setFeedback(answerFeedback(isCorrect));
     logAttempt({
@@ -217,7 +223,13 @@ export function QuestionCard({
                 </span>{" "}
                 {question.oneLiner}
               </p>
-              <button onClick={() => setExpanded((v) => !v)} className="label-eyebrow text-primary">
+              <button
+                onClick={() => {
+                  setExpanded((v) => !v);
+                  shareWithAi(answered);
+                }}
+                className="label-eyebrow text-primary"
+              >
                 {expanded ? "Collapse explanation" : "Full explanation"}
               </button>
               {expanded && (

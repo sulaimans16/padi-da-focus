@@ -14,6 +14,7 @@ import { subjectColor, type Question } from "@/lib/questions";
 import { cn } from "@/lib/utils";
 import { useTrack } from "@/hooks/useTrack";
 import { trackKey } from "@/lib/track-state";
+import { aiQuestion, clearAiPageContext, setAiPageContext } from "@/lib/ai-page-context";
 
 export type QuizSummary = {
   total: number;
@@ -109,6 +110,15 @@ export function QuizRunner({
     shownAt.current = Date.now();
     setFeedback(null);
   }, [index]);
+
+  // Let Dr. Pulse see the question on screen — but never mid-mock, mid-challenge
+  // or mid-speed-round, where it would give the answer away.
+  const answeredCurrent = q ? answers[q.id] != null : false;
+  useEffect(() => {
+    if (!q || speed || (reveal !== "immediate" && !submitted)) return;
+    setAiPageContext({ question: aiQuestion(q, answeredCurrent || submitted) });
+    return clearAiPageContext;
+  }, [q, answeredCurrent, submitted, reveal, speed]);
 
   const summary = useMemo<QuizSummary>(() => {
     const answered = Object.keys(answers).length;

@@ -1,16 +1,12 @@
-import { createFileRoute, useBlocker, useNavigate } from "@tanstack/react-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { ProgressRing } from "@/components/ProgressRing";
-import { NagOverlay } from "@/components/NagOverlay";
-import { playSuccess } from "@/lib/sfx";
-import { recordFocusSession } from "@/lib/tracker";
-import { registerFocus } from "@/lib/gamification";
-
 import {
-  clearActiveSession,
+  endActiveSession,
+  enterFullscreen,
   formatClock,
-  loadActiveSession,
-  logSession,
+  onFocusChange,
+  peekActiveSession,
   remainingSec,
   saveActiveSession,
   type FocusSession,
@@ -40,157 +36,61 @@ export const Route = createFileRoute("/$track/focus")({
 });
 
 const PRESETS = [15, 25, 45, 60];
-const GRACE_MS = 5000;
 
+const SHORTCUTS = [
+  { to: "/$track/practice", label: "Practice", icon: "bolt" },
+  { to: "/$track/bank", label: "QBank", icon: "quiz" },
+  { to: "/$track/learn", label: "Learn", icon: "school" },
+  { to: "/$track/flashcards", label: "Flashcards", icon: "style" },
+] as const;
+
+/**
+ * The Focus Lock timer. The lock itself (countdown, escape detection, outside-link
+ * block, finishing the session) lives in FocusLockLayer so it keeps running on
+ * every page of the app; this page starts it and shows the big timer.
+ */
 function FocusPage() {
   const track = useTrack();
   const navigate = useNavigate();
   const [session, setSession] = useState<FocusSession | null>(null);
   const [remaining, setRemaining] = useState(0);
-  const [nagOpen, setNagOpen] = useState(false);
   const [minutes, setMinutes] = useState(25);
   const [custom, setCustom] = useState("");
   const [subject, setSubject] = useState<string>("");
   const [exitOpen, setExitOpen] = useState(false);
   const [exitText, setExitText] = useState("");
   const [celebrate, setCelebrate] = useState(false);
-  const lastNagRef = useRef(0);
-  const hiddenTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Rehydrate an in-flight lock so a refresh can't dodge it.
   useEffect(() => {
-    const active = loadActiveSession();
-    if (active) {
-      setSession(active);
-      setRemaining(remainingSec(active));
-      if (window.sessionStorage.getItem("padida.focus.escaped")) {
-        window.sessionStorage.removeItem("padida.focus.escaped");
-        setNagOpen(true);
+    setSession(peekActiveSession());
+    return onFocusChange((change) => {
+      setSession(peekActiveSession());
+      if (change?.kind === "ended") {
+        setExitOpen(false);
+        setExitText("");
+        setCelebrate(change.completed);
       }
-    }
-  }, []);
-
-  const triggerNag = useCallback(() => {
-    setSession((prev) => {
-      if (!prev) return prev;
-      if (Date.now() - lastNagRef.current < 1200) return prev;
-      lastNagRef.current = Date.now();
-      const next = { ...prev, escapeAttempts: prev.escapeAttempts + 1 };
-      saveActiveSession(next);
-      setNagOpen(true);
-      return next;
     });
   }, []);
 
-  // Kill in-app router navigation (links, dashboard buttons) while locked.
-  useBlocker({
-    shouldBlockFn: () => {
-      if (!session) return false;
-      triggerNag();
-      return true;
-    },
-    enableBeforeUnload: false,
-    withResolver: false,
-  });
-
-  const finish = useCallback((completed: boolean) => {
-    setSession((prev) => {
-      if (prev) {
-        logSession({
-          startedAt: prev.startedAt,
-          endedAt: Date.now(),
-          plannedDurationSec: prev.durationSec,
-          actualDurationSec: Math.round((Date.now() - prev.startedAt) / 1000),
-          subject: prev.subject,
-          escapeAttempts: prev.escapeAttempts,
-          completed,
-        });
-        void recordFocusSession({
-          minutes: Math.round((Date.now() - prev.startedAt) / 60000),
-          plannedMinutes: Math.round(prev.durationSec / 60),
-          escapes: prev.escapeAttempts,
-          completed,
-          startedAt: new Date(prev.startedAt).toISOString(),
-        });
-        if (completed) registerFocus((Date.now() - prev.startedAt) / 60000);
-      }
-      return null;
-    });
-    clearActiveSession();
-    setNagOpen(false);
-    setExitOpen(false);
-    setExitText("");
-    if (completed) {
-      playSuccess();
-      setCelebrate(true);
-      setTimeout(() => setCelebrate(false), 6000);
-    }
-  }, []);
-
-  // Timer driven off wall clock, immune to tab throttling.
   useEffect(() => {
     if (!session) return;
-    const tick = () => {
-      const left = remainingSec(session);
-      setRemaining(left);
-      if (left <= 0) finish(true);
-    };
+    const tick = () => setRemaining(remainingSec(session));
     tick();
     const id = setInterval(tick, 250);
     return () => clearInterval(id);
-  }, [session, finish]);
-
-  // Tab-switch / blur deterrent with grace period.
-  useEffect(() => {
-    if (!session) return;
-    const onVisibility = () => {
-      if (document.hidden) {
-        hiddenTimerRef.current = setTimeout(triggerNag, GRACE_MS);
-      } else if (hiddenTimerRef.current) {
-        clearTimeout(hiddenTimerRef.current);
-        hiddenTimerRef.current = null;
-      }
-    };
-    document.addEventListener("visibilitychange", onVisibility);
-    return () => {
-      document.removeEventListener("visibilitychange", onVisibility);
-      if (hiddenTimerRef.current) clearTimeout(hiddenTimerRef.current);
-    };
-  }, [session, triggerNag]);
-
-  // Back button + refresh interception.
-  useEffect(() => {
-    if (!session) return;
-    window.history.pushState({ padidaLock: true }, "");
-    const onPop = () => {
-      window.history.pushState({ padidaLock: true }, "");
-      triggerNag();
-    };
-    const onBeforeUnload = (e: BeforeUnloadEvent) => {
-      e.preventDefault();
-      e.returnValue = "Timer running-a irukku da!";
-      return e.returnValue;
-    };
-    window.addEventListener("popstate", onPop);
-    window.addEventListener("beforeunload", onBeforeUnload);
-    return () => {
-      window.removeEventListener("popstate", onPop);
-      window.removeEventListener("beforeunload", onBeforeUnload);
-    };
-  }, [session, triggerNag]);
+  }, [session]);
 
   const start = () => {
     const dur = Math.max(1, Math.min(300, Number(custom) || minutes));
-    const next: FocusSession = {
+    enterFullscreen();
+    setCelebrate(false);
+    saveActiveSession({
       startedAt: Date.now(),
       durationSec: dur * 60,
       subject: subject || null,
       escapeAttempts: 0,
-    };
-    saveActiveSession(next);
-    setSession(next);
-    setRemaining(next.durationSec);
-    setCelebrate(false);
+    });
   };
 
   if (session) {
@@ -224,6 +124,27 @@ function FocusPage() {
           ))}
         </div>
 
+        <div className="w-full max-w-sm text-center">
+          <p className="text-sm text-muted-foreground">
+            Study anywhere in the app while the timer runs. Leaving the app counts as an escape.
+          </p>
+          <div className="mt-3 grid grid-cols-4 gap-2">
+            {SHORTCUTS.map((s) => (
+              <Link
+                key={s.to}
+                to={s.to}
+                params={{ track: track.slug }}
+                className="card-surface flex flex-col items-center gap-1 px-1 py-2 text-[11px] font-semibold"
+              >
+                <span aria-hidden className="material-symbols-outlined text-[20px] text-primary">
+                  {s.icon}
+                </span>
+                {s.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+
         <div className="w-full max-w-sm">
           {exitOpen ? (
             <div className="card-surface space-y-3 p-4">
@@ -240,7 +161,11 @@ function FocusPage() {
               <div className="flex gap-2">
                 <button
                   disabled={exitText.trim() !== "I GIVE UP"}
-                  onClick={() => finish(false)}
+                  onClick={() => {
+                    endActiveSession(false);
+                    if (document.fullscreenElement)
+                      void document.exitFullscreen().catch(() => undefined);
+                  }}
                   className="btn-base flex-1 bg-destructive text-destructive-foreground disabled:opacity-40"
                 >
                   Break lock
@@ -259,10 +184,6 @@ function FocusPage() {
             </button>
           )}
         </div>
-
-        {nagOpen && (
-          <NagOverlay attempts={session.escapeAttempts} onDismiss={() => setNagOpen(false)} />
-        )}
       </main>
     );
   }
@@ -278,7 +199,8 @@ function FocusPage() {
 
       <h1 className="text-3xl font-bold">Focus Lock</h1>
       <p className="mt-1 text-sm text-muted-foreground">
-        Pick a duration. Once locked, navigation is dead until the timer hits zero.
+        Pick a duration. Once locked you can use any part of the app, but leaving it (other tabs,
+        other sites) counts as an escape until the timer hits zero.
       </p>
 
       <div className="card-surface mt-5 space-y-5 p-4">

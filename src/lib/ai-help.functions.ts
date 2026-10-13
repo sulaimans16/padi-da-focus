@@ -6,6 +6,29 @@ const AskInput = z.object({
   question: z.string().min(2).max(2000),
   context: z.string().max(2000).optional(),
   exam: z.enum(["neet_pg", "neet_ug"]).optional(),
+  /** Earlier turns of this chat, oldest first. */
+  history: z
+    .array(z.object({ role: z.enum(["user", "assistant"]), content: z.string().max(2000) }))
+    .max(6)
+    .optional(),
+  /** What is on screen (see ai-page-context.ts). */
+  page: z
+    .object({
+      path: z.string().max(200),
+      question: z
+        .object({
+          subject: z.string().max(100),
+          topic: z.string().max(200),
+          stem: z.string().max(2000),
+          options: z.array(z.string().max(300)).max(6),
+          answer: z.string().max(300),
+          explanation: z.string().max(1500),
+          answered: z.boolean(),
+        })
+        .optional(),
+      lesson: z.object({ module: z.string().max(80), concept: z.string().max(120) }).optional(),
+    })
+    .optional(),
 });
 
 export const askStudyAi = createServerFn({ method: "POST" })
@@ -29,9 +52,19 @@ export const askStudyAi = createServerFn({ method: "POST" })
       ? createOpenRouterProvider(openRouterKey!)
       : createLovableAiGatewayProvider(lovableKey!);
 
+    const exam = data.exam ?? "neet_pg";
+    const { buildLearnerContext, appKnowledge } = await import("./ai-context.server");
+    const learner = await buildLearnerContext(context.supabase, context.userId, exam).catch(
+      (e: unknown) => {
+        console.error("learner context failed", e);
+        return "Unavailable right now.";
+      },
+    );
     const prompt = [
-      data.context ? `The student is currently studying: ${data.context}` : "",
-      data.question,
+      `## Learner data (live from their account)\n${learner}`,
+      appKnowledge(exam, data.question, data.page),
+      data.context && !data.page ? `The student is currently studying: ${data.context}` : "",
+      `## Question\n${data.question}`,
     ]
       .filter(Boolean)
       .join("\n\n");
@@ -39,8 +72,8 @@ export const askStudyAi = createServerFn({ method: "POST" })
     try {
       const result = await generateText({
         model: gateway(useOpenRouter ? OPENROUTER_MODEL : "openai/gpt-5.6-sol"),
-        system: data.exam === "neet_ug" ? ASK_SYSTEM_UG : ASK_SYSTEM,
-        prompt,
+        system: exam === "neet_ug" ? ASK_SYSTEM_UG : ASK_SYSTEM,
+        messages: [...(data.history ?? []), { role: "user" as const, content: prompt }],
         ...(useOpenRouter
           ? { maxOutputTokens: 4000 }
           : { providerOptions: { lovable: { reasoningEffort: "none" } } }),

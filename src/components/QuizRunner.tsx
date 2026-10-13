@@ -20,6 +20,8 @@ export type QuizSummary = {
   answered: number;
   correct: number;
   seconds: number;
+  /** Chosen option per question id (e.g. for server-graded friend challenges). */
+  answers: Record<string, string>;
 };
 
 function fmt(total: number) {
@@ -112,7 +114,13 @@ export function QuizRunner({
     const answered = Object.keys(answers).length;
     const correct = questions.filter((item) => answers[item.id] === item.correctOptionId).length;
     // A speed round is scored on what you reached, not the size of the pool.
-    return { total: speed ? answered : questions.length, answered, correct, seconds: elapsed };
+    return {
+      total: speed ? answered : questions.length,
+      answered,
+      correct,
+      seconds: elapsed,
+      answers,
+    };
   }, [answers, questions, elapsed, speed]);
 
   const submit = useCallback(() => {

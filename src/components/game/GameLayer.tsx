@@ -22,6 +22,8 @@ import { playLevelUp } from "@/lib/sfx";
 import { trackById } from "@/lib/tracks";
 import { activeTrackId } from "@/lib/track-state";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
+import { captureInviteRef, claimInviteRef, fetchMyUsername, rememberUsername } from "@/lib/social";
 
 type Toast = { id: number; amount: number; combo: number };
 type Celebration = Extract<GameEvent, { type: "celebrate" }> & { id: number };
@@ -49,7 +51,30 @@ let seq = 0;
  * floating XP toasts, and turns state transitions (level up, streak, badges) into
  * full-screen celebrations.
  */
+/** Invite links: remember `?ref=` and, once signed in, turn it into a friendship. */
+function useInviteLinks() {
+  const { user } = useAuth();
+  useEffect(() => {
+    captureInviteRef(window.location.search);
+  }, []);
+  useEffect(() => {
+    if (!user) return;
+    void fetchMyUsername().then(rememberUsername);
+    void claimInviteRef().then((name) => {
+      if (name)
+        emitGameEvent({
+          type: "celebrate",
+          kind: "goal",
+          title: "New study buddy!",
+          subtitle: `You and @${name} are now friends. Challenge them from the Friends page.`,
+          icon: "group",
+        });
+    });
+  }, [user]);
+}
+
 export function GameLayer() {
+  useInviteLinks();
   const qc = useQueryClient();
   const { state, level, rank, dataUpdatedAt, serverReady } = useGameState();
   const [toasts, setToasts] = useState<Toast[]>([]);

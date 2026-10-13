@@ -6,6 +6,7 @@ import { Icon } from "@/components/Primitives";
 import { Reveal, SPRING } from "@/components/motion/Reveal";
 import { LeagueTable, TierEmblem } from "@/components/game/Widgets";
 import { Mascot } from "@/components/mascot/Mascot";
+import { MonthlySprint } from "@/components/social/MonthlySprint";
 import { useAuth } from "@/hooks/useAuth";
 import {
   LEAGUE_TIERS,
@@ -194,6 +195,10 @@ function Leagues() {
             </>
           )}
         </div>
+      </Reveal>
+
+      <Reveal delay={0.12}>
+        <MonthlySprint />
       </Reveal>
     </div>
   );

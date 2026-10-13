@@ -36,6 +36,7 @@ type TrackPath =
   | "/$track/review"
   | "/$track/flashcards"
   | "/$track/leagues"
+  | "/$track/friends"
   | "/$track/profile";
 
 type NavLink = {
@@ -52,6 +53,7 @@ const PLAY: NavLink[] = [
   { label: "Flashcards", icon: "style", to: "/$track/flashcards" },
   { label: "Fix Mistakes", icon: "healing", to: "/$track/review" },
   { label: "Leagues", icon: "trophy", to: "/$track/leagues" },
+  { label: "Friends", icon: "group", to: "/$track/friends" },
 ];
 
 const PRIMARY: NavLink[] = [

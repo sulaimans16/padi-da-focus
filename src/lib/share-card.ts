@@ -1,3 +1,5 @@
+import { cachedUsername } from "./social";
+
 /**
  * Shareable achievement cards (level-ups, streaks), drawn on a canvas in the
  * browser. No server, no extra dependencies: the PNG goes to the native share
@@ -263,7 +265,9 @@ export type AchievementShare = {
 export function inviteUrl(trackSlug: string) {
   const origin =
     typeof window !== "undefined" ? window.location.origin : "https://pg-pre.learners-studio.com";
-  return `${origin}/${trackSlug}`;
+  // With the sharer's @username, opening the link makes you friends after sign-in.
+  const me = cachedUsername();
+  return `${origin}/${trackSlug}${me ? `?ref=${encodeURIComponent(me)}` : ""}`;
 }
 
 /** Caption for the share sheet / clipboard, ending with the invite link. */

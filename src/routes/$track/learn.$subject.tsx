@@ -1,4 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { clearAiPageContext, setAiPageContext } from "@/lib/ai-page-context";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { Icon } from "@/components/Primitives";
@@ -150,6 +151,13 @@ function LearnSubject() {
   const selectedId = open ?? firstOpen;
   const contentRef = useRef<HTMLDivElement>(null);
   const [saving, setSaving] = useState(false);
+
+  // Dr. Pulse knows which lesson is open.
+  useEffect(() => {
+    if (!selectedId) return;
+    setAiPageContext({ lesson: { module: mod.slug, concept: selectedId } });
+    return clearAiPageContext;
+  }, [mod.slug, selectedId]);
 
   // Deep link from search: /learn/<subject>#<concept-id> opens that concept.
   useEffect(() => {

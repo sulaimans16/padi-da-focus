@@ -9,7 +9,7 @@ import {
 } from "@tanstack/react-router";
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 
-import { LockGuard } from "@/components/LockGuard";
+import { FocusLockLayer } from "@/components/FocusLockLayer";
 import { AppShell } from "@/components/AppShell";
 import { Splash } from "@/components/Splash";
 import { supabase } from "@/integrations/supabase/client";
@@ -175,7 +175,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       {!splashDone && <Splash onDone={finishSplash} />}
-      <LockGuard />
+      <FocusLockLayer />
       <AppShell>
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />

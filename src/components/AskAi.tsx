@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from "react";
-import { useRouterState } from "@tanstack/react-router";
+import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
+import { useRouter, useRouterState } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { activeTrackId } from "@/lib/track-state";
 import { askStudyAi } from "@/lib/ai-help.functions";
+import { getAiPageContext } from "@/lib/ai-page-context";
 import { AnimatePresence, motion } from "motion/react";
 import { useAccess } from "@/hooks/useAccess";
 import { Mascot } from "@/components/mascot/Mascot";
@@ -17,21 +18,130 @@ function Icon({ name, className = "" }: { name: string; className?: string }) {
   );
 }
 
-const SUGGESTIONS = [
-  "Explain the renin–angiotensin system simply",
-  "Difference between transudate and exudate?",
-  "Fastest way to read a 12-lead ECG",
-];
+const CHAT_KEY = (exam: string) => `padida.${exam}.askai.chat`;
+const MAX_HISTORY = 6;
+
+function loadChat(exam: string): Turn[] {
+  try {
+    const raw = sessionStorage.getItem(CHAT_KEY(exam));
+    return raw ? (JSON.parse(raw) as Turn[]).slice(-40) : [];
+  } catch {
+    return [];
+  }
+}
+
+function suggestionsFor(hasQuestion: boolean, onLesson: boolean) {
+  return [
+    ...(hasQuestion ? ["Explain this question"] : []),
+    ...(onLesson ? ["Quiz me on this lesson"] : []),
+    "What should I study today?",
+    "How am I doing? Where am I weakest?",
+    "Where can I find past year papers?",
+  ].slice(0, 4);
+}
+
+/** Inline **bold** and [label](/in-app/path) links; anything else stays plain text. */
+function inline(text: string, go: (href: string) => void, key: string): ReactNode[] {
+  const out: ReactNode[] = [];
+  const re = /\*\*([^*]+)\*\*|\[([^\]]+)\]\(([^)\s]+)\)/g;
+  let last = 0;
+  let m: RegExpExecArray | null;
+  let i = 0;
+  while ((m = re.exec(text))) {
+    if (m.index > last) out.push(text.slice(last, m.index));
+    if (m[1]) out.push(<strong key={`${key}-${i++}`}>{m[1]}</strong>);
+    else {
+      const href = m[3]!;
+      // Only same-app paths become links (no outside sites from the chat).
+      if (href.startsWith("/") && !href.startsWith("//"))
+        out.push(
+          <a
+            key={`${key}-${i++}`}
+            href={href}
+            onClick={(e) => {
+              e.preventDefault();
+              go(href);
+            }}
+            className="font-semibold text-primary underline underline-offset-2"
+          >
+            {m[2]}
+          </a>,
+        );
+      else out.push(m[2]);
+    }
+    last = m.index + m[0].length;
+  }
+  if (last < text.length) out.push(text.slice(last));
+  return out;
+}
+
+/** Light markdown for answers: paragraphs, '-' bullets, bold and in-app links. */
+function Answer({ text, go }: { text: string; go: (href: string) => void }) {
+  const blocks: ReactNode[] = [];
+  let list: string[] = [];
+  const flush = () => {
+    if (!list.length) return;
+    const items = list;
+    list = [];
+    blocks.push(
+      <ul key={`ul-${blocks.length}`} className="list-disc space-y-1 pl-4">
+        {items.map((it, i) => (
+          <li key={i}>{inline(it, go, `li-${blocks.length}-${i}`)}</li>
+        ))}
+      </ul>,
+    );
+  };
+  text.split("\n").forEach((raw, i) => {
+    const line = raw.trim();
+    const bullet = /^([-*•]|\d+[.)])\s+(.*)$/.exec(line);
+    if (bullet) list.push(bullet[2]!);
+    else {
+      flush();
+      if (line)
+        blocks.push(<p key={`p-${i}`}>{inline(line.replace(/^#+\s*/, ""), go, `p-${i}`)}</p>);
+    }
+  });
+  flush();
+  return (
+    <div className="space-y-2">
+      {blocks.map((b, i) => (
+        <Fragment key={i}>{b}</Fragment>
+      ))}
+    </div>
+  );
+}
 
 export function AskAi() {
+  // A fresh chat per track (each keeps its own session history).
+  const exam = activeTrackId();
+  return <AskAiChat key={exam} exam={exam} />;
+}
+
+function AskAiChat({ exam }: { exam: string }) {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
-  const [turns, setTurns] = useState<Turn[]>([]);
+  const [turns, setTurns] = useState<Turn[]>(() => loadChat(exam));
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const ask = useServerFn(askStudyAi);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  const router = useRouter();
+
+  // Keep the chat for this browser session, per track.
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(CHAT_KEY(exam), JSON.stringify(turns.slice(-40)));
+    } catch {
+      // ignore
+    }
+  }, [turns, exam]);
+
+  const go = (href: string) => {
+    if (window.matchMedia("(max-width: 767px)").matches) setOpen(false);
+    router.history.push(href);
+  };
+  const pageCtx = open ? getAiPageContext(pathname) : {};
   const { isPro, loading: accessLoading } = useAccess();
   const [hint, setHint] = useState(false);
 
@@ -61,11 +171,25 @@ export function AskAi() {
     if (!q || busy) return;
     setError("");
     setInput("");
+    const history = turns.slice(-MAX_HISTORY).map((t) => ({
+      role: t.role === "you" ? ("user" as const) : ("assistant" as const),
+      content: t.text.slice(0, 2000),
+    }));
+    const ctx = getAiPageContext(pathname);
     setTurns((t) => [...t, { role: "you", text: q }]);
     setBusy(true);
     try {
       const res = await ask({
-        data: { question: q, context: `app page ${pathname}`, exam: activeTrackId() },
+        data: {
+          question: q,
+          exam: exam === "neet_ug" ? "neet_ug" : "neet_pg",
+          history,
+          page: {
+            path: pathname.slice(0, 200),
+            ...(ctx.question ? { question: ctx.question } : {}),
+            ...(ctx.lesson ? { lesson: ctx.lesson } : {}),
+          },
+        },
       });
       setTurns((t) => [...t, { role: "ai", text: res.answer }]);
     } catch (e) {
@@ -130,7 +254,7 @@ export function AskAi() {
             <Mascot mood={busy ? "think" : "happy"} size={40} />
             <div className="min-w-0">
               <p className="truncate text-sm font-bold">Ask Dr. Pulse</p>
-              <p className="label-eyebrow">2am-friendly answers to any doubt</p>
+              <p className="label-eyebrow">Knows your progress & the app</p>
             </div>
             {turns.length ? (
               <button
@@ -147,9 +271,10 @@ export function AskAi() {
             {turns.length === 0 ? (
               <div className="space-y-2">
                 <p className="text-xs text-muted-foreground">
-                  Hi! Ask me anything: a concept, a distractor you got wrong, a mnemonic.
+                  Hi! Ask me a doubt, how you're doing, what to study next, or where to find
+                  something in the app. I can see your progress.
                 </p>
-                {SUGGESTIONS.map((s) => (
+                {suggestionsFor(Boolean(pageCtx.question), Boolean(pageCtx.lesson)).map((s) => (
                   <button
                     key={s}
                     type="button"
@@ -180,8 +305,8 @@ export function AskAi() {
                   className="flex items-start gap-2"
                 >
                   <Mascot mood="happy" size={30} className="mt-1" />
-                  <div className="max-w-[88%] whitespace-pre-wrap rounded-2xl rounded-tl-md border-2 border-glass-line bg-surface-2 px-3 py-2 text-sm leading-relaxed">
-                    {t.text}
+                  <div className="max-w-[88%] rounded-2xl rounded-tl-md border-2 border-glass-line bg-surface-2 px-3 py-2 text-sm leading-relaxed">
+                    <Answer text={t.text} go={go} />
                   </div>
                 </motion.div>
               ),
@@ -206,7 +331,7 @@ export function AskAi() {
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask a doubt…"
+              placeholder="Ask a doubt or about your prep…"
               className="min-w-0 flex-1 rounded-full border-2 border-glass-line bg-surface-2 px-3 py-2 text-sm outline-none focus:border-primary"
             />
             <button

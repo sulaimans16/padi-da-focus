@@ -27,6 +27,7 @@ import { cn } from "@/lib/utils";
 import { formatClock, loadSessionLog, type CompletedSession } from "@/lib/focus-session";
 import { useTrack } from "@/hooks/useTrack";
 import { ReadinessCard } from "@/components/ReadinessCard";
+import { GettingStarted } from "@/components/GettingStarted";
 import { localizeHead } from "@/lib/tracks";
 
 export const Route = createFileRoute("/$track/")({
@@ -298,6 +299,8 @@ function Index() {
           ) : null}
         </div>
       </motion.div>
+
+      <GettingStarted />
 
       {/* Continue + goal + streak */}
       <SwipeDeck

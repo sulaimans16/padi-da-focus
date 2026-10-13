@@ -5,6 +5,7 @@ import { Icon, Pill } from "@/components/Primitives";
 import { QuizRunner, type QuizSummary } from "@/components/QuizRunner";
 import { Reveal } from "@/components/motion/Reveal";
 import { MascotSays } from "@/components/mascot/Mascot";
+import { ReferralCard } from "@/components/social/ReferralCard";
 import { useTrack } from "@/hooks/useTrack";
 import { levelForXp } from "@/lib/gamification";
 import type { Question } from "@/lib/questions";
@@ -558,6 +559,7 @@ function FriendsPage() {
           <Section title="Invite link" icon="link">
             <InviteCard username={me.data ?? null} trackSlug={track.slug} trackName={track.name} />
           </Section>
+          <ReferralCard compact />
         </div>
       </div>
     </div>

@@ -131,6 +131,7 @@ function isFullBleed(pathname: string) {
     pathname === "/" ||
     /^\/neet-(pg|ug)\/focus\/?$/.test(pathname) ||
     pathname.startsWith("/auth") ||
+    pathname.startsWith("/onboarding") ||
     pathname.startsWith("/welcome")
   );
 }

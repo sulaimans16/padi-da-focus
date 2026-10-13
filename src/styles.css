@@ -97,6 +97,9 @@ layer(icons);
   --xp: oklch(0.84 0.15 85);
   --streak: oklch(0.74 0.18 50);
   --gem: oklch(0.72 0.15 300);
+  /* Chart series (validated categorical pair, dark surface) */
+  --chart-series-1: #3987e5;
+  --chart-series-2: #d95926;
   /* Lower lip that gives buttons and tiles their pressable depth */
   --edge: color-mix(in oklab, black 38%, var(--surface));
   --shadow-float: 0 32px 80px -36px oklch(0.1 0.05 258 / 0.85);
@@ -148,6 +151,8 @@ html:not(.dark) {
   --xp: oklch(0.7 0.15 75);
   --streak: oklch(0.65 0.19 45);
   --gem: oklch(0.56 0.18 300);
+  --chart-series-1: #2a78d6;
+  --chart-series-2: #eb6834;
   --edge: oklch(0.86 0.02 230);
   --gradient-hero: radial-gradient(
       120% 90% at 8% -12%,

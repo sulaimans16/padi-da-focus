@@ -200,10 +200,33 @@ export async function claimInviteRef(): Promise<string | null> {
   if (!ref) return null;
   const { data, error } = await supabase.rpc("accept_invite", { _username: ref });
   if (error) return null; // keep it for a later try (e.g. offline)
+  // New learners also earn a referral: 7 days of Pro each after their first 10 answers.
+  await supabase.rpc("record_referral", { _username: ref }).then(
+    () => undefined,
+    () => undefined,
+  );
   try {
     localStorage.removeItem(REF_KEY);
   } catch {
     // ignore
   }
   return data === "accepted" ? ref : null;
+}
+
+// ---------- referrals ----------
+
+export type MyReferrals = {
+  invited: number;
+  qualified: number;
+  days_earned: number;
+  pending: string[];
+  referred_by: string | null;
+};
+
+export const REFERRAL_DAYS = 7;
+
+export async function fetchMyReferrals(): Promise<MyReferrals | null> {
+  const { data, error } = await supabase.rpc("my_referrals");
+  if (error) return null; // before migration 0018
+  return data as unknown as MyReferrals;
 }

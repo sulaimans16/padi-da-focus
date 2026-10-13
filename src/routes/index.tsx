@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { BrandMark } from "@/components/BrandMark";
@@ -7,6 +7,7 @@ import { SPRING } from "@/components/motion/Reveal";
 import { MascotSays } from "@/components/mascot/Mascot";
 import { useAuth } from "@/hooks/useAuth";
 import { doctorName } from "@/lib/doctor-name";
+import { needsOnboarding } from "@/lib/onboarding";
 import { lastTrack, type TrackId } from "@/lib/track-state";
 import { TRACK_LIST, type Track } from "@/lib/tracks";
 import { cn } from "@/lib/utils";
@@ -112,8 +113,16 @@ function TrackCard({ track, last, index }: { track: Track; last: boolean; index:
 
 function ExamPicker() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [last, setLast] = useState<TrackId | null>(null);
   useEffect(() => setLast(lastTrack()), []);
+  // Brand-new learners go through the short setup wizard first.
+  useEffect(() => {
+    if (!user) return;
+    void needsOnboarding().then((need) => {
+      if (need) void navigate({ to: "/onboarding", replace: true });
+    });
+  }, [user, navigate]);
 
   return (
     <div className="mx-auto min-h-screen w-full max-w-5xl px-4 py-6 sm:px-6 lg:py-10">
@@ -134,7 +143,7 @@ function ExamPicker() {
         <p className="label-eyebrow">Choose your exam</p>
         <h1 className="mt-1 text-3xl sm:text-4xl">
           {user
-            ? `Welcome back, ${doctorName(user.user_metadata?.["full_name"] as string | undefined, user.email)}`
+            ? `${last ? "Welcome back" : "Welcome"}, ${doctorName(user.user_metadata?.["full_name"] as string | undefined, user.email)}`
             : "What are you preparing for?"}
         </h1>
         <MascotSays mood="happy" size={72} className="mt-4 max-w-xl">

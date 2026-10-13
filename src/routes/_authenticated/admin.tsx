@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useAccess } from "@/hooks/useAccess";
+import { EngagementPanel } from "@/components/admin/EngagementPanel";
 import { grantPlan, listMembers, revokePlan } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -62,7 +63,8 @@ function AdminConsole() {
     if (!loading && isAdmin) void refresh();
   }, [loading, isAdmin, refresh]);
 
-  if (loading) return <div className="px-4 py-8 text-sm text-muted-foreground">Checking access…</div>;
+  if (loading)
+    return <div className="px-4 py-8 text-sm text-muted-foreground">Checking access…</div>;
 
   if (!isAdmin) {
     return (
@@ -112,10 +114,12 @@ function AdminConsole() {
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-8">
       <p className="label-eyebrow">Admin console</p>
-      <h1 className="text-3xl font-extrabold tracking-tight">Members & access</h1>
+      <h1 className="text-3xl font-extrabold tracking-tight">Engagement, members & access</h1>
       <p className="mt-1 text-sm text-muted-foreground">
         {members.length} accounts · {proCount} with Pro access
       </p>
+
+      <EngagementPanel />
 
       <section className="card-surface mt-5 p-4">
         <p className="text-sm font-bold">Activate a plan</p>

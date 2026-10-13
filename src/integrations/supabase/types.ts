@@ -478,6 +478,39 @@ export type Database = {
         }
         Relationships: []
       }
+      study_roadmaps: {
+        Row: {
+          done: string[]
+          exam: string
+          goal: string
+          goal_key: string
+          opened_at: string
+          roadmap: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          done?: string[]
+          exam?: string
+          goal: string
+          goal_key: string
+          opened_at?: string
+          roadmap: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          done?: string[]
+          exam?: string
+          goal?: string
+          goal_key?: string
+          opened_at?: string
+          roadmap?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       subscriptions: {
         Row: {
           amount_inr: number

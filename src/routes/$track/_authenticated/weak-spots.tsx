@@ -32,13 +32,23 @@ export const Route = createFileRoute("/$track/_authenticated/weak-spots")({
   component: WeakSpots,
 });
 
-type SourceKey = "all" | "question_bank" | "pyq";
+type SourceKey = "all" | "question_bank" | "pyq" | "smart_practice";
 
 const SOURCES: { key: SourceKey; label: string }[] = [
   { key: "all", label: "All attempts" },
   { key: "question_bank", label: "QBank" },
   { key: "pyq", label: "PYQ Vault" },
+  { key: "smart_practice", label: "Smart Practice" },
 ];
+
+const PRACTICE_CONTEXTS = new Set([
+  "question_bank",
+  "pyq",
+  "smart_practice",
+  "image_practice",
+  "daily_challenge",
+  "mistake_review",
+]);
 
 function pct(v: number) {
   return `${Math.round(v * 100)}%`;
@@ -71,7 +81,8 @@ function WeakSpots() {
   const rows = useMemo(() => {
     const all = attempts.data ?? [];
     if (source === "all")
-      return all.filter((r) => r.context === "question_bank" || r.context === "pyq");
+      // Untimed practice only: mocks and speed rounds are answered under time pressure.
+      return all.filter((r) => PRACTICE_CONTEXTS.has(r.context));
     return all.filter((r) => r.context === source);
   }, [attempts.data, source]);
 

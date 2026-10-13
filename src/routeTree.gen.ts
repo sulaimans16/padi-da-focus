@@ -25,6 +25,7 @@ import { Route as TrackFlashcardsRouteImport } from './routes/$track/flashcards'
 import { Route as TrackFocusRouteImport } from './routes/$track/focus'
 import { Route as TrackMockRouteImport } from './routes/$track/mock'
 import { Route as TrackPapersRouteImport } from './routes/$track/papers'
+import { Route as TrackPracticeRouteImport } from './routes/$track/practice'
 import { Route as TrackPyqRouteImport } from './routes/$track/pyq'
 import { Route as TrackRoadmapRouteImport } from './routes/$track/roadmap'
 import { Route as TrackVideosRouteImport } from './routes/$track/videos'
@@ -117,6 +118,11 @@ const TrackMockRoute = TrackMockRouteImport.update({
 const TrackPapersRoute = TrackPapersRouteImport.update({
   id: '/papers',
   path: '/papers',
+  getParentRoute: () => TrackRoute,
+} as any)
+const TrackPracticeRoute = TrackPracticeRouteImport.update({
+  id: '/practice',
+  path: '/practice',
   getParentRoute: () => TrackRoute,
 } as any)
 const TrackPyqRoute = TrackPyqRouteImport.update({
@@ -215,6 +221,7 @@ export interface FileRoutesByFullPath {
   '/$track/focus': typeof TrackFocusRoute
   '/$track/mock': typeof TrackMockRoute
   '/$track/papers': typeof TrackPapersRoute
+  '/$track/practice': typeof TrackPracticeRoute
   '/$track/pyq': typeof TrackPyqRoute
   '/$track/roadmap': typeof TrackRoadmapRoute
   '/$track/videos': typeof TrackVideosRoute
@@ -246,6 +253,7 @@ export interface FileRoutesByTo {
   '/$track/focus': typeof TrackFocusRoute
   '/$track/mock': typeof TrackMockRoute
   '/$track/papers': typeof TrackPapersRoute
+  '/$track/practice': typeof TrackPracticeRoute
   '/$track/pyq': typeof TrackPyqRoute
   '/$track/roadmap': typeof TrackRoadmapRoute
   '/$track/videos': typeof TrackVideosRoute
@@ -279,6 +287,7 @@ export interface FileRoutesById {
   '/$track/focus': typeof TrackFocusRoute
   '/$track/mock': typeof TrackMockRoute
   '/$track/papers': typeof TrackPapersRoute
+  '/$track/practice': typeof TrackPracticeRoute
   '/$track/pyq': typeof TrackPyqRoute
   '/$track/roadmap': typeof TrackRoadmapRoute
   '/$track/videos': typeof TrackVideosRoute
@@ -312,6 +321,7 @@ export interface FileRouteTypes {
     | '/$track/focus'
     | '/$track/mock'
     | '/$track/papers'
+    | '/$track/practice'
     | '/$track/pyq'
     | '/$track/roadmap'
     | '/$track/videos'
@@ -343,6 +353,7 @@ export interface FileRouteTypes {
     | '/$track/focus'
     | '/$track/mock'
     | '/$track/papers'
+    | '/$track/practice'
     | '/$track/pyq'
     | '/$track/roadmap'
     | '/$track/videos'
@@ -375,6 +386,7 @@ export interface FileRouteTypes {
     | '/$track/focus'
     | '/$track/mock'
     | '/$track/papers'
+    | '/$track/practice'
     | '/$track/pyq'
     | '/$track/roadmap'
     | '/$track/videos'
@@ -517,6 +529,13 @@ declare module '@tanstack/react-router' {
       path: '/papers'
       fullPath: '/$track/papers'
       preLoaderRoute: typeof TrackPapersRouteImport
+      parentRoute: typeof TrackRoute
+    }
+    '/$track/practice': {
+      id: '/$track/practice'
+      path: '/practice'
+      fullPath: '/$track/practice'
+      preLoaderRoute: typeof TrackPracticeRouteImport
       parentRoute: typeof TrackRoute
     }
     '/$track/pyq': {
@@ -668,6 +687,7 @@ interface TrackRouteChildren {
   TrackFocusRoute: typeof TrackFocusRoute
   TrackMockRoute: typeof TrackMockRoute
   TrackPapersRoute: typeof TrackPapersRoute
+  TrackPracticeRoute: typeof TrackPracticeRoute
   TrackPyqRoute: typeof TrackPyqRoute
   TrackRoadmapRoute: typeof TrackRoadmapRoute
   TrackVideosRoute: typeof TrackVideosRoute
@@ -687,6 +707,7 @@ const TrackRouteChildren: TrackRouteChildren = {
   TrackFocusRoute: TrackFocusRoute,
   TrackMockRoute: TrackMockRoute,
   TrackPapersRoute: TrackPapersRoute,
+  TrackPracticeRoute: TrackPracticeRoute,
   TrackPyqRoute: TrackPyqRoute,
   TrackRoadmapRoute: TrackRoadmapRoute,
   TrackVideosRoute: TrackVideosRoute,

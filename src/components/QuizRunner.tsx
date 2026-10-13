@@ -13,6 +13,7 @@ import { recordAttempt } from "@/lib/tracker";
 import { subjectColor, type Question } from "@/lib/questions";
 import { cn } from "@/lib/utils";
 import { useTrack } from "@/hooks/useTrack";
+import { trackKey } from "@/lib/track-state";
 
 export type QuizSummary = {
   total: number;
@@ -38,11 +39,28 @@ function buddyMood(feedback: Feedback | null, combo: number): MascotMood {
   return combo >= 5 ? "fire" : "happy";
 }
 
+type SpeedResult = { best: number; isNewBest: boolean };
+
+/** Best speed-round score per track and round length. */
+function recordSpeedBest(durationSec: number, correct: number): SpeedResult {
+  const key = trackKey(`speed.best.${durationSec}`);
+  let best = 0;
+  try {
+    best = Number(localStorage.getItem(key)) || 0;
+    if (correct > best) localStorage.setItem(key, String(correct));
+  } catch {
+    // ignore
+  }
+  return { best: Math.max(best, correct), isNewBest: correct > best && correct > 0 };
+}
+
 export function QuizRunner({
   questions,
   context,
   durationSec,
   reveal = "onSubmit",
+  speed = false,
+  tags,
   onFinish,
 }: {
   questions: Question[];
@@ -50,6 +68,13 @@ export function QuizRunner({
   /** Countdown length; omit for untimed. */
   durationSec?: number;
   reveal?: "immediate" | "onSubmit";
+  /**
+   * Speed round: answer as many as possible before the countdown ends. Each
+   * answer flashes right/wrong and auto-advances; no explanations mid-round.
+   */
+  speed?: boolean;
+  /** Optional per-question label shown above the stem (e.g. why it was picked). */
+  tags?: Record<string, string>;
   onFinish?: (summary: QuizSummary) => void;
 }) {
   const [index, setIndex] = useState(0);
@@ -64,10 +89,12 @@ export function QuizRunner({
   const startedAt = useRef(Date.now());
   const shownAt = useRef(Date.now());
   const finished = useRef(false);
+  const advanceTimer = useRef<number | null>(null);
+  const [speedResult, setSpeedResult] = useState<SpeedResult | null>(null);
 
   const q = questions[index];
   const remaining = durationSec != null ? durationSec - elapsed : null;
-  const immediate = reveal === "immediate";
+  const immediate = speed || reveal === "immediate";
 
   useEffect(() => {
     const t = window.setInterval(() => {
@@ -84,15 +111,28 @@ export function QuizRunner({
   const summary = useMemo<QuizSummary>(() => {
     const answered = Object.keys(answers).length;
     const correct = questions.filter((item) => answers[item.id] === item.correctOptionId).length;
-    return { total: questions.length, answered, correct, seconds: elapsed };
-  }, [answers, questions, elapsed]);
+    // A speed round is scored on what you reached, not the size of the pool.
+    return { total: speed ? answered : questions.length, answered, correct, seconds: elapsed };
+  }, [answers, questions, elapsed, speed]);
 
   const submit = useCallback(() => {
     if (finished.current) return;
     finished.current = true;
+    if (advanceTimer.current) window.clearTimeout(advanceTimer.current);
+    if (speed && durationSec) setSpeedResult(recordSpeedBest(durationSec, summary.correct));
     setSubmitted(true);
     onFinish?.({ ...summary, seconds: Math.round((Date.now() - startedAt.current) / 1000) });
-  }, [onFinish, summary]);
+  }, [onFinish, summary, speed, durationSec]);
+
+  useEffect(
+    () => () => {
+      if (advanceTimer.current) window.clearTimeout(advanceTimer.current);
+    },
+    [],
+  );
+  // The auto-advance timeout must see the summary after its own answer lands.
+  const submitRef = useRef(submit);
+  submitRef.current = submit;
 
   useEffect(() => {
     if (remaining != null && remaining <= 0 && !submitted) submit();
@@ -115,6 +155,13 @@ export function QuizRunner({
           setFeedback({ correct, ...fb });
           if (!correct) setShake((s) => s + 1);
         }
+        if (speed) {
+          // Flash the result, then straight on to the next question.
+          advanceTimer.current = window.setTimeout(() => {
+            if (index >= questions.length - 1) submitRef.current();
+            else setIndex((i) => i + 1);
+          }, 450);
+        }
       }
       void recordAttempt({
         questionId: q.id,
@@ -126,7 +173,7 @@ export function QuizRunner({
         context,
       });
     },
-    [q, submitted, immediate, answers, context],
+    [q, submitted, immediate, answers, context, speed, index, questions.length],
   );
 
   const next = useCallback(() => {
@@ -146,23 +193,28 @@ export function QuizRunner({
       if (pick >= 0 && q.options[pick] && !(immediate && answers[q.id])) {
         e.preventDefault();
         choose(q.options[pick]!.id);
-      } else if (e.key === "Enter" && answers[q.id]) {
+      } else if (e.key === "Enter" && answers[q.id] && !speed) {
         e.preventDefault();
         next();
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [q, submitted, immediate, answers, choose, next]);
+  }, [q, submitted, immediate, answers, choose, next, speed]);
 
   if (submitted) {
     return (
       <ResultReview
-        questions={questions}
+        questions={speed ? questions.filter((item) => answers[item.id]) : questions}
         answers={answers}
         summary={summary}
         xp={stats.current.xp}
         bestCombo={stats.current.bestCombo}
+        speed={
+          speed && durationSec
+            ? { durationSec, ...(speedResult ?? { best: 0, isNewBest: false }) }
+            : undefined
+        }
       />
     );
   }
@@ -170,7 +222,9 @@ export function QuizRunner({
   if (!q) return null;
 
   const chosen = answers[q.id];
-  const showAnswer = immediate && Boolean(chosen);
+  // Speed rounds colour the options but skip the explanation and feedback sheet.
+  const showAnswer = immediate && !speed && Boolean(chosen);
+  const colourOptions = immediate && Boolean(chosen);
   const accent = subjectColor(q.subject);
 
   return (
@@ -180,13 +234,25 @@ export function QuizRunner({
         <div className="flex items-center gap-3">
           <Mascot mood={buddyMood(feedback, combo)} size={48} />
           <ProgressBar
-            value={(index + (chosen ? 1 : 0)) / questions.length}
-            color="var(--color-success)"
+            value={
+              speed && durationSec && remaining != null
+                ? Math.max(0, remaining) / durationSec
+                : (index + (chosen ? 1 : 0)) / questions.length
+            }
+            color={
+              speed && remaining != null && remaining <= 10
+                ? "var(--color-destructive)"
+                : "var(--color-success)"
+            }
             className="h-4 flex-1"
           />
           <ComboMeter combo={immediate ? combo : 0} />
           <span className="font-display text-xs font-bold tabular-nums text-muted-foreground">
-            {index + 1}/{questions.length}
+            {speed ? (
+              <span className="text-success">{summary.correct} ✓</span>
+            ) : (
+              `${index + 1}/${questions.length}`
+            )}
           </span>
         </div>
 
@@ -199,6 +265,12 @@ export function QuizRunner({
             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
           >
             <div key={shake} className={cn("card-pop p-5 sm:p-7", shake > 0 && "animate-nag")}>
+              {tags?.[q.id] ? (
+                <p className="mb-3 flex items-center gap-1.5 text-xs font-semibold text-primary">
+                  <Icon name="auto_awesome" filled className="text-[15px]" />
+                  {tags[q.id]}
+                </p>
+              ) : null}
               <div className="flex flex-wrap items-center gap-2">
                 <span className="chip" style={{ color: accent, borderColor: `${accent}66` }}>
                   {q.subject}
@@ -242,7 +314,7 @@ export function QuizRunner({
                 {q.options.map((opt, i) => {
                   const isChosen = chosen === opt.id;
                   const isRight = opt.id === q.correctOptionId;
-                  const state = showAnswer
+                  const state = colourOptions
                     ? isRight
                       ? "correct"
                       : isChosen
@@ -256,17 +328,17 @@ export function QuizRunner({
                       key={opt.id}
                       type="button"
                       onClick={() => choose(opt.id)}
-                      disabled={showAnswer}
+                      disabled={colourOptions}
                       data-state={state}
-                      animate={showAnswer && isRight ? { scale: [1, 1.03, 1] } : { scale: 1 }}
+                      animate={colourOptions && isRight ? { scale: [1, 1.03, 1] } : { scale: 1 }}
                       transition={{ duration: 0.35 }}
                       className="option-tile"
                     >
                       <span className="option-key text-muted-foreground">{i + 1}</span>
                       <span className="flex-1 pt-0.5 leading-snug">{opt.text}</span>
-                      {showAnswer && isRight ? (
+                      {colourOptions && isRight ? (
                         <Icon name="check_circle" filled className="text-[22px] text-success" />
-                      ) : showAnswer && isChosen ? (
+                      ) : colourOptions && isChosen ? (
                         <Icon name="cancel" filled className="text-[22px] text-destructive" />
                       ) : null}
                     </motion.button>
@@ -306,7 +378,9 @@ export function QuizRunner({
                 </div>
               ) : !showAnswer ? (
                 <p className="mt-5 text-center text-[11px] text-muted-foreground">
-                  Tip: press 1–4 to answer, Enter to continue
+                  {speed
+                    ? "Tip: press 1–4 to answer — it moves on by itself"
+                    : "Tip: press 1–4 to answer, Enter to continue"}
                 </p>
               ) : null}
             </div>
@@ -320,7 +394,7 @@ export function QuizRunner({
           <p
             className={cn(
               "mt-1 font-mono text-3xl font-bold tabular-nums",
-              remaining != null && remaining < 300 && "text-destructive",
+              remaining != null && remaining < (speed ? 11 : 300) && "text-destructive",
             )}
           >
             {fmt(remaining != null ? remaining : elapsed)}
@@ -330,20 +404,22 @@ export function QuizRunner({
               <p className="label-eyebrow">Answered</p>
               <p className="text-lg font-bold">
                 {summary.answered}
-                <span className="text-xs text-muted-foreground">/{questions.length}</span>
+                {speed ? null : (
+                  <span className="text-xs text-muted-foreground">/{questions.length}</span>
+                )}
               </p>
             </div>
             <div>
-              <p className="label-eyebrow">Flagged</p>
-              <p className="text-lg font-bold">{flagged.length}</p>
+              <p className="label-eyebrow">{speed ? "Correct" : "Flagged"}</p>
+              <p className="text-lg font-bold">{speed ? summary.correct : flagged.length}</p>
             </div>
           </div>
           <Pill variant="primary" className="mt-4 w-full justify-center" onClick={submit}>
-            Submit test
+            {speed ? "End round" : "Submit test"}
           </Pill>
         </GlassCard>
 
-        <GlassCard className="p-5">
+        <GlassCard className={cn("p-5", speed && "hidden")}>
           <p className="label-eyebrow">Question palette</p>
           <div className="mt-3 grid grid-cols-6 gap-1.5">
             {questions.map((item, i) => {
@@ -464,12 +540,14 @@ function ResultReview({
   summary,
   xp,
   bestCombo,
+  speed,
 }: {
   questions: Question[];
   answers: Record<string, string>;
   summary: QuizSummary;
   xp: number;
   bestCombo: number;
+  speed?: ({ durationSec: number } & SpeedResult) | undefined;
 }) {
   const track = useTrack();
   const { user } = useAuth();
@@ -512,13 +590,25 @@ function ResultReview({
             transition={SPRING}
             className="text-2xl sm:text-3xl"
           >
-            {great
-              ? "Lesson complete! 🎉"
-              : pct >= 40
-                ? "Good session 💪"
-                : "Every miss is a lesson 📚"}
+            {speed
+              ? speed.isNewBest
+                ? "New best! ⚡"
+                : "Round over ⚡"
+              : great
+                ? "Lesson complete! 🎉"
+                : pct >= 40
+                  ? "Good session 💪"
+                  : "Every miss is a lesson 📚"}
           </motion.h2>
         </div>
+        {speed ? (
+          <p className="-mt-3 mb-5 text-center text-sm text-muted-foreground sm:text-left">
+            Answered <strong className="text-foreground">{summary.answered}</strong> in{" "}
+            {speed.durationSec}s ·{" "}
+            <strong className="text-success">{summary.correct} correct</strong> · Best:{" "}
+            <strong className="text-xp">{speed.best}</strong>
+          </p>
+        ) : null}
         <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-center">
           <motion.div
             initial={{ scale: 0.7, opacity: 0 }}

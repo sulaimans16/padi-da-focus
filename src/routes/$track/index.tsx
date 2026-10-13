@@ -26,6 +26,7 @@ import { cn } from "@/lib/utils";
 
 import { formatClock, loadSessionLog, type CompletedSession } from "@/lib/focus-session";
 import { useTrack } from "@/hooks/useTrack";
+import { ReadinessCard } from "@/components/ReadinessCard";
 import { localizeHead } from "@/lib/tracks";
 
 export const Route = createFileRoute("/$track/")({
@@ -52,6 +53,13 @@ export const Route = createFileRoute("/$track/")({
 });
 
 const MODULES = [
+  {
+    label: "Smart Practice",
+    icon: "auto_awesome",
+    note: "Weak topics, speed rounds, image Qs",
+    to: "/$track/practice" as const,
+    hue: 187,
+  },
   {
     label: "Flashcards",
     icon: "style",
@@ -566,6 +574,10 @@ function Index() {
               </div>
             </Reveal>
           </SwipeDeck>
+
+          <Reveal delay={0.1}>
+            <ReadinessCard />
+          </Reveal>
 
           <Reveal delay={0.12}>
             <Link

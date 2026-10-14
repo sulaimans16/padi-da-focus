@@ -491,7 +491,6 @@ export type Database = {
           id: string
           updated_at: string
           username: string | null
-          onboarded_at: string | null
         }
         Insert: {
           created_at?: string
@@ -499,7 +498,6 @@ export type Database = {
           id: string
           updated_at?: string
           username?: string | null
-          onboarded_at?: string | null
         }
         Update: {
           created_at?: string
@@ -507,7 +505,6 @@ export type Database = {
           id?: string
           updated_at?: string
           username?: string | null
-          onboarded_at?: string | null
         }
         Relationships: []
       }
@@ -822,9 +819,6 @@ export type Database = {
         Returns: number
       }
       game_valid_exam: { Args: { _exam: string }; Returns: string }
-      admin_engagement: { Args: { _days?: number }; Returns: Json }
-      my_referrals: { Args: never; Returns: Json }
-      record_referral: { Args: { _username: string }; Returns: string }
       get_friends: { Args: { _exam?: string }; Returns: Json }
       get_game_state: { Args: { _exam?: string }; Returns: Json }
       get_league: { Args: { _exam?: string }; Returns: Json }

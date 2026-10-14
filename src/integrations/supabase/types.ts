@@ -484,30 +484,57 @@ export type Database = {
         }
         Relationships: []
       }
+      pro_grants: {
+        Row: {
+          created_at: string
+          days: number
+          id: string
+          source: string
+          until: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          days: number
+          id?: string
+          source: string
+          until: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          days?: number
+          id?: string
+          source?: string
+          until?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
           display_name: string
           id: string
+          onboarded_at: string | null
           updated_at: string
           username: string | null
-          onboarded_at: string | null
         }
         Insert: {
           created_at?: string
           display_name?: string
           id: string
+          onboarded_at?: string | null
           updated_at?: string
           username?: string | null
-          onboarded_at?: string | null
         }
         Update: {
           created_at?: string
           display_name?: string
           id?: string
+          onboarded_at?: string | null
           updated_at?: string
           username?: string | null
-          onboarded_at?: string | null
         }
         Relationships: []
       }
@@ -571,6 +598,33 @@ export type Database = {
           stem?: string
           subject?: string
           topic?: string
+        }
+        Relationships: []
+      }
+      referrals: {
+        Row: {
+          created_at: string
+          qualified_at: string | null
+          referee: string
+          referrer: string
+          referrer_days: number
+          rewarded_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          qualified_at?: string | null
+          referee: string
+          referrer: string
+          referrer_days?: number
+          rewarded_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          qualified_at?: string | null
+          referee?: string
+          referrer?: string
+          referrer_days?: number
+          rewarded_at?: string | null
         }
         Relationships: []
       }
@@ -736,6 +790,7 @@ export type Database = {
     }
     Functions: {
       accept_invite: { Args: { _username: string }; Returns: string }
+      admin_engagement: { Args: { _days?: number }; Returns: Json }
       claim_xp: {
         Args: { _exam?: string; _ref: string; _source: string }
         Returns: number
@@ -822,13 +877,14 @@ export type Database = {
         Returns: number
       }
       game_valid_exam: { Args: { _exam: string }; Returns: string }
-      admin_engagement: { Args: { _days?: number }; Returns: Json }
-      my_referrals: { Args: never; Returns: Json }
-      record_referral: { Args: { _username: string }; Returns: string }
       get_friends: { Args: { _exam?: string }; Returns: Json }
       get_game_state: { Args: { _exam?: string }; Returns: Json }
       get_league: { Args: { _exam?: string }; Returns: Json }
       get_monthly_event: { Args: { _exam?: string }; Returns: Json }
+      grant_pro_days: {
+        Args: { _days: number; _source: string; _uid: string }
+        Returns: string
+      }
       has_active_subscription: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
         Args: {
@@ -840,6 +896,8 @@ export type Database = {
       is_pro: { Args: { _user_id: string }; Returns: boolean }
       list_challenges: { Args: { _exam?: string }; Returns: Json }
       my_coupon_access: { Args: never; Returns: string }
+      my_referrals: { Args: never; Returns: Json }
+      record_referral: { Args: { _username: string }; Returns: string }
       redeem_coupon: { Args: { _code: string }; Returns: Json }
       remove_friend: { Args: { _other: string }; Returns: undefined }
       request_friend: { Args: { _username: string }; Returns: string }

@@ -15,7 +15,12 @@ export function createLovableAiGatewayProvider(
   });
 }
 
-export const OPENROUTER_MODEL = "apodex/apodex-1.1-mini:free";
+/**
+ * OpenRouter model for every AI feature. Set OPENROUTER_MODEL in the hosting
+ * environment to switch models without a code change (free models come and go).
+ */
+export const OPENROUTER_MODEL =
+  process.env["OPENROUTER_MODEL"]?.trim() || "nvidia/nemotron-3-super-120b-a12b:free";
 
 export function createOpenRouterProvider(
   apiKey: string,

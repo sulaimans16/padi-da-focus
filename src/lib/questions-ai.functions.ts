@@ -156,7 +156,7 @@ export const generateQuestionBatch = createServerFn({ method: "POST" })
         prompt,
         output: Output.object({ schema: BatchSchema }),
         ...(useOpenRouter
-          ? { maxOutputTokens: 12000 }
+          ? { maxOutputTokens: 12000, providerOptions: { openrouter: { reasoningEffort: "low" } } }
           : { providerOptions: { lovable: { reasoningEffort: "none" } } }),
       });
       parsed = output;

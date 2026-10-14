@@ -42,6 +42,10 @@ export function friendlyAiError(error: unknown) {
     return "AI is rate limited right now — try again in a few seconds.";
   if (/\b402\b|credit|insufficient/i.test(message))
     return "AI credits are exhausted for this workspace.";
+  if (/no endpoints found|model.*(not found|unavailable|does not exist)/i.test(message)) {
+    console.error("[ai] model unavailable — set OPENROUTER_MODEL to a listed model:", message);
+    return "The AI is temporarily unavailable. Please try again a little later.";
+  }
   if (/\b401\b|\b403\b|unauthor/i.test(message))
     return "AI key was rejected — please check the OpenRouter key.";
   return message;

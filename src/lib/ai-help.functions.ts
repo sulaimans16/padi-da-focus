@@ -75,7 +75,7 @@ export const askStudyAi = createServerFn({ method: "POST" })
         system: exam === "neet_ug" ? ASK_SYSTEM_UG : ASK_SYSTEM,
         messages: [...(data.history ?? []), { role: "user" as const, content: prompt }],
         ...(useOpenRouter
-          ? { maxOutputTokens: 4000 }
+          ? { maxOutputTokens: 4000, providerOptions: { openrouter: { reasoningEffort: "low" } } }
           : { providerOptions: { lovable: { reasoningEffort: "none" } } }),
       });
       const answer = result.text;

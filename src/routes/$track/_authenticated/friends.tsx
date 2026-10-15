@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Icon, Pill } from "@/components/Primitives";
@@ -560,6 +560,20 @@ function FriendsPage() {
             <InviteCard username={me.data ?? null} trackSlug={track.slug} trackName={track.name} />
           </Section>
           <ReferralCard compact />
+          <Link
+            to="/$track/batch"
+            params={{ track: track.slug }}
+            className="card-pop flex items-center gap-3 p-4 transition-colors hover:ring-2 hover:ring-primary/30"
+          >
+            <Icon name="school" filled className="text-[24px] text-primary" />
+            <span className="min-w-0 flex-1">
+              <span className="block text-sm font-bold">At a coaching institute?</span>
+              <span className="block text-xs text-muted-foreground">
+                Join your batch with the code from your faculty.
+              </span>
+            </span>
+            <Icon name="chevron_right" className="text-[20px] text-muted-foreground" />
+          </Link>
         </div>
       </div>
     </div>

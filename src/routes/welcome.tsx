@@ -228,6 +228,9 @@ function WelcomePage() {
             <Link to="/pricing" className="transition-colors hover:text-foreground">
               Pricing
             </Link>
+            <Link to="/partners" className="transition-colors hover:text-foreground">
+              For institutes
+            </Link>
             <Link
               to="/$track/papers"
               params={{ track: "neet-pg" }}
@@ -425,6 +428,9 @@ function WelcomePage() {
               className="transition-colors hover:text-primary"
             >
               Free papers
+            </Link>
+            <Link to="/partners" className="transition-colors hover:text-primary">
+              For institutes
             </Link>
             <Link to="/privacy" className="transition-colors hover:text-primary">
               Privacy Policy

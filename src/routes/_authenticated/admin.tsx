@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useAccess } from "@/hooks/useAccess";
+import { InstitutesPanel } from "@/components/admin/InstitutesPanel";
 import { EngagementPanel } from "@/components/admin/EngagementPanel";
 import { grantPlan, listMembers, revokePlan } from "@/lib/admin.functions";
 
@@ -120,6 +121,8 @@ function AdminConsole() {
       </p>
 
       <EngagementPanel />
+
+      <InstitutesPanel />
 
       <section className="card-surface mt-5 p-4">
         <p className="text-sm font-bold">Activate a plan</p>

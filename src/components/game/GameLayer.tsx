@@ -20,10 +20,11 @@ import { ShareNote } from "@/components/game/ShareNote";
 import { shareAchievement, type ShareStatus } from "@/lib/share-card";
 import { playLevelUp } from "@/lib/sfx";
 import { trackById } from "@/lib/tracks";
-import { activeTrackId } from "@/lib/track-state";
+import { activeTrackId, setActiveTrack } from "@/lib/track-state";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { captureInviteRef, claimInviteRef, fetchMyUsername, rememberUsername } from "@/lib/social";
+import { claimJoinCode } from "@/lib/institute";
 
 type Toast = { id: number; amount: number; combo: number };
 type Celebration = Extract<GameEvent, { type: "celebrate" }> & { id: number };
@@ -69,6 +70,20 @@ function useInviteLinks() {
           subtitle: `You and @${name} are now friends. New here? Answer 10 questions and you both get 7 days of Pro.`,
           icon: "group",
         });
+    });
+    // A batch code saved from a /join link before signing in.
+    void claimJoinCode().then((res) => {
+      if (!res) return;
+      setActiveTrack(res.exam);
+      emitGameEvent({
+        type: "celebrate",
+        kind: "goal",
+        title: "You joined your batch!",
+        subtitle: res.pro_days
+          ? `Your institute unlocked ${res.pro_days} days of Pro. Find assignments under My Batch.`
+          : "Find your faculty's assignments under My Batch.",
+        icon: "school",
+      });
     });
   }, [user]);
 }

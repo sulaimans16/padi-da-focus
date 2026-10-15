@@ -1,6 +1,8 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import type { ReactNode } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { fetchMyBatches, fetchStaffOverview } from "@/lib/institute";
 import { useAuth } from "@/hooks/useAuth";
 import { useTheme } from "@/lib/theme";
 import { AskAi } from "@/components/AskAi";
@@ -37,12 +39,13 @@ type TrackPath =
   | "/$track/flashcards"
   | "/$track/leagues"
   | "/$track/friends"
+  | "/$track/batch"
   | "/$track/profile";
 
 type NavLink = {
   label: string;
   icon: string;
-  to: TrackPath | "/pricing" | "/admin";
+  to: TrackPath | "/pricing" | "/admin" | "/institute";
   badge?: number;
 };
 
@@ -124,6 +127,7 @@ const FOCUS_LINK: NavLink = { label: "Focus Lock", icon: "lock_clock", to: "/$tr
 const FILL_LINK: NavLink = { label: "Fill Bank", icon: "cloud_download", to: "/$track/bank/fill" };
 const PRICING_LINK: NavLink = { label: "Go Pro", icon: "workspace_premium", to: "/pricing" };
 const ADMIN_LINK: NavLink = { label: "Admin", icon: "admin_panel_settings", to: "/admin" };
+const INSTITUTE_LINK: NavLink = { label: "Institute Portal", icon: "domain", to: "/institute" };
 
 /** Screens that draw their own chrome: the exam picker, focus lock, auth, landing. */
 function isFullBleed(pathname: string) {
@@ -131,6 +135,9 @@ function isFullBleed(pathname: string) {
     pathname === "/" ||
     /^\/neet-(pg|ug)\/focus\/?$/.test(pathname) ||
     pathname.startsWith("/auth") ||
+    pathname.startsWith("/join/") ||
+    pathname.startsWith("/institute") ||
+    pathname.startsWith("/partners") ||
     pathname.startsWith("/onboarding") ||
     pathname.startsWith("/welcome")
   );
@@ -190,14 +197,35 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { state: game, level, rank } = useGameState();
   const track = useTrack();
   const slug = track.slug;
-  const play = PLAY.map((l) =>
-    l.to === "/$track/review" ? { ...l, badge: game?.mistakesDue ?? 0 } : l,
+  // Coaching batches: "My Batch" for members, the portal link for institute staff.
+  const myBatches = useQuery({
+    queryKey: ["my-batches", track.id],
+    queryFn: () => fetchMyBatches(track.id),
+    enabled: Boolean(user),
+    staleTime: 5 * 60_000,
+  });
+  const staff = useQuery({
+    queryKey: ["staff-overview"],
+    queryFn: fetchStaffOverview,
+    enabled: Boolean(user),
+    staleTime: 10 * 60_000,
+  });
+  const batchTodo = (myBatches.data ?? []).reduce(
+    (n, b) => n + b.assignments.filter((a) => a.my_score == null).length,
+    0,
   );
+  const play = [
+    ...PLAY.map((l) => (l.to === "/$track/review" ? { ...l, badge: game?.mistakesDue ?? 0 } : l)),
+    ...(myBatches.data?.length
+      ? [{ label: "My Batch", icon: "school", to: "/$track/batch", badge: batchTodo } as NavLink]
+      : []),
+  ];
 
   const SECONDARY: NavLink[] = [
     FOCUS_LINK,
     ...(isPro ? [FILL_LINK] : []),
     ...(isPro ? [] : [PRICING_LINK]),
+    ...(staff.data?.length ? [INSTITUTE_LINK] : []),
     ...(isAdmin ? [ADMIN_LINK] : []),
   ];
 

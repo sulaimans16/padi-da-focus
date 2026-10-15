@@ -13,7 +13,9 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as TrackRouteImport } from './routes/$track'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as InstituteRouteImport } from './routes/institute'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as PartnersRouteImport } from './routes/partners'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
@@ -31,6 +33,9 @@ import { Route as TrackPyqRouteImport } from './routes/$track/pyq'
 import { Route as TrackRoadmapRouteImport } from './routes/$track/roadmap'
 import { Route as TrackVideosRouteImport } from './routes/$track/videos'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as InstituteDemoRouteImport } from './routes/institute_.demo'
+import { Route as JoinCodeRouteImport } from './routes/join.$code'
+import { Route as TrackAuthenticatedBatchRouteImport } from './routes/$track/_authenticated/batch'
 import { Route as TrackAuthenticatedFriendsRouteImport } from './routes/$track/_authenticated/friends'
 import { Route as TrackAuthenticatedLeaguesRouteImport } from './routes/$track/_authenticated/leagues'
 import { Route as TrackAuthenticatedProfileRouteImport } from './routes/$track/_authenticated/profile'
@@ -63,9 +68,19 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InstituteRoute = InstituteRouteImport.update({
+  id: '/institute',
+  path: '/institute',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PartnersRoute = PartnersRouteImport.update({
+  id: '/partners',
+  path: '/partners',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PricingRoute = PricingRouteImport.update({
@@ -152,6 +167,21 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const InstituteDemoRoute = InstituteDemoRouteImport.update({
+  id: '/institute_/demo',
+  path: '/institute/demo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JoinCodeRoute = JoinCodeRouteImport.update({
+  id: '/join/$code',
+  path: '/join/$code',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TrackAuthenticatedBatchRoute = TrackAuthenticatedBatchRouteImport.update({
+  id: '/batch',
+  path: '/batch',
+  getParentRoute: () => TrackAuthenticatedRouteRoute,
+} as any)
 const TrackAuthenticatedFriendsRoute =
   TrackAuthenticatedFriendsRouteImport.update({
     id: '/friends',
@@ -224,7 +254,9 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$track': typeof TrackRouteWithChildren
   '/auth': typeof AuthRoute
+  '/institute': typeof InstituteRoute
   '/onboarding': typeof OnboardingRoute
+  '/partners': typeof PartnersRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -240,7 +272,10 @@ export interface FileRoutesByFullPath {
   '/$track/roadmap': typeof TrackRoadmapRoute
   '/$track/videos': typeof TrackVideosRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/institute/demo': typeof InstituteDemoRoute
+  '/join/$code': typeof JoinCodeRoute
   '/$track/': typeof TrackIndexRoute
+  '/$track/batch': typeof TrackAuthenticatedBatchRoute
   '/$track/friends': typeof TrackAuthenticatedFriendsRoute
   '/$track/leagues': typeof TrackAuthenticatedLeaguesRoute
   '/$track/profile': typeof TrackAuthenticatedProfileRoute
@@ -257,7 +292,9 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/institute': typeof InstituteRoute
   '/onboarding': typeof OnboardingRoute
+  '/partners': typeof PartnersRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -274,6 +311,9 @@ export interface FileRoutesByTo {
   '/$track/roadmap': typeof TrackRoadmapRoute
   '/$track/videos': typeof TrackVideosRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/institute/demo': typeof InstituteDemoRoute
+  '/join/$code': typeof JoinCodeRoute
+  '/$track/batch': typeof TrackAuthenticatedBatchRoute
   '/$track/friends': typeof TrackAuthenticatedFriendsRoute
   '/$track/leagues': typeof TrackAuthenticatedLeaguesRoute
   '/$track/profile': typeof TrackAuthenticatedProfileRoute
@@ -293,7 +333,9 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/$track': typeof TrackRouteWithChildren
   '/auth': typeof AuthRoute
+  '/institute': typeof InstituteRoute
   '/onboarding': typeof OnboardingRoute
+  '/partners': typeof PartnersRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -310,7 +352,10 @@ export interface FileRoutesById {
   '/$track/roadmap': typeof TrackRoadmapRoute
   '/$track/videos': typeof TrackVideosRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/institute_/demo': typeof InstituteDemoRoute
+  '/join/$code': typeof JoinCodeRoute
   '/$track/': typeof TrackIndexRoute
+  '/$track/_authenticated/batch': typeof TrackAuthenticatedBatchRoute
   '/$track/_authenticated/friends': typeof TrackAuthenticatedFriendsRoute
   '/$track/_authenticated/leagues': typeof TrackAuthenticatedLeaguesRoute
   '/$track/_authenticated/profile': typeof TrackAuthenticatedProfileRoute
@@ -330,7 +375,9 @@ export interface FileRouteTypes {
     | '/'
     | '/$track'
     | '/auth'
+    | '/institute'
     | '/onboarding'
+    | '/partners'
     | '/pricing'
     | '/privacy'
     | '/sitemap.xml'
@@ -346,7 +393,10 @@ export interface FileRouteTypes {
     | '/$track/roadmap'
     | '/$track/videos'
     | '/admin'
+    | '/institute/demo'
+    | '/join/$code'
     | '/$track/'
+    | '/$track/batch'
     | '/$track/friends'
     | '/$track/leagues'
     | '/$track/profile'
@@ -363,7 +413,9 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/institute'
     | '/onboarding'
+    | '/partners'
     | '/pricing'
     | '/privacy'
     | '/sitemap.xml'
@@ -380,6 +432,9 @@ export interface FileRouteTypes {
     | '/$track/roadmap'
     | '/$track/videos'
     | '/admin'
+    | '/institute/demo'
+    | '/join/$code'
+    | '/$track/batch'
     | '/$track/friends'
     | '/$track/leagues'
     | '/$track/profile'
@@ -398,7 +453,9 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/$track'
     | '/auth'
+    | '/institute'
     | '/onboarding'
+    | '/partners'
     | '/pricing'
     | '/privacy'
     | '/sitemap.xml'
@@ -415,7 +472,10 @@ export interface FileRouteTypes {
     | '/$track/roadmap'
     | '/$track/videos'
     | '/_authenticated/admin'
+    | '/institute_/demo'
+    | '/join/$code'
     | '/$track/'
+    | '/$track/_authenticated/batch'
     | '/$track/_authenticated/friends'
     | '/$track/_authenticated/leagues'
     | '/$track/_authenticated/profile'
@@ -435,11 +495,15 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   TrackRoute: typeof TrackRouteWithChildren
   AuthRoute: typeof AuthRoute
+  InstituteRoute: typeof InstituteRoute
   OnboardingRoute: typeof OnboardingRoute
+  PartnersRoute: typeof PartnersRoute
   PricingRoute: typeof PricingRoute
   PrivacyRoute: typeof PrivacyRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   WelcomeRoute: typeof WelcomeRoute
+  InstituteDemoRoute: typeof InstituteDemoRoute
+  JoinCodeRoute: typeof JoinCodeRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
 
@@ -473,11 +537,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/institute': {
+      id: '/institute'
+      path: '/institute'
+      fullPath: '/institute'
+      preLoaderRoute: typeof InstituteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/onboarding': {
       id: '/onboarding'
       path: '/onboarding'
       fullPath: '/onboarding'
       preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/partners': {
+      id: '/partners'
+      path: '/partners'
+      fullPath: '/partners'
+      preLoaderRoute: typeof PartnersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pricing': {
@@ -599,6 +677,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/institute_/demo': {
+      id: '/institute_/demo'
+      path: '/institute/demo'
+      fullPath: '/institute/demo'
+      preLoaderRoute: typeof InstituteDemoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/join/$code': {
+      id: '/join/$code'
+      path: '/join/$code'
+      fullPath: '/join/$code'
+      preLoaderRoute: typeof JoinCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$track/_authenticated/batch': {
+      id: '/$track/_authenticated/batch'
+      path: '/batch'
+      fullPath: '/$track/batch'
+      preLoaderRoute: typeof TrackAuthenticatedBatchRouteImport
+      parentRoute: typeof TrackAuthenticatedRouteRoute
+    }
     '/$track/_authenticated/friends': {
       id: '/$track/_authenticated/friends'
       path: '/friends'
@@ -698,6 +797,7 @@ const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface TrackAuthenticatedRouteRouteChildren {
+  TrackAuthenticatedBatchRoute: typeof TrackAuthenticatedBatchRoute
   TrackAuthenticatedFriendsRoute: typeof TrackAuthenticatedFriendsRoute
   TrackAuthenticatedLeaguesRoute: typeof TrackAuthenticatedLeaguesRoute
   TrackAuthenticatedProfileRoute: typeof TrackAuthenticatedProfileRoute
@@ -708,6 +808,7 @@ interface TrackAuthenticatedRouteRouteChildren {
 
 const TrackAuthenticatedRouteRouteChildren: TrackAuthenticatedRouteRouteChildren =
   {
+    TrackAuthenticatedBatchRoute: TrackAuthenticatedBatchRoute,
     TrackAuthenticatedFriendsRoute: TrackAuthenticatedFriendsRoute,
     TrackAuthenticatedLeaguesRoute: TrackAuthenticatedLeaguesRoute,
     TrackAuthenticatedProfileRoute: TrackAuthenticatedProfileRoute,
@@ -768,11 +869,15 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   TrackRoute: TrackRouteWithChildren,
   AuthRoute: AuthRoute,
+  InstituteRoute: InstituteRoute,
   OnboardingRoute: OnboardingRoute,
+  PartnersRoute: PartnersRoute,
   PricingRoute: PricingRoute,
   PrivacyRoute: PrivacyRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   WelcomeRoute: WelcomeRoute,
+  InstituteDemoRoute: InstituteDemoRoute,
+  JoinCodeRoute: JoinCodeRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport

@@ -289,7 +289,8 @@ export async function createBatch(
 export async function updateBatch(batch: string, active: boolean | null, rotateCode = false) {
   const { data, error } = await supabase.rpc("update_batch", {
     _batch: batch,
-    _active: active,
+    // null on the wire keeps the current value (the RPC COALESCEs it).
+    _active: (active ?? undefined) as boolean,
     _rotate_code: rotateCode,
   });
   if (error) fail(error);
@@ -312,7 +313,7 @@ export async function createAssignment(
     _batch: batch,
     _title: title,
     _question_ids: questionIds,
-    _due_at: dueAt ? dueAt.toISOString() : null,
+    _due_at: dueAt ? dueAt.toISOString() : undefined,
   });
   if (error) fail(error);
   return data;

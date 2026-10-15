@@ -14,6 +14,41 @@ export type Database = {
   }
   public: {
     Tables: {
+      assignment_submissions: {
+        Row: {
+          answers: Json
+          assignment_id: string
+          score: number
+          seconds: number
+          submitted_at: string
+          user_id: string
+        }
+        Insert: {
+          answers: Json
+          assignment_id: string
+          score: number
+          seconds?: number
+          submitted_at?: string
+          user_id: string
+        }
+        Update: {
+          answers?: Json
+          assignment_id?: string
+          score?: number
+          seconds?: number
+          submitted_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assignment_submissions_assignment_id_fkey"
+            columns: ["assignment_id"]
+            isOneToOne: false
+            referencedRelation: "batch_assignments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       attempts: {
         Row: {
           chosen_option_id: string
@@ -55,6 +90,114 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      batch_assignments: {
+        Row: {
+          batch_id: string
+          created_at: string
+          created_by: string
+          due_at: string | null
+          id: string
+          question_ids: string[]
+          title: string
+        }
+        Insert: {
+          batch_id: string
+          created_at?: string
+          created_by: string
+          due_at?: string | null
+          id?: string
+          question_ids: string[]
+          title: string
+        }
+        Update: {
+          batch_id?: string
+          created_at?: string
+          created_by?: string
+          due_at?: string | null
+          id?: string
+          question_ids?: string[]
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "batch_assignments_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      batch_members: {
+        Row: {
+          batch_id: string
+          joined_at: string
+          pro_granted: boolean
+          user_id: string
+        }
+        Insert: {
+          batch_id: string
+          joined_at?: string
+          pro_granted?: boolean
+          user_id: string
+        }
+        Update: {
+          batch_id?: string
+          joined_at?: string
+          pro_granted?: boolean
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "batch_members_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      batches: {
+        Row: {
+          active: boolean
+          created_at: string
+          exam: string
+          id: string
+          institute_id: string
+          join_code: string
+          name: string
+          pro_days: number
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          exam?: string
+          id?: string
+          institute_id: string
+          join_code: string
+          name: string
+          pro_days?: number
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          exam?: string
+          id?: string
+          institute_id?: string
+          join_code?: string
+          name?: string
+          pro_days?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "batches_institute_id_fkey"
+            columns: ["institute_id"]
+            isOneToOne: false
+            referencedRelation: "institutes"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       bookmarks: {
         Row: {
@@ -406,6 +549,62 @@ export type Database = {
           title?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      institute_staff: {
+        Row: {
+          added_at: string
+          institute_id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          added_at?: string
+          institute_id: string
+          role: string
+          user_id: string
+        }
+        Update: {
+          added_at?: string
+          institute_id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "institute_staff_institute_id_fkey"
+            columns: ["institute_id"]
+            isOneToOne: false
+            referencedRelation: "institutes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      institutes: {
+        Row: {
+          city: string
+          created_at: string
+          created_by: string
+          id: string
+          name: string
+          verified: boolean
+        }
+        Insert: {
+          city?: string
+          created_at?: string
+          created_by: string
+          id?: string
+          name: string
+          verified?: boolean
+        }
+        Update: {
+          city?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          name?: string
+          verified?: boolean
         }
         Relationships: []
       }
@@ -790,16 +989,51 @@ export type Database = {
     }
     Functions: {
       accept_invite: { Args: { _username: string }; Returns: string }
+      add_institute_staff: {
+        Args: { _institute: string; _username: string }
+        Returns: undefined
+      }
       admin_engagement: { Args: { _days?: number }; Returns: Json }
+      admin_list_institutes: { Args: never; Returns: Json }
+      admin_verify_institute: {
+        Args: { _id: string; _verified: boolean }
+        Returns: undefined
+      }
+      assignment_results: { Args: { _id: string }; Returns: Json }
+      batch_dashboard: { Args: { _batch: string }; Returns: Json }
+      batch_preview: { Args: { _code: string }; Returns: Json }
       claim_xp: {
         Args: { _exam?: string; _ref: string; _source: string }
         Returns: number
       }
       coupon_access_until: { Args: { _user_id: string }; Returns: string }
+      create_assignment: {
+        Args: {
+          _batch: string
+          _due_at?: string
+          _question_ids: string[]
+          _title: string
+        }
+        Returns: string
+      }
+      create_batch: {
+        Args: {
+          _exam: string
+          _institute: string
+          _name: string
+          _pro_days?: number
+        }
+        Returns: string
+      }
       create_challenge: {
         Args: { _exam: string; _opponent: string; _question_ids: string[] }
         Returns: string
       }
+      create_institute: {
+        Args: { _city?: string; _name: string }
+        Returns: string
+      }
+      delete_assignment: { Args: { _id: string }; Returns: undefined }
       game_award_badge: {
         Args: { _badge: string; _exam: string; _uid: string }
         Returns: undefined
@@ -893,13 +1127,26 @@ export type Database = {
         }
         Returns: boolean
       }
+      institute_new_code: { Args: never; Returns: string }
+      is_batch_staff: { Args: { _batch: string }; Returns: boolean }
+      is_institute_staff: {
+        Args: { _institute: string; _owner_only?: boolean }
+        Returns: boolean
+      }
       is_pro: { Args: { _user_id: string }; Returns: boolean }
+      join_batch: { Args: { _code: string }; Returns: Json }
+      leave_batch: { Args: { _batch: string }; Returns: undefined }
       list_challenges: { Args: { _exam?: string }; Returns: Json }
+      my_batches: { Args: { _exam?: string }; Returns: Json }
       my_coupon_access: { Args: never; Returns: string }
       my_referrals: { Args: never; Returns: Json }
       record_referral: { Args: { _username: string }; Returns: string }
       redeem_coupon: { Args: { _code: string }; Returns: Json }
       remove_friend: { Args: { _other: string }; Returns: undefined }
+      remove_institute_staff: {
+        Args: { _institute: string; _user: string }
+        Returns: undefined
+      }
       request_friend: { Args: { _username: string }; Returns: string }
       respond_friend: {
         Args: { _accept: boolean; _other: string }
@@ -920,9 +1167,18 @@ export type Database = {
       set_username: { Args: { _name: string }; Returns: string }
       social_are_friends: { Args: { _x: string; _y: string }; Returns: boolean }
       social_user_by_name: { Args: { _name: string }; Returns: string }
+      staff_overview: { Args: never; Returns: Json }
+      submit_assignment: {
+        Args: { _answers: Json; _id: string; _seconds: number }
+        Returns: Json
+      }
       submit_challenge: {
         Args: { _answers: Json; _id: string; _seconds: number }
         Returns: Json
+      }
+      update_batch: {
+        Args: { _active: boolean; _batch: string; _rotate_code?: boolean }
+        Returns: string
       }
       update_game_settings: {
         Args: {

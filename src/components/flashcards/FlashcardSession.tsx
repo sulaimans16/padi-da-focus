@@ -10,12 +10,129 @@ import { emitGameEvent } from "@/lib/gamification";
 import { playCorrect, playTick, playWrong } from "@/lib/sfx";
 import { cn } from "@/lib/utils";
 
-const RATINGS: { rating: Rating; label: string; key: string; className: string }[] = [
-  { rating: 1, label: "Again", key: "1", className: "btn-danger" },
-  { rating: 2, label: "Hard", key: "2", className: "btn-ghost" },
-  { rating: 3, label: "Good", key: "3", className: "btn-success" },
-  { rating: 4, label: "Easy", key: "4", className: "btn-primary" },
+const RATINGS: {
+  rating: Rating;
+  label: string;
+  hint: string;
+  help: string;
+  key: string;
+  className: string;
+  color: string;
+}[] = [
+  {
+    rating: 1,
+    label: "Again",
+    hint: "forgot",
+    help: "Forgot it. It comes back in a few minutes, this session.",
+    key: "1",
+    className: "btn-danger",
+    color: "text-destructive",
+  },
+  {
+    rating: 2,
+    label: "Hard",
+    hint: "tough",
+    help: "Got it, but with effort. A shorter gap before the next review.",
+    key: "2",
+    className: "btn-ghost",
+    color: "text-foreground",
+  },
+  {
+    rating: 3,
+    label: "Good",
+    hint: "got it",
+    help: "Recalled it normally. The usual gap.",
+    key: "3",
+    className: "btn-success",
+    color: "text-success",
+  },
+  {
+    rating: 4,
+    label: "Easy",
+    hint: "too easy",
+    help: "Instant, no effort. The longest gap.",
+    key: "4",
+    className: "btn-primary",
+    color: "text-primary",
+  },
 ];
+
+const HELP_KEY = "padida.flashcards.helpSeen";
+
+function helpSeen() {
+  try {
+    return localStorage.getItem(HELP_KEY) === "1";
+  } catch {
+    return true;
+  }
+}
+
+/** "3d" → "3 days" for screen readers and tooltips. */
+function spoken(label: string) {
+  const m = /^([\d.]+)(m|d|mo|y)$/.exec(label);
+  if (!m) return label;
+  const unit = { m: "minute", d: "day", mo: "month", y: "year" }[m[2] as "m" | "d" | "mo" | "y"];
+  return `${m[1]} ${unit}${m[1] === "1" ? "" : "s"}`;
+}
+
+/** What the four buttons mean — shown once on the first flip, then on demand. */
+function RatingHelp({ onClose }: { onClose: () => void }) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={onClose}
+      className="fixed inset-0 z-[60] flex items-end justify-center bg-background/70 p-3 pb-28 backdrop-blur-sm sm:items-center sm:pb-3"
+    >
+      <motion.div
+        initial={{ y: 24 }}
+        animate={{ y: 0 }}
+        exit={{ y: 24 }}
+        role="dialog"
+        aria-modal="true"
+        aria-label="How the rating buttons work"
+        onClick={(e) => e.stopPropagation()}
+        className="card-pop w-full max-w-md !bg-surface p-4"
+      >
+        <div className="flex items-start gap-3">
+          <Mascot mood="happy" size={40} className="shrink-0" />
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-bold">How well did you remember it?</p>
+            <ul className="mt-2 space-y-1 text-xs leading-relaxed">
+              {RATINGS.map((r) => (
+                <li key={r.rating}>
+                  <span className={cn("font-bold", r.color)}>{r.label}:</span>{" "}
+                  <span className="text-muted-foreground">{r.help}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+              The time under each button is when you&apos;ll see this card again. Cards you keep
+              remembering come back less and less often.{" "}
+              <span className="sm:hidden">Tip: swipe ← for Again, → for Good.</span>
+              <span className="hidden sm:inline">Tip: press 1–4 or swipe.</span>
+            </p>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={onClose}
+          className="btn-base btn-primary mt-3 h-10 w-full text-sm"
+        >
+          Okay, let&apos;s review
+        </button>
+      </motion.div>
+    </motion.div>
+  );
+}
 
 const SWIPE = 110;
 
@@ -38,6 +155,21 @@ export function FlashcardSession({
   const [stats, setStats] = useState({ reviewed: 0, again: 0, xp: 0 });
   const [states, setStates] = useState<ReviewMap>(reviews);
   const [busy, setBusy] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
+
+  // First ever flip: explain the buttons once.
+  useEffect(() => {
+    if (flipped && !helpSeen()) setShowHelp(true);
+  }, [flipped]);
+
+  const closeHelp = () => {
+    setShowHelp(false);
+    try {
+      localStorage.setItem(HELP_KEY, "1");
+    } catch {
+      // ignore
+    }
+  };
   const [againCount, setAgainCount] = useState<Record<string, number>>({});
 
   const card = queue[index];
@@ -271,24 +403,46 @@ export function FlashcardSession({
       </div>
 
       <div className="mt-6 min-h-[4.5rem]">
+        <AnimatePresence>
+          {flipped && showHelp ? <RatingHelp onClose={closeHelp} /> : null}
+        </AnimatePresence>
         {flipped ? (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="grid grid-cols-4 gap-2"
-          >
-            {RATINGS.map((r, i) => (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+            <div className="grid grid-cols-4 gap-2">
+              {RATINGS.map((r, i) => {
+                const when = labels[i] ?? "";
+                const tip = `${r.label} — ${r.hint}. Next review in ${spoken(when)}.`;
+                return (
+                  <button
+                    key={r.rating}
+                    type="button"
+                    disabled={busy}
+                    onClick={() => void grade(r.rating)}
+                    title={tip}
+                    aria-label={tip}
+                    className={cn("btn-base h-[4.5rem] flex-col gap-0 px-1 text-sm", r.className)}
+                  >
+                    {r.label}
+                    <span className="text-[10px] font-medium leading-tight opacity-80">
+                      {r.hint}
+                    </span>
+                    <span className="text-[10px] font-semibold leading-tight opacity-75">
+                      in {when}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            {!showHelp ? (
               <button
-                key={r.rating}
                 type="button"
-                disabled={busy}
-                onClick={() => void grade(r.rating)}
-                className={cn("btn-base h-16 flex-col gap-0 px-1 text-sm", r.className)}
+                onClick={() => setShowHelp(true)}
+                className="mx-auto mt-3 flex items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-primary"
               >
-                {r.label}
-                <span className="text-[10px] font-semibold opacity-75">{labels[i]}</span>
+                <Icon name="info" className="text-[16px]" />
+                How do these work?
               </button>
-            ))}
+            ) : null}
           </motion.div>
         ) : (
           <button

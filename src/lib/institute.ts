@@ -183,7 +183,7 @@ export async function leaveBatch(batch: string) {
 
 /** The signed-in student's batches (empty before migration 0020 or when signed out). */
 export async function fetchMyBatches(exam?: TrackId): Promise<MyBatch[]> {
-  const { data, error } = await supabase.rpc("my_batches", { _exam: exam ?? null });
+  const { data, error } = await supabase.rpc("my_batches", ...(exam ? [{ _exam: exam }] : []));
   if (error) return [];
   return (data ?? []) as unknown as MyBatch[];
 }
@@ -289,7 +289,8 @@ export async function createBatch(
 export async function updateBatch(batch: string, active: boolean | null, rotateCode = false) {
   const { data, error } = await supabase.rpc("update_batch", {
     _batch: batch,
-    _active: active,
+    // null on the wire keeps the current value (the RPC COALESCEs it).
+    _active: (active ?? undefined) as boolean,
     _rotate_code: rotateCode,
   });
   if (error) fail(error);
@@ -312,7 +313,7 @@ export async function createAssignment(
     _batch: batch,
     _title: title,
     _question_ids: questionIds,
-    _due_at: dueAt ? dueAt.toISOString() : null,
+    ...(dueAt ? { _due_at: dueAt.toISOString() } : {}),
   });
   if (error) fail(error);
   return data;

@@ -148,6 +148,13 @@
       "when": 1792076728490,
       "tag": "0020_institutes",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1792078066139,
+      "tag": "0021_institutes_batches",
+      "breakpoints": true
     }
   ]
 }

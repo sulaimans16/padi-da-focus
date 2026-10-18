@@ -33,6 +33,7 @@ import { Route as TrackPyqRouteImport } from './routes/$track/pyq'
 import { Route as TrackRoadmapRouteImport } from './routes/$track/roadmap'
 import { Route as TrackVideosRouteImport } from './routes/$track/videos'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthResetRouteImport } from './routes/auth_.reset'
 import { Route as InstituteDemoRouteImport } from './routes/institute_.demo'
 import { Route as JoinCodeRouteImport } from './routes/join.$code'
 import { Route as TrackAuthenticatedBatchRouteImport } from './routes/$track/_authenticated/batch'
@@ -167,6 +168,11 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthResetRoute = AuthResetRouteImport.update({
+  id: '/auth_/reset',
+  path: '/auth/reset',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const InstituteDemoRoute = InstituteDemoRouteImport.update({
   id: '/institute_/demo',
   path: '/institute/demo',
@@ -272,6 +278,7 @@ export interface FileRoutesByFullPath {
   '/$track/roadmap': typeof TrackRoadmapRoute
   '/$track/videos': typeof TrackVideosRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/auth/reset': typeof AuthResetRoute
   '/institute/demo': typeof InstituteDemoRoute
   '/join/$code': typeof JoinCodeRoute
   '/$track/': typeof TrackIndexRoute
@@ -311,6 +318,7 @@ export interface FileRoutesByTo {
   '/$track/roadmap': typeof TrackRoadmapRoute
   '/$track/videos': typeof TrackVideosRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/auth/reset': typeof AuthResetRoute
   '/institute/demo': typeof InstituteDemoRoute
   '/join/$code': typeof JoinCodeRoute
   '/$track/batch': typeof TrackAuthenticatedBatchRoute
@@ -352,6 +360,7 @@ export interface FileRoutesById {
   '/$track/roadmap': typeof TrackRoadmapRoute
   '/$track/videos': typeof TrackVideosRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/auth_/reset': typeof AuthResetRoute
   '/institute_/demo': typeof InstituteDemoRoute
   '/join/$code': typeof JoinCodeRoute
   '/$track/': typeof TrackIndexRoute
@@ -393,6 +402,7 @@ export interface FileRouteTypes {
     | '/$track/roadmap'
     | '/$track/videos'
     | '/admin'
+    | '/auth/reset'
     | '/institute/demo'
     | '/join/$code'
     | '/$track/'
@@ -432,6 +442,7 @@ export interface FileRouteTypes {
     | '/$track/roadmap'
     | '/$track/videos'
     | '/admin'
+    | '/auth/reset'
     | '/institute/demo'
     | '/join/$code'
     | '/$track/batch'
@@ -472,6 +483,7 @@ export interface FileRouteTypes {
     | '/$track/roadmap'
     | '/$track/videos'
     | '/_authenticated/admin'
+    | '/auth_/reset'
     | '/institute_/demo'
     | '/join/$code'
     | '/$track/'
@@ -502,6 +514,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   WelcomeRoute: typeof WelcomeRoute
+  AuthResetRoute: typeof AuthResetRoute
   InstituteDemoRoute: typeof InstituteDemoRoute
   JoinCodeRoute: typeof JoinCodeRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
@@ -676,6 +689,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin'
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/auth_/reset': {
+      id: '/auth_/reset'
+      path: '/auth/reset'
+      fullPath: '/auth/reset'
+      preLoaderRoute: typeof AuthResetRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/institute_/demo': {
       id: '/institute_/demo'
@@ -876,6 +896,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   WelcomeRoute: WelcomeRoute,
+  AuthResetRoute: AuthResetRoute,
   InstituteDemoRoute: InstituteDemoRoute,
   JoinCodeRoute: JoinCodeRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,

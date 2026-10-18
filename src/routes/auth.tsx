@@ -34,6 +34,21 @@ export const Route = createFileRoute("/auth")({
   component: AuthPage,
 });
 
+/** Plain-language messages for auth failures (never a fake success). */
+function friendlyAuthError(e: unknown) {
+  const message =
+    e instanceof Error ? e.message : String((e as { message?: string })?.message ?? "");
+  if (/rate limit|too many|429|for security purposes/i.test(message))
+    return "Too many emails were requested. Please wait a few minutes and try again.";
+  if (/password should be at least/i.test(message))
+    return "Use a password of at least 6 characters.";
+  if (/invalid email|unable to validate email/i.test(message))
+    return "That email address doesn't look right.";
+  if (/sending|smtp|email.*(fail|error)/i.test(message))
+    return "We couldn't send the email right now. Please try again in a few minutes, or use Continue with Google.";
+  return message || "Something went wrong.";
+}
+
 function AuthPage() {
   const navigate = useNavigate();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
@@ -43,6 +58,16 @@ function AuthPage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  // Address a confirmation email can be re-sent to, and the resend cooldown.
+  const [resendTo, setResendTo] = useState<string | null>(null);
+  const [cooldown, setCooldown] = useState(0);
+  const [showReset, setShowReset] = useState(false);
+
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const t = window.setTimeout(() => setCooldown((c) => c - 1), 1000);
+    return () => window.clearTimeout(t);
+  }, [cooldown]);
 
   useEffect(() => {
     void supabase.auth.getSession().then(({ data }) => {
@@ -61,11 +86,14 @@ function AuthPage() {
     setBusy(true);
     setError(null);
     setNotice(null);
+    setResendTo(null);
+    setShowReset(false);
+    const address = resolvedEmail();
     try {
       if (mode === "signup") {
         const username = name.trim();
         const { data, error: err } = await supabase.auth.signUp({
-          email: resolvedEmail(),
+          email: address,
           password,
           options: {
             emailRedirectTo: window.location.origin,
@@ -73,8 +101,23 @@ function AuthPage() {
           },
         });
         if (err) throw err;
+        // An existing address comes back as a user with no identities and no email is
+        // sent (Supabase hides which addresses are registered). Don't claim one was.
+        if (data.user && !data.session && (data.user.identities?.length ?? 0) === 0) {
+          setMode("signin");
+          setPassword("");
+          setError(
+            "An account with this email already exists. Sign in instead — if you joined with Google, use Continue with Google.",
+          );
+          setShowReset(true);
+          return;
+        }
         if (!data.session) {
-          setNotice("Check your email to confirm the account, then sign in.");
+          setNotice(
+            `We sent a confirmation link to ${address}. Open it, then sign in. Not there? Check Spam and Promotions.`,
+          );
+          setResendTo(address);
+          setCooldown(60);
           return;
         }
         if (data.user && username) {
@@ -84,17 +127,74 @@ function AuthPage() {
         }
       } else {
         const { error: err } = await supabase.auth.signInWithPassword({
-          email: resolvedEmail(),
+          email: address,
           password,
         });
-        if (err) throw err;
+        if (err) {
+          if (/not confirmed/i.test(err.message)) {
+            setError("Please confirm your email first. We can send the link again.");
+            setResendTo(address);
+            return;
+          }
+          if (/invalid login credentials/i.test(err.message)) {
+            setError(
+              "Wrong email or password. If you signed up with Google, use Continue with Google — or reset your password to add one.",
+            );
+            setShowReset(true);
+            return;
+          }
+          throw err;
+        }
       }
       await navigate({ to: "/", replace: true });
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Something went wrong.");
+      setError(friendlyAuthError(e));
     } finally {
       setBusy(false);
     }
+  };
+
+  const resend = async () => {
+    if (!resendTo || cooldown > 0) return;
+    setError(null);
+    const { error: err } = await supabase.auth.resend({
+      type: "signup",
+      email: resendTo,
+      options: { emailRedirectTo: window.location.origin },
+    });
+    if (err) {
+      setError(friendlyAuthError(err));
+      return;
+    }
+    setNotice(`Sent again to ${resendTo}. It can take a minute; check Spam and Promotions too.`);
+    setCooldown(60);
+  };
+
+  const forgot = async () => {
+    setError(null);
+    setNotice(null);
+    const address = resolvedEmail();
+    if (!email.trim()) {
+      setError("Enter your email above, then tap Forgot password.");
+      return;
+    }
+    if (address.endsWith("@padida.app")) {
+      setError("Username accounts can't receive email. Ask an admin to reset your password.");
+      return;
+    }
+    setBusy(true);
+    const { error: err } = await supabase.auth.resetPasswordForEmail(address, {
+      redirectTo: `${window.location.origin}/auth/reset`,
+    });
+    setBusy(false);
+    if (err) {
+      setError(friendlyAuthError(err));
+      return;
+    }
+    setShowReset(false);
+    setNotice(
+      `If an account exists for ${address}, we've sent a link to set a new password. Check Spam and Promotions too.`,
+    );
   };
 
   const google = async () => {
@@ -195,11 +295,48 @@ function AuthPage() {
               {busy ? "Working…" : mode === "signup" ? "Create account" : "Sign in"}
             </button>
 
-            {error && <p className="px-5 text-xs text-destructive">{error}</p>}
-            {notice && <p className="px-5 text-xs text-success">{notice}</p>}
+            {mode === "signin" ? (
+              <button
+                type="button"
+                onClick={() => void forgot()}
+                disabled={busy}
+                className={`w-full text-right text-xs transition-colors duration-300 hover:text-primary ${
+                  showReset ? "font-semibold text-primary" : "text-muted-foreground"
+                }`}
+              >
+                Forgot password?
+              </button>
+            ) : null}
+
+            {error && (
+              <p role="alert" className="px-5 text-xs text-destructive">
+                {error}
+              </p>
+            )}
+            {notice && (
+              <p role="status" className="px-5 text-xs text-success">
+                {notice}
+              </p>
+            )}
+            {resendTo ? (
+              <button
+                type="button"
+                onClick={() => void resend()}
+                disabled={cooldown > 0}
+                className="btn-base btn-ghost h-10 w-full text-xs disabled:opacity-60"
+              >
+                {cooldown > 0 ? `Resend email in ${cooldown}s` : "Resend confirmation email"}
+              </button>
+            ) : null}
 
             <button
-              onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
+              onClick={() => {
+                setMode(mode === "signin" ? "signup" : "signin");
+                setError(null);
+                setNotice(null);
+                setResendTo(null);
+                setShowReset(false);
+              }}
               className="w-full pt-2 text-center text-xs text-muted-foreground transition-colors duration-300 hover:text-primary"
             >
               {mode === "signin"

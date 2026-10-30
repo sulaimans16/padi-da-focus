@@ -77,8 +77,12 @@ export const generateQuestionBatch = createServerFn({ method: "POST" })
       throw new Error("AI is not configured for this project yet.");
 
     const { generateText, Output, NoObjectGeneratedError } = await import("ai");
-    const { createLovableAiGatewayProvider, createOpenRouterProvider, OPENROUTER_MODEL } =
-      await import("./ai-gateway.server");
+    const {
+      createLovableAiGatewayProvider,
+      createOpenRouterProvider,
+      openRouterModels,
+      withModelFallback,
+    } = await import("./ai-gateway.server");
     const { researchTopic } = await import("./web-research.server");
 
     const exam = data.exam ?? "neet_pg";
@@ -146,38 +150,57 @@ export const generateQuestionBatch = createServerFn({ method: "POST" })
     const gateway = useOpenRouter
       ? createOpenRouterProvider(openRouterKey!, { structuredOutputs: false })
       : createLovableAiGatewayProvider(lovableKey!, { structuredOutputs: true });
-    const modelId = useOpenRouter ? OPENROUTER_MODEL : "openai/gpt-5.6-sol";
 
-    let parsed: z.infer<typeof BatchSchema> | null = null;
-    try {
-      const { output } = await generateText({
-        model: gateway(modelId),
-        system: isUg ? SYSTEM_UG : SYSTEM,
-        prompt,
-        output: Output.object({ schema: BatchSchema }),
-        ...(useOpenRouter
-          ? { maxOutputTokens: 12000, providerOptions: { openrouter: { reasoningEffort: "low" } } }
-          : { providerOptions: { lovable: { reasoningEffort: "none" } } }),
-      });
-      parsed = output;
-    } catch (error) {
-      if (NoObjectGeneratedError.isInstance(error) && error.text) {
-        const match = error.text.match(/\{[\s\S]*\}/);
-        if (match) {
-          const safe = BatchSchema.safeParse(JSON.parse(match[0]));
-          if (safe.success) parsed = safe.data;
+    type Batch = z.infer<typeof BatchSchema>;
+    // One attempt per model: generate, then salvage JSON from a near-miss reply.
+    const attempt = async (model: string): Promise<Batch> => {
+      try {
+        const { output } = await generateText({
+          model: gateway(model),
+          system: isUg ? SYSTEM_UG : SYSTEM,
+          prompt,
+          output: Output.object({ schema: BatchSchema }),
+          ...(useOpenRouter
+            ? {
+                maxOutputTokens: 12000,
+                providerOptions: { openrouter: { reasoningEffort: "low" } },
+              }
+            : { providerOptions: { lovable: { reasoningEffort: "none" } } }),
+        });
+        return output;
+      } catch (error) {
+        if (NoObjectGeneratedError.isInstance(error) && error.text) {
+          const match = error.text.match(/\{[\s\S]*\}/);
+          if (match) {
+            try {
+              const safe = BatchSchema.safeParse(JSON.parse(match[0]));
+              if (safe.success) return safe.data;
+            } catch {
+              // fall through
+            }
+          }
+          throw new Error("AI returned no usable questions.");
         }
+        throw error;
       }
-      if (!parsed) {
-        const message = error instanceof Error ? error.message : "AI generation failed.";
-        throw new Error(
-          /429|rate/i.test(message)
-            ? "AI is rate limited right now — wait a few seconds and try again."
-            : /402|credit/i.test(message)
-              ? "AI credits are exhausted for this workspace."
+    };
+
+    let parsed: Batch | null = null;
+    try {
+      parsed = useOpenRouter
+        ? await withModelFallback(openRouterModels(), attempt)
+        : await attempt("openai/gpt-5.6-sol");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "AI generation failed.";
+      throw new Error(
+        /429|rate/i.test(message)
+          ? "AI is rate limited right now — wait a few seconds and try again."
+          : /402|credit/i.test(message)
+            ? "AI credits are exhausted for this workspace."
+            : /no endpoints|not a valid model|not found/i.test(message)
+              ? "The AI is temporarily unavailable. Please try again a little later."
               : message,
-        );
-      }
+      );
     }
 
     if (!parsed) throw new Error("AI returned no usable questions.");

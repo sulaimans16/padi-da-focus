@@ -43,8 +43,12 @@ export const askStudyAi = createServerFn({ method: "POST" })
       throw new Error("AI is not configured for this project yet.");
 
     const { generateText } = await import("ai");
-    const { createLovableAiGatewayProvider, createOpenRouterProvider, OPENROUTER_MODEL } =
-      await import("./ai-gateway.server");
+    const {
+      createLovableAiGatewayProvider,
+      createOpenRouterProvider,
+      openRouterModels,
+      withModelFallback,
+    } = await import("./ai-gateway.server");
     const { ASK_SYSTEM, ASK_SYSTEM_UG, friendlyAiError } = await import("./ai-help.server");
 
     const useOpenRouter = Boolean(openRouterKey);
@@ -70,14 +74,22 @@ export const askStudyAi = createServerFn({ method: "POST" })
       .join("\n\n");
 
     try {
-      const result = await generateText({
-        model: gateway(useOpenRouter ? OPENROUTER_MODEL : "openai/gpt-5.6-sol"),
-        system: exam === "neet_ug" ? ASK_SYSTEM_UG : ASK_SYSTEM,
-        messages: [...(data.history ?? []), { role: "user" as const, content: prompt }],
-        ...(useOpenRouter
-          ? { maxOutputTokens: 4000, providerOptions: { openrouter: { reasoningEffort: "low" } } }
-          : { providerOptions: { lovable: { reasoningEffort: "none" } } }),
-      });
+      const ask = (model: string) =>
+        generateText({
+          model: gateway(model),
+          system: exam === "neet_ug" ? ASK_SYSTEM_UG : ASK_SYSTEM,
+          messages: [...(data.history ?? []), { role: "user" as const, content: prompt }],
+          ...(useOpenRouter
+            ? { maxOutputTokens: 4000, providerOptions: { openrouter: { reasoningEffort: "low" } } }
+            : { providerOptions: { lovable: { reasoningEffort: "none" } } }),
+        }).then((r) => {
+          // An empty reply (e.g. all tokens spent reasoning) counts as a failure.
+          if (!r.text.trim()) throw new Error("no usable answer");
+          return r;
+        });
+      const result = useOpenRouter
+        ? await withModelFallback(openRouterModels(), ask)
+        : await ask("openai/gpt-5.6-sol");
       const answer = result.text;
       return { answer: answer.trim() };
     } catch (error) {

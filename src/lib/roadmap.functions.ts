@@ -71,8 +71,12 @@ export const generateRoadmap = createServerFn({ method: "POST" })
       throw new Error("AI is not configured for this project yet.");
 
     const { generateText, Output, NoObjectGeneratedError } = await import("ai");
-    const { createLovableAiGatewayProvider, createOpenRouterProvider, OPENROUTER_MODEL } =
-      await import("./ai-gateway.server");
+    const {
+      createLovableAiGatewayProvider,
+      createOpenRouterProvider,
+      openRouterModels,
+      withModelFallback,
+    } = await import("./ai-gateway.server");
     const { friendlyAiError } = await import("./ai-help.server");
 
     const weeks = data.weeks && data.weeks > 0 ? data.weeks : 8;
@@ -89,27 +93,46 @@ export const generateRoadmap = createServerFn({ method: "POST" })
       ? createOpenRouterProvider(openRouterKey!, { structuredOutputs: false })
       : createLovableAiGatewayProvider(lovableKey!, { structuredOutputs: true });
 
+    // One attempt per model: generate, then salvage JSON from a near-miss reply.
+    const attempt = async (model: string): Promise<Roadmap> => {
+      try {
+        const { output } = await generateText({
+          model: gateway(model),
+          system: data.exam === "neet_ug" ? SYSTEM_UG : SYSTEM,
+          prompt,
+          output: Output.object({ schema: RoadmapSchema }),
+          ...(useOpenRouter
+            ? {
+                maxOutputTokens: 10000,
+                providerOptions: { openrouter: { reasoningEffort: "low" } },
+              }
+            : { providerOptions: { lovable: { reasoningEffort: "none" } } }),
+        });
+        return output;
+      } catch (error) {
+        if (NoObjectGeneratedError.isInstance(error) && error.text) {
+          const match = error.text.match(/\{[\s\S]*\}/);
+          if (match) {
+            try {
+              const safe = RoadmapSchema.safeParse(JSON.parse(match[0]));
+              if (safe.success) return safe.data;
+            } catch {
+              // fall through
+            }
+          }
+          throw new Error("AI returned no usable roadmap.");
+        }
+        throw error;
+      }
+    };
+
     let parsed: Roadmap | null = null;
     try {
-      const { output } = await generateText({
-        model: gateway(useOpenRouter ? OPENROUTER_MODEL : "openai/gpt-5.6-sol"),
-        system: data.exam === "neet_ug" ? SYSTEM_UG : SYSTEM,
-        prompt,
-        output: Output.object({ schema: RoadmapSchema }),
-        ...(useOpenRouter
-          ? { maxOutputTokens: 10000, providerOptions: { openrouter: { reasoningEffort: "low" } } }
-          : { providerOptions: { lovable: { reasoningEffort: "none" } } }),
-      });
-      parsed = output;
+      parsed = useOpenRouter
+        ? await withModelFallback(openRouterModels(), attempt)
+        : await attempt("openai/gpt-5.6-sol");
     } catch (error) {
-      if (NoObjectGeneratedError.isInstance(error) && error.text) {
-        const match = error.text.match(/\{[\s\S]*\}/);
-        if (match) {
-          const safe = RoadmapSchema.safeParse(JSON.parse(match[0]));
-          if (safe.success) parsed = safe.data;
-        }
-      }
-      if (!parsed) throw new Error(friendlyAiError(error));
+      throw new Error(friendlyAiError(error));
     }
 
     if (!parsed) throw new Error("AI returned no usable roadmap.");

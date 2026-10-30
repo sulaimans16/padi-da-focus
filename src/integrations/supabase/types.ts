@@ -827,54 +827,6 @@ export type Database = {
         }
         Relationships: []
       }
-      study_notes: {
-        Row: {
-          body: string
-          created_at: string
-          exam: string
-          id: string
-          pinned: boolean
-          source_kind: string
-          source_label: string | null
-          source_path: string | null
-          source_ref: string | null
-          subject: string | null
-          title: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          body?: string
-          created_at?: string
-          exam?: string
-          id?: string
-          pinned?: boolean
-          source_kind?: string
-          source_label?: string | null
-          source_path?: string | null
-          source_ref?: string | null
-          subject?: string | null
-          title?: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          body?: string
-          created_at?: string
-          exam?: string
-          id?: string
-          pinned?: boolean
-          source_kind?: string
-          source_label?: string | null
-          source_path?: string | null
-          source_ref?: string | null
-          subject?: string | null
-          title?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
       study_roadmaps: {
         Row: {
           done: string[]

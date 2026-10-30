@@ -6,6 +6,8 @@ import type { Question } from "./questions";
  * AskAi reads it when a doubt is sent. A plain module store, no React state.
  */
 export type AiQuestion = {
+  /** Not sent to the AI (the server schema drops it); used to tag notes. */
+  id?: string;
   subject: string;
   topic: string;
   stem: string;
@@ -29,6 +31,7 @@ export function aiQuestion(q: Question, answered: boolean): AiQuestion {
   const letter = (i: number) => String.fromCharCode(65 + i);
   const correct = q.options.findIndex((o) => o.id === q.correctOptionId);
   return {
+    id: q.id,
     subject: q.subject,
     topic: q.topic,
     stem: clip(q.stem, 1500),

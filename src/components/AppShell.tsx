@@ -6,6 +6,7 @@ import { fetchMyBatches, fetchStaffOverview } from "@/lib/institute";
 import { useAuth } from "@/hooks/useAuth";
 import { useTheme } from "@/lib/theme";
 import { AskAi } from "@/components/AskAi";
+import { NotesDock } from "@/components/notes/NotesDock";
 import { UsernamePrompt } from "@/components/UsernamePrompt";
 import { Icon } from "@/components/Primitives";
 import { Aurora } from "@/components/Aurora";
@@ -40,6 +41,7 @@ type TrackPath =
   | "/$track/leagues"
   | "/$track/friends"
   | "/$track/batch"
+  | "/$track/notes"
   | "/$track/profile";
 
 type NavLink = {
@@ -54,6 +56,7 @@ const PLAY: NavLink[] = [
   { label: "Learn", icon: "menu_book", to: "/$track/learn" },
   { label: "Daily Challenge", icon: "bolt", to: "/$track/daily" },
   { label: "Flashcards", icon: "style", to: "/$track/flashcards" },
+  { label: "Notes", icon: "edit_note", to: "/$track/notes" },
   { label: "Fix Mistakes", icon: "healing", to: "/$track/review" },
   { label: "Leagues", icon: "trophy", to: "/$track/leagues" },
   { label: "Friends", icon: "group", to: "/$track/friends" },
@@ -385,6 +388,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         })}
       </nav>
 
+      <NotesDock />
       <AskAi />
       <UsernamePrompt />
       <GameLayer />

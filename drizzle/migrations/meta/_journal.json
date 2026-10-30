@@ -155,6 +155,13 @@
       "when": 1792078066139,
       "tag": "0021_institutes_batches",
       "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1793324404906,
+      "tag": "0022_notes",
+      "breakpoints": true
     }
   ]
 }

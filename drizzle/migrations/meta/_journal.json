@@ -162,6 +162,13 @@
       "when": 1793324404906,
       "tag": "0022_notes",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1793325473088,
+      "tag": "0023_study_notes",
+      "breakpoints": true
     }
   ]
 }
